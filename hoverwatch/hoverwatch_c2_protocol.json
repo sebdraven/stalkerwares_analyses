@@ -1,0 +1,334 @@
+{
+  "protocol": "Hoverwatch C2 Protocol v7.5.369",
+  "transport": {
+    "scheme": "HTTPS",
+    "port": 443,
+    "ssl_verification": false,
+    "ssl_pinning": false,
+    "hostname_verification": false,
+    "timeout_connect_ms": 60000,
+    "timeout_read_ms": 60000,
+    "connection": "Keep-Alive | Close"
+  },
+
+  "headers": {
+    "common": {
+      "User-Agent": "Android Monitor {client_ver}",
+      "Connection": "Keep-Alive"
+    },
+    "authenticated": {
+      "x-auth-key": "{activation_id}"
+    },
+    "sync": {
+      "x-settings-ver": "{settings_version}",
+      "x-client-event": "{event_data}"
+    }
+  },
+
+  "client_identifiers": {
+    "HWA": "Hoverwatch Android (production)",
+    "HWA_TST": "Hoverwatch Android (test/debug)",
+    "SNPA": "Hoverwatch Android (variant)"
+  },
+
+  "domains": {
+    "format": "https://{domain}:443/;https://{domain2}:443/",
+    "separator": ";",
+    "rotation": "on_failure_move_to_end",
+    "fallback_delay_ms": 10800000,
+    "normalization": {
+      "force_https": true,
+      "force_port_443": true,
+      "force_trailing_slash": true
+    }
+  },
+
+  "endpoints": {
+
+    "registration": {
+      "path": "api/online/registration/",
+      "method": "POST",
+      "content_type": "application/json",
+      "auth_required": false,
+      "request": {
+        "username": {"type": "string", "description": "Email de l'acheteur/abuseur"},
+        "password": {"type": "string", "description": "Mot de passe de l'acheteur"},
+        "hid": {"type": "string", "format": "and:{hardware_id}", "description": "Identifiant hardware unique du device"},
+        "device_name": {"type": "string", "description": "Modèle du téléphone (Build.MODEL)"},
+        "client_ver": {"type": "string", "example": "7.5.369", "description": "Version de l'app stalkerware"},
+        "os_ver": {"type": "string", "example": "13", "description": "Version Android (Build.VERSION.RELEASE)"},
+        "user_type": {"type": "integer", "description": "Type de device (enum ordinal)"},
+        "device.dev_mac_adr_str": {"type": "string", "description": "Adresse MAC WiFi", "optional": true},
+        "device.dev_mac2_adr_str": {"type": "string", "description": "Adresse MAC secondaire", "optional": true},
+        "device.dev_serial_num_str": {"type": "string", "description": "Numéro de série (>8 chars)", "optional": true},
+        "device.dev_imei_str": {"type": "string", "description": "IMEI du device (>8 chars)", "optional": true},
+        "device.dev_accounts_str": {"type": "string", "description": "Comptes Google sur le device", "optional": true},
+        "device.perm_101": {"type": "integer", "description": "État permission READ_CONTACTS"},
+        "device.perm_102": {"type": "integer", "description": "État permission READ_CALL_LOG"},
+        "device.perm_103": {"type": "integer", "description": "État permission READ_SMS"},
+        "device.perm_116": {"type": "integer", "description": "État permission LOCATION"},
+        "device.perm_118": {"type": "integer", "description": "État permission CAMERA"},
+        "device.perm_121": {"type": "integer", "description": "État permission RECORD_AUDIO"},
+        "device.perm_128": {"type": "integer", "description": "État permission STORAGE"},
+        "device.perm_129": {"type": "integer", "description": "État permission PHONE"},
+        "device.perm_130": {"type": "integer", "description": "État permission CALENDAR"}
+      },
+      "response_success": {
+        "status": "ok",
+        "auth_key": {"type": "string", "description": "Clé d'activation (= ActivationID stocké en DES)"},
+        "valid_through": {"type": "string", "format": "yyyy-MM-dd HH:mm:ss", "example": "2026-12-31 23:59:59"},
+        "subscription": {"type": "string", "description": "Type d'abonnement"},
+        "domains": {"type": "string", "format": "semicolon_separated_urls", "example": "https://c2.example.com:443/;https://backup.example.com:443/"},
+        "client_pin": {"type": "string", "description": "Code PIN de l'acheteur", "optional": true}
+      },
+      "response_fail": {
+        "status": "fail"
+      }
+    },
+
+    "activation": {
+      "path": "api/online/activation/",
+      "method": "POST",
+      "content_type": "application/json",
+      "auth_required": false,
+      "request": {"type": "object", "description": "JSONObject (structure similaire à registration)"},
+      "response_success": {
+        "status": "ok",
+        "auth_key": "{activation_id}",
+        "valid_through": "yyyy-MM-dd HH:mm:ss",
+        "subscription": "{type}",
+        "domains": "{semicolon_separated_urls}",
+        "client_pin": "{pin}",
+        "settings": "→ voir objet settings ci-dessous"
+      }
+    },
+
+    "check": {
+      "path": "api/online/check/",
+      "method": "POST",
+      "auth_required": false,
+      "description": "Ping/heartbeat — vérifie que le domaine C2 est joignable",
+      "request": {"body": "empty (doOutput=false)"},
+      "response": "HTTP 200 = OK, autre = erreur → rotation domaine"
+    },
+
+    "sync_settings": {
+      "path": "Inclus dans la réponse de check/registration via header x-settings-ver",
+      "method": "Piggybacked sur les autres requêtes",
+      "description": "Le serveur envoie les settings dans la réponse JSON",
+      "response": "→ voir objet settings ci-dessous"
+    },
+
+    "update_check": {
+      "path": "api/online/programversion/{client_id}/",
+      "method": "GET",
+      "auth_required": false,
+      "path_params": {
+        "client_id": {"type": "string", "enum": ["HWA", "HWA_TST", "SNPA"]}
+      },
+      "response_no_update": "Update not found",
+      "response_update_available": {
+        "version": {"type": "string", "example": "7.6.370"},
+        "download_link": {"type": "string", "format": "url", "description": "URL du nouvel APK (forcé HTTPS)"}
+      }
+    },
+
+    "deregistration": {
+      "path": "api/online/deregistration/",
+      "method": "POST",
+      "auth_required": true,
+      "description": "Reset de la licence — désassocier le device",
+      "request": {"body": "empty"},
+      "response": "HTTP status code uniquement"
+    },
+
+    "send_exception_logs": {
+      "path": "api/online/exceptionlog/",
+      "method": "POST",
+      "auth_required": true,
+      "content_type": "protobuf-like (C0718k builder)",
+      "description": "Envoi des logs d'erreurs/exceptions internes",
+      "request_format": {
+        "container": "protobuf-like binary avec clé/valeur",
+        "content": "JSON events wrappés dans un conteneur binaire",
+        "key_format": "Y{sequential_id} ou N{sequential_id} (selon le type)",
+        "content_length": "explicite dans le header"
+      }
+    },
+
+    "send_event_logs": {
+      "path": "api/online/logs/",
+      "method": "POST",
+      "auth_required": true,
+      "content_type": "protobuf-like (C0718k builder)",
+      "description": "Exfiltration des données collectées (IM, GPS, SMS, etc.)",
+      "request_format": {
+        "container": "protobuf-like binary avec clé/valeur",
+        "content": "JSON events wrappés dans un conteneur binaire",
+        "key_format": "Y{sequential_id} ou N{sequential_id}",
+        "content_length": "explicite dans le header",
+        "batch_mode": "multiple events par requête, envoyés par collecteur"
+      }
+    }
+  },
+
+  "http_response_codes": {
+    "200": {"action": "success", "description": "OK"},
+    "400": {"action": "error", "description": "Request unrecognized"},
+    "401": {"action": "error + increase_sync_period_720min", "description": "License locked"},
+    "403": {"action": "error", "description": "Wrong login/password"},
+    "404": {"action": "ignore", "description": "Update not found"},
+    "409": {"action": "error", "description": "License limit reached"},
+    "410": {"action": "SELF_DESTRUCT", "description": "Remove application — triggers auto-uninstall (kill switch)"},
+    "413": {"action": "error", "description": "Request entity too large"},
+    "422": {"action": "error", "description": "Unprocessable Entity"},
+    "500": {"action": "retry_later", "description": "Server error"},
+    "502": {"action": "error", "description": "Bad Gateway"}
+  },
+
+  "settings_object": {
+    "_description": "Envoyé par le serveur dans la réponse registration/activation. Contrôle à distance tous les modules du stalkerware.",
+    "_source": "Extrait de C0887y.m6527x() — config par défaut hardcodée",
+    "version": {"type": "long", "description": "Version des settings (incrémentale, le client n'applique que si > version locale)"},
+    "on": {"type": "boolean", "default": true, "description": "Active/désactive la surveillance globale"},
+    "debug": {"type": "boolean", "default": false, "description": "Mode debug"},
+    "onlyWiFi": {"type": "boolean", "default": false, "description": "Exfiltrer uniquement en WiFi"},
+    "period": {"type": "integer", "default": 10, "unit": "minutes", "description": "Période de sync/exfiltration"},
+    "showtab": {"type": "boolean", "description": "Afficher l'onglet général dans l'UI de contrôle"},
+    "autoupdate": {
+      "on": {"type": "boolean", "default": false}
+    },
+    "location": {
+      "on": {"type": "boolean", "default": true, "module_id": 314},
+      "period": {"type": "integer", "default": 10, "unit": "minutes", "description": "Intervalle de collecte GPS"},
+      "acc": {"type": "integer", "default": 1000, "unit": "meters", "description": "Précision GPS minimale"}
+    },
+    "contact": {
+      "on": {"type": "boolean", "default": true, "description": "Collecte des contacts"}
+    },
+    "call": {
+      "on": {"type": "boolean", "default": true, "module_id": 312, "description": "Collecte journal d'appels"},
+      "rec": {"type": "boolean", "default": true, "description": "Enregistrement audio des appels"},
+      "source": {"type": "integer", "default": 4, "description": "AudioSource Android (1=MIC, 4=VOICE_COMMUNICATION, 6=VOICE_RECOGNITION, 7=VOICE_CALL)"},
+      "quality": {"type": "integer", "default": 1, "description": "Qualité audio (0=basse, 1=moyenne, 2=haute)"},
+      "codec": {"type": "integer", "default": 2, "description": "Codec audio"},
+      "gain": {"type": "boolean", "default": false, "description": "Amplification du gain audio"}
+    },
+    "sms": {
+      "on": {"type": "boolean", "default": true, "module_id": 313, "description": "Interception SMS"},
+      "shot": {"type": "boolean", "default": false, "description": "Screenshot sur événement SMS"}
+    },
+    "chat": {
+      "on": {"type": "boolean", "default": true, "module_id": 304, "description": "Interception IM (100+ apps)"},
+      "shot": {"type": "boolean", "default": false, "description": "Screenshot sur événement chat"},
+      "rec": {"type": "boolean", "default": true, "description": "Enregistrement audio sur événement chat (appels VoIP)"}
+    },
+    "url": {
+      "on": {"type": "boolean", "default": true, "module_id": 305, "description": "Interception URLs navigateur"},
+      "shot": {"type": "boolean", "default": false, "description": "Screenshot sur navigation web"}
+    },
+    "sim": {
+      "on": {"type": "boolean", "default": false, "description": "Monitoring changement SIM"}
+    },
+    "calendar": {
+      "on": {"type": "boolean", "default": true, "description": "Collecte calendrier"}
+    },
+    "frcam": {
+      "on": {"type": "boolean", "default": true, "module_id": 319, "description": "Capture caméra frontale"},
+      "photo": {"type": "boolean", "description": "Prendre des photos"}
+    },
+    "shot": {
+      "on": {"type": "boolean", "default": false, "module_id": 302, "description": "Captures d'écran périodiques"},
+      "period": {"type": "integer", "default": 5, "unit": "minutes", "description": "Intervalle entre screenshots"}
+    },
+    "files": {
+      "on": {"type": "boolean", "description": "Monitoring fichiers"},
+      "shot": {"type": "boolean", "description": "Screenshot sur événement fichier"}
+    },
+    "app": {
+      "on": {"type": "boolean", "description": "Monitoring apps installées/lancées"},
+      "shot": {"type": "boolean", "description": "Screenshot sur événement app"}
+    },
+    "keys": {
+      "on": {"type": "boolean", "description": "Keylogger (via AccessibilityService)"},
+      "shot": {"type": "boolean", "description": "Screenshot sur événement keylog"}
+    }
+  },
+
+  "module_ids": {
+    "302": "Screenshots périodiques",
+    "304": "IM Reader (AccessibilityService — 54+ apps messaging)",
+    "305": "Browser monitoring (44+ navigateurs)",
+    "312": "Call recording (appels téléphoniques + VoIP)",
+    "313": "SMS monitoring",
+    "314": "Location tracking (GPS + WiFi + Cell)",
+    "319": "Front camera capture"
+  },
+
+  "data_formats": {
+    "instant_message": {
+      "_description": "Format d'un message IM intercepté (classe InstantMessage)",
+      "N": {"type": "integer", "description": "Index du message dans la conversation"},
+      "time": {"type": "timestamp", "description": "Horodatage du message"},
+      "sec": {"type": "integer", "description": "Heure dans la journée (secondes depuis minuit)"},
+      "seen": {"type": "long", "description": "Timestamp quand le message a été lu"},
+      "from": {"type": "string", "description": "Nom de l'expéditeur"},
+      "text": {"type": "string", "description": "Contenu du message"},
+      "len": {"type": "integer", "description": "Longueur du texte"},
+      "type": {"type": "integer", "enum": {"0": "texte", "1": "image", "5": "sticker", "6": "vidéo", "-1": "inconnu"}},
+      "direct": {"type": "enum", "values": ["UNDEFINED", "INBOUND", "OUTBOUND"]}
+    },
+
+    "location_event": {
+      "_description": "Format d'un événement GPS (classe C0616e)",
+      "loc": {
+        "cat": {"type": "integer", "description": "Catégorie de source (1=GPS, 2=WiFi, 4=inconnue)"},
+        "crd": {"type": "array", "format": "[latitude, longitude]"},
+        "acc": {"type": "float", "unit": "meters", "description": "Précision"},
+        "spd": {"type": "float", "unit": "km/h", "description": "Vitesse (convertie de m/s × 3.6)"},
+        "ssid": {"type": "string", "description": "Nom du réseau WiFi"},
+        "bssid": {"type": "string", "description": "MAC du point d'accès"},
+        "cellid": {"type": "string", "format": "MCC-MNC-LAC-CID", "description": "Identifiant cellulaire"}
+      }
+    },
+
+    "call_event": {
+      "_description": "Format d'un événement d'appel (voix ou VoIP)",
+      "call": 1,
+      "_id": {"type": "integer", "description": "Module ID (312=call, 304=VoIP)"},
+      "im": {"type": "integer", "description": "Type IM (pour VoIP — 4=WhatsApp, etc.)"}
+    }
+  },
+
+  "encryption": {
+    "algorithm": "DES/ECB/PKCS5Padding",
+    "key_derivation": "DESKeySpec from UTF-8 bytes",
+    "default_key": {
+      "raw": "val",
+      "padded": "vallength 8",
+      "effective_8bytes": "vallenge",
+      "_note": "Si clé < 8 chars, padding avec 'length 8'. DESKeySpec prend les 8 premiers octets."
+    },
+    "encoding": "Base64",
+    "usage": [
+      "SharedPreferences: ActivationID, Password, domains, Subscription",
+      "Obfuscation de noms de packages dans le code source"
+    ]
+  },
+
+  "license_management": {
+    "validity_period": {"description": "ValidThrough timestamp"},
+    "grace_period_ms": 604800000,
+    "grace_period_human": "7 jours",
+    "lock_period_ms": 3628800000,
+    "lock_period_human": "42 jours après expiration",
+    "sync_period_normal_ms": 300000,
+    "sync_period_normal_human": "5 minutes",
+    "sync_period_error_ms": 43200000,
+    "sync_period_error_human": "720 minutes (12h)",
+    "kill_switch": {
+      "trigger": "HTTP 410",
+      "action": "Auto-désinstallation via C0743c.m5397a()"
+    }
+  }
+}

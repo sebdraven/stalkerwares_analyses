@@ -1,0 +1,14 @@
+[project]
+name = "hoverwatch-mock-c2"
+version = "1.0.0"
+description = "Mock C2 server for Hoverwatch stalkerware — research/ASTRA project"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "httpx>=0.27.0",
+]
