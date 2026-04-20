@@ -1,0 +1,153 @@
+{
+  "apk": "P:\\Thèse\\Datasets\\stalkerware_named\\hoverwatch_20260420.apk",
+  "dex_files": [
+    "classes.dex"
+  ],
+  "algorithm": "DES/ECB/PKCS5",
+  "key_hex": "76616c6c656e6774",
+  "key_utf8": "vallengt",
+  "count_total_strings": 11153,
+  "count_decrypted": 20,
+  "records": [
+    {
+      "plaintext": "https://a.syncvch.com:443/;https://i1.hoverwatch.com:443/;https://hwa.cab:443/",
+      "kind": "c2_url",
+      "ciphertexts": [
+        "O4MkUWSy2w/J0RDFuayF5Ews4PV4Ocp8zP7SC0Tqr8tNqvR67gt5eLENzuZr371ILX3yaN+WuMUV\n3d5sswyBFBNI5FtH3kiMb/0dsnsdKtY="
+      ]
+    },
+    {
+      "plaintext": "https://snsync.com:443/;https://api.snoopza.com:443/;https://app.snoopza.com:443/",
+      "kind": "c2_url",
+      "ciphertexts": [
+        "O4MkUWSy2w8l+q9IeEEKmD8bzy/MLGOuO4MkUWSy2w8AGXZGDD1v7oP2Y7eJwWNb913z4+UPlNgQ\no/m0ruse4stmDc+aPJ7hLX3yaN+WuMUKC5YLbFNtkA=="
+      ]
+    },
+    {
+      "plaintext": "content://",
+      "kind": "content_uri",
+      "ciphertexts": [
+        "3t2PYOBHw5QQ3MraExQvUA=="
+      ]
+    },
+    {
+      "plaintext": "com.facebook.katana",
+      "kind": "domain",
+      "ciphertexts": [
+        "3fyV19Ubrzy0I8TMlynRaqHeVVP+T8kp\n"
+      ]
+    },
+    {
+      "plaintext": "com.google.android.apps.youtube.kids",
+      "kind": "domain",
+      "ciphertexts": [
+        "lrH2Zm0JF+MdZcKkUKBf1Pv5W7uFbwla2XNHCjr2LTEcduvI7tFe8g==\n"
+      ]
+    },
+    {
+      "plaintext": "com.google.android.youtube",
+      "kind": "domain",
+      "ciphertexts": [
+        "lrH2Zm0JF+MdZcKkUKBf1FtNxAV67vik/HT3Km2t/Qo=\n"
+      ]
+    },
+    {
+      "plaintext": "/bookmarks",
+      "kind": "path_or_intent",
+      "ciphertexts": [
+        "4QGHDRAo5gtxKC6tB906CA=="
+      ]
+    },
+    {
+      "plaintext": "/history",
+      "kind": "path_or_intent",
+      "ciphertexts": [
+        "iStpXVU4Hl2WvPTVQihbzQ=="
+      ]
+    },
+    {
+      "plaintext": " -c",
+      "kind": "string",
+      "ciphertexts": [
+        "WoCJfsNr1es=\n"
+      ]
+    },
+    {
+      "plaintext": " -d -v time -b crash ",
+      "kind": "string",
+      "ciphertexts": [
+        "0Uji2E/esiv4G0Mf1dQghVqVAqSyHaJX\n"
+      ]
+    },
+    {
+      "plaintext": " mCi",
+      "kind": "string",
+      "ciphertexts": [
+        "ddRao1nW0Yc=\n"
+      ]
+    },
+    {
+      "plaintext": " mCid",
+      "kind": "string",
+      "ciphertexts": [
+        "bUTnBPXNI8A=\n"
+      ]
+    },
+    {
+      "plaintext": " mLac",
+      "kind": "string",
+      "ciphertexts": [
+        "dIra2WVswMU=\n"
+      ]
+    },
+    {
+      "plaintext": " mTac",
+      "kind": "string",
+      "ciphertexts": [
+        "kplZKq/lyHs=\n"
+      ]
+    },
+    {
+      "plaintext": "CellIdentityGsm",
+      "kind": "string",
+      "ciphertexts": [
+        "xLiWIG9WNxmhD4v7DXtiNQ==\n"
+      ]
+    },
+    {
+      "plaintext": "CellIdentityLte",
+      "kind": "string",
+      "ciphertexts": [
+        "xLiWIG9WNxmIT1ZJpvSLHA==\n"
+      ]
+    },
+    {
+      "plaintext": "CellIdentityWcdma",
+      "kind": "string",
+      "ciphertexts": [
+        "xLiWIG9WNxnXZVYDTGhrje6wnHt5vGXh\n"
+      ]
+    },
+    {
+      "plaintext": "E/AndroidRuntime",
+      "kind": "string",
+      "ciphertexts": [
+        "KCiTyJ1RfIhtFxFtjPmoopa89NVCKFvN"
+      ]
+    },
+    {
+      "plaintext": "logcat",
+      "kind": "string",
+      "ciphertexts": [
+        "A+lQI+gVHJo=\n"
+      ]
+    },
+    {
+      "plaintext": "refog",
+      "kind": "string",
+      "ciphertexts": [
+        "uHpzgHJIA7s=\n"
+      ]
+    }
+  ]
+}

@@ -1,11 +1,12 @@
 [project]
-name = "hoverwatch-mock-c2"
-version = "1.0.0"
-description = "Mock C2 server for Hoverwatch stalkerware — research/ASTRA project"
+name = "refog-mock-c2"
+version = "2.0.0"
+description = "Mock C2 server for Refog stalkerware (Hoverwatch / Snoopza) — ASTRA / LHS-LORIA research project"
 requires-python = ">=3.10"
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
+    "python-multipart>=0.0.9",  # required by FastAPI for request.form() — multipart parsing
 ]
 
 [tool.uv]

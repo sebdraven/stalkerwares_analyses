@@ -1,0 +1,36 @@
+{
+  "projectVersion": 2,
+  "files": [
+    "mtf_payload_v39_arm_20260409_160800.apk"
+  ],
+  "treeExpansionsV2": [
+    "t:JResources"
+  ],
+  "codeData": {
+    "comments": [],
+    "renames": []
+  },
+  "openTabs": [
+    {
+      "type": "resource",
+      "tabPath": "AndroidManifest.xml",
+      "subPath": "",
+      "caret": 16809,
+      "view": {
+        "x": 0,
+        "y": 6666
+      },
+      "active": true,
+      "pinned": false,
+      "bookmarked": false,
+      "hidden": false,
+      "previewTab": false
+    }
+  ],
+  "cacheDir": "C:\\Users\\sebdr\\AppData\\Local\\skylot\\jadx\\cache\\projects\\mtf_payload_v39_arm_20260409_160800-4aa9f4fdb25367bf9525e70e1e44dacc",
+  "enableLiveReload": false,
+  "searchHistory": [],
+  "searchResourcesFilter": "$TEXT",
+  "searchResourcesSizeLimit": 0,
+  "pluginOptions": {}
+}

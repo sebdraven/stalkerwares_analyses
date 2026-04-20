@@ -1,7 +1,7 @@
 # Hoverwatch — Reverse Engineering du protocole C2
 
-> **Package** : `com.android.core.mntan`
-> **Version** : 7.5.369 (versionCode 369)
+> **Package** : `com.android.core.mntan` (7.5.369) / `com.android.core.mntau` (7.5.385)
+> **Versions analysées** : 7.5.369 (versionCode 369), 7.5.385 (versionCode 385)
 > **Target SDK** : 33 (Android 13)
 > **Obfuscation** : ProGuard — package renommé `p094hw` (hw = Hoverwatch)
 > **Outil** : JADX MCP
@@ -24,7 +24,7 @@
 | `CAMERA` | Photos |
 | `READ_EXTERNAL_STORAGE` / `WRITE_EXTERNAL_STORAGE` / `MANAGE_EXTERNAL_STORAGE` | Fichiers |
 | `READ_LOGS` | Logs système |
-| `GET_ACCOUNTS` | Comptes utilisateur |
+| `GET_ACCOUNTS` | Comptes utilisateur (**utilisé aussi pour l'exfil SMTP, cf. §5**) |
 | `READ_HISTORY_BOOKMARKS` | Historique navigateur |
 | `PACKAGE_USAGE_STATS` | Apps utilisées |
 
@@ -70,14 +70,14 @@
 
 ---
 
-## 2. Protocole C2 — Classe `p092e.p093a.C0736a`
+## 2. Protocole C2 — Classe `p092e.p093a.C0736a` (369) / `C0737a` (385)
 
 ### 2.1 Identification client
 
 | Champ | Valeur |
 |-------|--------|
-| User-Agent | `Android Monitor 7.5.369` |
-| Client ID | `HWA` (prod), `HWA_TST` (test), `SNPA` (variante) |
+| User-Agent | `Android Monitor <versionName>` (ex. `Android Monitor 7.5.385`) |
+| Client ID | `HWA` (prod), `HWA_TST` (test), `SNPA` (variante Snoopza) |
 | Auth header | `x-auth-key: {ActivationID}` |
 | Settings header | `x-settings-ver: {version}` |
 | Event header | `x-client-event: {event_data}` |
@@ -102,7 +102,7 @@
   "password": "<password_acheteur>",
   "hid": "and:<device_hardware_id>",
   "device_name": "<modele_telephone>",
-  "client_ver": "7.5.369",
+  "client_ver": "7.5.385",
   "os_ver": "<android_version>",
   "user_type": 0,
   "device.dev_mac_adr_str": "<mac_wifi>",
@@ -160,16 +160,27 @@
 - Normalisation forcée : ajout `https://` et `:443/` si absents
 - Fallback : si le domaine courant échoue pendant >3h, rotation vers le suivant
 
-### 2.7 Sécurité SSL
+### 2.7 Domaines C2 par défaut (bootstrap)
+
+Hardcodés DES-chiffrés dans `p053c.p077c.p081d.C0624b` (classe d'initialisation `ServiceCore.INITIALIZE`), rejoués à chaque mise à jour de l'app :
+
+| Variante | Domaines (ordre = priorité) |
+|----------|------------------------------|
+| **HWA** (Hoverwatch, `f6028x=false`) | `a.syncvch.com`, `i1.hoverwatch.com`, `hwa.cab` |
+| **SNPA** (Snoopza, `f6028x=true`) | `snsync.com`, `api.snoopza.com`, `app.snoopza.com` |
+
+Tous en HTTPS sur port 443 explicite (`https://<host>:443/`).
+
+### 2.8 Sécurité SSL
 
 **AUCUNE** vérification SSL :
-- `TrustManager` custom (`C0739d`) → accepte tous les certificats
+- `TrustManager` custom (`C0739d` / `C0740d`) → accepte tous les certificats
 - `HostnameVerifier` → `return true` systématique
 - Implication : vulnérable au MITM, n'importe quel proxy peut intercepter le trafic
 
 ---
 
-## 3. Settings / État — Classe `p094hw.utils.C0888z`
+## 3. Settings / État — Classe `p094hw.utils.C0888z` (369) / `C0895z` (385)
 
 ### 3.1 Clés de configuration
 
@@ -199,25 +210,25 @@
 - **Validité** : `ValidThrough` + 7 jours de grâce (`604800000` ms)
 - **Verrouillage** : `ValidThrough` + 42 jours (`3628800000` ms) → app verrouillée
 - **Période de sync en cas d'erreur** : 5 min (normal) → 720 min (si erreur licence)
-- **Kill switch** : code 410 → déclenche `C0743c.m5397a()` (désinstallation)
+- **Kill switch** : code 410 → déclenche `C0743c.m5397a()` / `C0744c.m5393a()` (désinstallation)
 
 ---
 
-## 4. Exfiltration des données
+## 4. Exfiltration par C2 HTTPS (chemin primaire)
 
 ### 4.1 Architecture
 
 ```
 Collecteurs (Services/Receivers)
     ↓ écriture
-Base de données locale (AbstractC0746c)
+Base de données locale (AbstractC0746c / AbstractC0747c)
     ↓ lecture batch
 Sérialiseur protobuf-like (p082d.p083a.p084a.p085a)
     ↓ POST
 C2 server (api/online/logs/)
 ```
 
-### 4.2 Flux d'exfiltration (`m5329C` → `m5356u`)
+### 4.2 Flux d'exfiltration (`m5329C` → `m5356u` / `m5325C` → `m5352u`)
 
 1. Vérification : licence valide + réseau disponible + délai respecté
 2. Si WiFi : acquisition d'un `WifiLock` pour maintenir la connexion
@@ -237,7 +248,79 @@ C2 server (api/online/logs/)
 
 ---
 
-## 5. Collecteurs identifiés
+## 5. Exfiltration par SMTP (chemin secondaire) — `assets/providers.json`
+
+> **Analysé sur la 7.5.385.** Présence probable sur la 7.5.369 (à re-vérifier ; la
+> permission `GET_ACCOUNTS` et la string obfusquée `refog` sont présentes sur les
+> deux versions, cohérent avec une réutilisation du même codepath).
+
+### 5.1 Fichier de config `assets/providers.json`
+
+Base JSON de **22 fournisseurs d'email** avec configs SMTP complètes (hostname, port, flags TLS/SSL/STARTTLS). Format unitaire :
+
+```json
+{
+  "domain-match": ["gmail\\.com", "googlemail\\.com"],
+  "smtp": [
+    {"starttls": true, "port": 587, "hostname": "smtp.gmail.com"},
+    {"port": 465, "hostname": "smtp.gmail.com", "ssl": true},
+    {"starttls": true, "port": 25, "hostname": "smtp.gmail.com"}
+  ]
+}
+```
+
+Les `domain-match` sont des regex (escape de `\.`) testées contre le domaine de l'adresse email à matcher. Plusieurs candidats SMTP par provider en mode fallback (587 STARTTLS → 465 SSL → 25 STARTTLS).
+
+### 5.2 Providers ciblés (22 entrées)
+
+| Catégorie | Providers |
+|-----------|-----------|
+| Généralistes US/EU | Gmail, Outlook/Hotmail/Live (~40 TLDs), Yahoo (+ymail, rocketmail, xtra.co.nz), Yahoo Japan, AOL/AIM/Juno, Mail.com, GMX/Caramail, Zoho, FastMail (~100 alias) |
+| Secure / privacy | Hushmail, OpenMailbox |
+| Apple | iCloud/Me/Mac (`smtp.mail.me.com`) **+ Apple corporate** (`apple.com`, `euro.apple.com`, `asia.apple.com` → `phonehome[.asia].apple.com`) |
+| Russophones / CIS | **Mail.ru** (+inbox/list/bk.ru, mail.ua), **Yandex** (6 TLDs : .ru/.ua/.kz/.by/.com/.com.tr), **Rambler** (lenta/autorambler/myrambler/ro.ru/r0.ru), **Ukr.net** |
+| Chinois | **QQ/Tencent** (`smtp.exmail.qq.com`) |
+
+### 5.3 Mécanique d'exfiltration présumée
+
+Pipeline déductif (à valider par identification du code consommateur) :
+
+1. Permission `GET_ACCOUNTS` (déjà requise au manifest) → `AccountManager.getAccounts()` liste les comptes configurés sur l'appareil
+2. Pour chaque compte, extraction du domaine (`user@<domaine>`)
+3. Match du domaine contre les regex `domain-match` de `providers.json`
+4. Récupération de la config SMTP correspondante (avec fallbacks port/TLS)
+5. Authentification SMTP (creds fournies par l'opérateur à la config de l'app, ou potentiellement récupérées via OAuth/AccountManager selon la version Android et les permissions accordées)
+6. Envoi des logs de surveillance en tant que **mail sortant depuis le compte de la cible**
+
+**Intérêt pour l'opérateur du stalkerware** :
+- Contourne le blocage des domaines C2 (le mail sortant ressemble à du trafic utilisateur légitime)
+- Contourne les outils d'analyse de trafic HTTPS d'entreprise qui whitelisteraient les domaines SMTP grand public
+- En cas de compromission du C2 principal (takedown, DNS sinkhole), le canal SMTP reste opérationnel
+- Le compte mail de la victime devient un proxy d'exfiltration — en cas d'investigation, la trace revient à la victime
+
+### 5.4 Indicateur de lineage Refog
+
+Deux indices convergents suggèrent une filiation codebase **Refog → Brainstack/Hoverwatch** :
+
+1. String `refog` (plaintext `uHpzgHJIA7s=\n`) parmi les 20 strings DES-chiffrées du DEX (cf. `hoverwatch_20260420_strings.md`) — apparaît dans le static initializer de `C0737a` (`C0877h.m6278c("uHpzgHJIA7s=\n")`)
+2. **L'exfiltration par email SMTP est la signature historique de Refog** (keylogger Windows depuis 2003), caractéristique rarissime dans les stalkerwares Android modernes qui privilégient HTTPS C2
+3. La structure de `providers.json` (`domain-match` regex + array de `smtp` candidates) ressemble aux tables d'autoconfig de clients mail open source (Thunderbird ISPDB, K-9 Mail) ou à une adaptation d'une config Refog Windows historique
+
+Lien à documenter précisément dans le SoK pour établir le **graphe de filiation de la famille Brainstack** (mSpy, Struktura, Ersten Group, Refog, Hoverwatch, Snoopza).
+
+### 5.5 TODO d'analyse
+
+- [ ] Localiser la classe qui parse `providers.json` (candidats : chercher dans les DEX les strings `providers.json`, `domain-match`, `starttls`, `MimeMessage`, `javax.mail` via `apk_peek find --bytes`)
+- [ ] Identifier l'API SMTP utilisée (JavaMail bundled ? implémentation maison socket-level ?)
+- [ ] Tracer l'origine des credentials SMTP (prompt à l'installeur, `AccountManager.getAuthToken`, config serveur ?)
+- [ ] Comparer avec la version 7.5.369 : `providers.json` identique ? modifié ?
+- [ ] Comparer avec la variante SNPA (Snoopza) : même fichier bundlé ?
+- [ ] Identifier quelles données partent par SMTP vs HTTPS (tout ? fallback ? subset ?)
+- [ ] Capturer le format du mail d'exfil (subject, body template, attachments)
+
+---
+
+## 6. Collecteurs identifiés
 
 > **TODO** : analyser chaque collecteur en détail via JADX
 
@@ -253,7 +336,7 @@ C2 server (api/online/logs/)
 
 ---
 
-## 6. Vulnérabilités identifiées
+## 7. Vulnérabilités identifiées
 
 1. **Pas de vérification SSL** → MITM trivial
 2. **SharedPreferences** avec chiffrement maison → extractible via backup ou root
@@ -261,18 +344,23 @@ C2 server (api/online/logs/)
 4. **Kill switch distant** (code 410) → l'opérateur peut supprimer les preuves
 5. **Domaines C2 en clair** dans les SharedPreferences (après déchiffrement)
 6. **Pas de certificate pinning** → interception proxy sans modification de l'APK
+7. **Exfiltration SMTP depuis le compte de la cible** → en cas d'investigation forensique du compte mail de la victime, la trace d'envoi remonte à la victime elle-même et non au stalkerware (cf. §5.3) ; à intégrer dans la méthodologie forensique IPV
 
 ---
 
-## 7. TODO
+## 8. TODO
 
 - [ ] Analyser `ServiceCore` — logique d'orchestration et collecte GPS
 - [ ] Analyser `ServiceRecording` — enregistrement audio/appels
 - [ ] Analyser `ServiceScr` — capture d'écran
 - [ ] Analyser `ReaderAccessibilityService` — interception IM
-- [ ] Analyser la classe de chiffrement des SharedPreferences (`C0870h`)
-- [ ] Extraire les domaines C2 hardcodés / par défaut
+- [ ] Analyser la classe de chiffrement des SharedPreferences (`C0870h` / `C0877h`)
+- [x] Extraire les domaines C2 hardcodés / par défaut (cf. §2.7)
 - [ ] Analyser le format protobuf des logs exfiltrés
 - [ ] Documenter le schéma de la base de données locale
 - [ ] Coder un mock C2 server pour tester les signatures Suricata
 - [ ] Lancer Kharon sur l'APK (check native code)
+- [ ] **[§5] Identifier le parseur de `providers.json` et le sender SMTP**
+- [ ] **[§5] Documenter le flow credentials → AccountManager → SMTP auth**
+- [ ] **[§5] Comparer `providers.json` entre 7.5.369 et 7.5.385 (diff longitudinal)**
+- [ ] **[§5] Vérifier présence du même fichier dans la variante SNPA (Snoopza)**
