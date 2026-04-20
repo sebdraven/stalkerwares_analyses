@@ -1,0 +1,78 @@
+{
+  "timestamp": "2026-04-20T21:50:02.343333",
+  "auth_key": "abuser@evil.com:c4335b1f270a41e3",
+  "brand": "HWA",
+  "part_count": 5,
+  "raw_body_size": 727,
+  "parts": [
+    {
+      "name": "log0001",
+      "kind": "json",
+      "data": {
+        "N": 1,
+        "time": 1712000000000,
+        "sec": 43200,
+        "seen": 1712000010000,
+        "text": "[MOCK] Hey, where are you? Can we meet?",
+        "len": 38,
+        "direct": "INBOUND",
+        "from": "Alice",
+        "type": 0
+      }
+    },
+    {
+      "name": "log0002",
+      "kind": "json",
+      "data": {
+        "N": 2,
+        "time": 1712000050000,
+        "sec": 43250,
+        "text": "[MOCK] Working from home today",
+        "len": 30,
+        "direct": "OUTBOUND",
+        "from": "victim",
+        "type": 0
+      }
+    },
+    {
+      "name": "log0003",
+      "kind": "json",
+      "data": {
+        "loc": {
+          "cat": 1,
+          "crd": [
+            48.8566,
+            2.3522
+          ],
+          "acc": 15.0,
+          "spd": 0.0,
+          "ssid": "VictimHome",
+          "bssid": "AA:BB:CC:DD:EE:FF",
+          "cellid": "208-01-1234-5678"
+        }
+      }
+    },
+    {
+      "name": "log0004",
+      "kind": "json",
+      "data": {
+        "url": "https://example.com/article",
+        "title": "How to safely leave",
+        "date": 1712000100000,
+        "package": "com.android.chrome"
+      }
+    },
+    {
+      "name": "log0005",
+      "kind": "json",
+      "data": {
+        "sms": {
+          "from": "+33612345678",
+          "text": "[MOCK] Verification code: 854213",
+          "date": 1712000200000,
+          "direct": "INBOUND"
+        }
+      }
+    }
+  ]
+}

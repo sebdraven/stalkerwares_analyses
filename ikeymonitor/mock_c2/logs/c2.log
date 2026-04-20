@@ -1,0 +1,19 @@
+2026-04-20 22:08:47,085 [INFO] >>> [register]  from 127.0.0.1 (131 bytes) 
+2026-04-20 22:08:47,086 [INFO] REGISTER device: AA:BB:CC:DD:EE:FF
+2026-04-20 22:08:47,091 [INFO] >>> [account]  from 127.0.0.1 (131 bytes) 
+2026-04-20 22:08:47,093 [INFO] ACCOUNT check: AA:BB:CC:DD:EE:FF
+2026-04-20 22:08:47,097 [INFO] >>> [get_settings]  from 127.0.0.1 (131 bytes) 
+2026-04-20 22:08:47,097 [INFO] GET_SETTINGS: AA:BB:CC:DD:EE:FF
+2026-04-20 22:08:47,101 [INFO] >>> [get_websocket_address]  from 127.0.0.1 (131 bytes) 
+2026-04-20 22:08:47,102 [INFO] WS_ADDRESS requested by AA:BB:CC:DD:EE:FF -> wss://127.0.0.1:8443/ws
+2026-04-20 22:08:47,105 [INFO] >>> [cycle]  from 127.0.0.1 (131 bytes) 
+2026-04-20 22:08:47,105 [INFO] CYCLE from AA:BB:CC:DD:EE:FF
+2026-04-20 22:08:47,112 [INFO] >>> [upload_keystrokes] (raw: uoload_keystrokes) from 127.0.0.1 (167 bytes) 
+2026-04-20 22:08:47,113 [INFO] UPLOAD [upload_keystrokes] from AA:BB:CC:DD:EE:FF (167 bytes)
+2026-04-20 22:08:47,118 [INFO] >>> [check_update]  from 127.0.0.1 (131 bytes) 
+2026-04-20 22:08:47,118 [INFO] CHECK_UPDATE: AA:BB:CC:DD:EE:FF
+2026-04-20 22:08:47,198 [INFO] WebSocket connected (total: 1)
+2026-04-20 22:08:47,200 [INFO] Sent onConnect handshake
+2026-04-20 22:08:47,201 [INFO] WS recv: <IKMService><Client>AA:BB:CC:DD:EE:FF</Client><License>TEST-LICENSE-001</License><WSTimeStamp>1776715727</WSTimeStamp></IKMService>
+2026-04-20 22:08:47,201 [INFO] WS: client=AA:BB:CC:DD:EE:FF license=TEST-LICENSE-001 ret= type=
+2026-04-20 22:08:52,223 [INFO] WebSocket disconnected (remaining: 0)

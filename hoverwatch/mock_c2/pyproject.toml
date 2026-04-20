@@ -7,6 +7,7 @@ dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
     "python-multipart>=0.0.9",  # required by FastAPI for request.form() — multipart parsing
+    "cryptography>=42.0.0",     # gen_cert.py : self-signed TLS cert (pur Python, pas d'openssl)
 ]
 
 [tool.uv]

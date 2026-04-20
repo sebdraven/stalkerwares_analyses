@@ -8,6 +8,7 @@ dependencies = [
     "uvicorn[standard]>=0.30.0",
     "websockets>=13.0",
     "pycryptodome>=3.20.0",
+    "cryptography>=42.0.0",  # gen_cert.py : self-signed TLS cert (pur Python, pas d'openssl)
 ]
 
 [tool.uv]

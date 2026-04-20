@@ -1,0 +1,17 @@
+{
+  "auth_key": "abuser@evil.com:30ddccc82db94c65",
+  "brand": "HWA",
+  "parts": [
+    {
+      "name": "exception0001",
+      "json": {
+        "type": "EX",
+        "description": "java.lang.NullPointerException at p094hw.utils.ServiceCore",
+        "stack": "143012.456 Ex: NullPointerException; Msg: null; Class: ServiceCore; Method: onStartCommand; Line: 42",
+        "version_app": "7.5.369",
+        "version_os": "13",
+        "device": "Samsung Galaxy S23"
+      }
+    }
+  ]
+}

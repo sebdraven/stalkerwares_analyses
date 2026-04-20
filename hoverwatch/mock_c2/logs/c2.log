@@ -1,0 +1,36 @@
+2026-04-20 21:57:08,906 [INFO] >>> POST /api/online/registration/ | brand=- | UA=Android Monitor 7.5.369 | auth=- | settings-ver=- | event=- | CL=607 | CT=application/json
+2026-04-20 21:57:08,909 [INFO] 🎯 DEVICE REGISTERED: user=abuser@evil.com | hid=and:5c6c26b0e67a4344 | device=Samsung Galaxy S23 | imei=353456789012345 | type=CHILD | → auth_key=abuser@evil.com:30ddccc82db94c65
+2026-04-20 21:57:08,909 [INFO] <<< POST /api/online/registration/ → 200
+2026-04-20 21:57:08,930 [INFO] >>> GET /api/online/programversion/HWA/ | brand=UNKNOWN | UA=Android Monitor 7.5.369 | auth=abuser@evil.com:30ddccc8… | settings-ver=- | event=- | CL=0 | CT=
+2026-04-20 21:57:08,932 [INFO] 📦 UPDATE CHECK | brand=HWA | auth_key=abuser@evil.com:30ddccc82db94c65
+2026-04-20 21:57:08,933 [INFO]    → reconciled brand=HWA for auth_key=abuser@evil.com:30ddccc82db94c65
+2026-04-20 21:57:08,933 [INFO] <<< GET /api/online/programversion/HWA/ → 404
+2026-04-20 21:57:08,952 [INFO] >>> POST /api/online/check/ | brand=HWA | UA=Android Monitor 7.5.369 | auth=abuser@evil.com:30ddccc8… | settings-ver=- | event=- | CL=0 | CT=
+2026-04-20 21:57:08,953 [INFO] 💓 HEARTBEAT auth_key=abuser@evil.com:30ddccc82db94c65 brand=HWA
+2026-04-20 21:57:08,953 [INFO] <<< POST /api/online/check/ → 200
+2026-04-20 21:57:08,972 [INFO] >>> POST /api/online/check/ | brand=HWA | UA=Android Monitor 7.5.369 | auth=abuser@evil.com:30ddccc8… | settings-ver=99 | event=sync_triggered | CL=0 | CT=
+2026-04-20 21:57:08,973 [INFO] 💓 HEARTBEAT auth_key=abuser@evil.com:30ddccc82db94c65 brand=HWA
+2026-04-20 21:57:08,973 [INFO] <<< POST /api/online/check/ → 200
+2026-04-20 21:57:08,993 [INFO] >>> POST /api/online/logs/ | brand=HWA | UA=Android Monitor 7.5.369 | auth=abuser@evil.com:30ddccc8… | settings-ver=- | event=- | CL=1401 | CT=multipart/form-data; boundary=----WebKitFormBounda
+2026-04-20 21:57:08,996 [INFO] 📡 EXFIL | brand=HWA | auth=abuser@evil.com:30ddccc82db94c65 | 5 parts | 727 bytes
+2026-04-20 21:57:08,996 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"N": 1, "time": 1712000000000, "sec": 43200, "seen": 1712000010000, "text": "[MOCK] Hey, where are you? Can we meet?", "len": 38, "direct": "INBOUND", "from": "Alice", "type": 0}}
+2026-04-20 21:57:08,996 [INFO]    part log0002: {"name": "log0002", "kind": "json", "data": {"N": 2, "time": 1712000050000, "sec": 43250, "text": "[MOCK] Working from home today", "len": 30, "direct": "OUTBOUND", "from": "victim", "type": 0}}
+2026-04-20 21:57:08,996 [INFO]    part log0003: {"name": "log0003", "kind": "json", "data": {"loc": {"cat": 1, "crd": [48.8566, 2.3522], "acc": 15.0, "spd": 0.0, "ssid": "VictimHome", "bssid": "AA:BB:CC:DD:EE:FF", "cellid": "208-01-1234-5678"}}}
+2026-04-20 21:57:08,996 [INFO]    part log0004: {"name": "log0004", "kind": "json", "data": {"url": "https://example.com/article", "title": "How to safely leave", "date": 1712000100000, "package": "com.android.chrome"}}
+2026-04-20 21:57:08,996 [INFO]    part log0005: {"name": "log0005", "kind": "json", "data": {"sms": {"from": "+33612345678", "text": "[MOCK] Verification code: 854213", "date": 1712000200000, "direct": "INBOUND"}}}
+2026-04-20 21:57:08,998 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-20 21:57:09,017 [INFO] >>> POST /api/online/exceptionlog/ | brand=HWA | UA=Android Monitor 7.5.369 | auth=abuser@evil.com:30ddccc8… | settings-ver=- | event=- | CL=458 | CT=multipart/form-data; boundary=----WebKitFormBounda
+2026-04-20 21:57:09,019 [INFO] 🐛 EXCEPTION LOG | brand=HWA | auth=abuser@evil.com:30ddccc82db94c65 | 1 parts
+2026-04-20 21:57:09,020 [INFO]    part exception0001: {"name": "exception0001", "json": {"type": "EX", "description": "java.lang.NullPointerException at p094hw.utils.ServiceCore", "stack": "143012.456 Ex: NullPointerException; Msg: null; Class: ServiceCore; Method: onStartCommand; Line: 42", "version_app": "7.5.369", "version_os": "13", "device": "Sams
+2026-04-20 21:57:09,022 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-20 21:57:09,043 [INFO] >>> POST /admin/kill/abuser@evil.com:30ddccc82db94c65 | brand=- | UA=Android Monitor 7.5.369 | auth=- | settings-ver=- | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-20 21:57:09,044 [WARNING] ☠️  KILL SWITCH armed for abuser@evil.com:30ddccc82db94c65 (HTTP 410 next request)
+2026-04-20 21:57:09,045 [INFO] <<< POST /admin/kill/abuser@evil.com:30ddccc82db94c65 → 200
+2026-04-20 21:57:09,065 [INFO] >>> POST /api/online/check/ | brand=HWA | UA=Android Monitor 7.5.369 | auth=abuser@evil.com:30ddccc8… | settings-ver=- | event=- | CL=0 | CT=
+2026-04-20 21:57:09,065 [WARNING] ☠️  KILL SWITCH delivered to abuser@evil.com:30ddccc82db94c65 (HTTP 410)
+2026-04-20 21:57:09,067 [INFO] <<< POST /api/online/check/ → 410
+2026-04-20 21:57:09,086 [INFO] >>> POST /admin/clear/abuser@evil.com:30ddccc82db94c65 | brand=- | UA=Android Monitor 7.5.369 | auth=- | settings-ver=- | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-20 21:57:09,087 [INFO] 🧹 Cleared armed states for abuser@evil.com:30ddccc82db94c65
+2026-04-20 21:57:09,087 [INFO] <<< POST /admin/clear/abuser@evil.com:30ddccc82db94c65 → 200
+2026-04-20 21:57:09,105 [INFO] >>> GET / | brand=- | UA=Android Monitor 7.5.369 | auth=- | settings-ver=- | event=- | CL=0 | CT=
+2026-04-20 21:57:09,106 [INFO] <<< GET / → 200

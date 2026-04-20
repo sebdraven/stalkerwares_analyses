@@ -9,19 +9,29 @@ Channels:
   - Admin API (trigger commands, inspect state, crypto tools)
 
 Usage:
-    uv run uvicorn server:app --host 0.0.0.0 --port 8443 --ssl-keyfile key.pem --ssl-certfile cert.pem
+    uv sync
+    uv run python server.py              # HTTPS :8443, auto-gen cert si absent
+    uv run python server.py --http       # HTTP :8080 (debug)
+    uv run python server.py --regen-cert # force nouveau cert
+
+Le premier lancement génère cert.pem + key.pem (self-signed, SAN=
+127.0.0.1/localhost/10.11.1.1 + les 5 domaines C2 iKeyMonitor, valide 1 an).
+Le bypass SSL Frida reste requis côté app.
 
 Research use only — ASTRA/LHS-LORIA stalkerware analysis project.
 """
 
+import argparse
 import base64
 import hashlib
+import ipaddress
 import json
 import logging
 import re
+import sys
 import time
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -29,6 +39,98 @@ from Crypto.Cipher import DES3
 from Crypto.Util.Padding import pad, unpad
 from fastapi import FastAPI, Query, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import PlainTextResponse, JSONResponse
+
+# ---------------------------------------------------------------------------
+# Self-signed TLS cert — auto-généré au premier lancement
+# ---------------------------------------------------------------------------
+
+CERT_PATH = Path(__file__).parent / "cert.pem"
+KEY_PATH  = Path(__file__).parent / "key.pem"
+
+# Domaines C2 iKeyMonitor (inclus dans le SAN pour permettre DNS spoofing / hosts)
+IKM_C2_DOMAINS = [
+    "ikmws.awsapi.io",
+    "ikmws-mirror.awsapi.io",
+    "ikm-sv2.awsapi.io",
+    "ikm-sv3.awsapi.io",
+    "ikm-sv4.awsapi.io",
+]
+
+
+def ensure_cert(log_fn=print) -> tuple[Path, Path]:
+    """Génère cert.pem + key.pem si absents. Self-signed, SAN multi-IP +
+    domaines C2 iKM, valide 1 an. Utilise `cryptography` (pur Python)."""
+    if CERT_PATH.exists() and KEY_PATH.exists():
+        log_fn(f"🔒 Reusing existing cert: {CERT_PATH.name}")
+        return CERT_PATH, KEY_PATH
+
+    try:
+        from cryptography import x509
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+        from cryptography.x509.oid import NameOID
+    except ImportError:
+        log_fn("❌ `cryptography` manquant. Ajoute-le dans pyproject.toml :")
+        log_fn('     dependencies = ["cryptography>=42", ...]')
+        log_fn("   puis : uv sync")
+        sys.exit(1)
+
+    log_fn("🔐 Generating self-signed cert (first run)…")
+
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+
+    subject = issuer = x509.Name([
+        x509.NameAttribute(NameOID.COUNTRY_NAME, "FR"),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "ASTRA LORIA (research)"),
+        x509.NameAttribute(NameOID.COMMON_NAME, "ikmws.awsapi.io"),
+    ])
+
+    san_entries = [
+        x509.DNSName("localhost"),
+        x509.DNSName("mock-c2"),
+        x509.IPAddress(ipaddress.IPv4Address("127.0.0.1")),
+        x509.IPAddress(ipaddress.IPv4Address("10.11.1.1")),
+        x509.IPAddress(ipaddress.IPv4Address("10.0.2.2")),
+    ]
+    for d in IKM_C2_DOMAINS:
+        san_entries.append(x509.DNSName(d))
+
+    now = datetime.now(timezone.utc)
+    cert = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(issuer)
+        .public_key(key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before(now - timedelta(minutes=5))
+        .not_valid_after(now + timedelta(days=365))
+        .add_extension(x509.SubjectAlternativeName(san_entries), critical=False)
+        .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
+        .add_extension(
+            x509.KeyUsage(
+                digital_signature=True, key_encipherment=True,
+                content_commitment=False, data_encipherment=False,
+                key_agreement=False, key_cert_sign=False, crl_sign=False,
+                encipher_only=False, decipher_only=False,
+            ),
+            critical=True,
+        )
+        .add_extension(
+            x509.ExtendedKeyUsage([x509.oid.ExtendedKeyUsageOID.SERVER_AUTH]),
+            critical=False,
+        )
+        .sign(key, hashes.SHA256())
+    )
+
+    CERT_PATH.write_bytes(cert.public_bytes(serialization.Encoding.PEM))
+    KEY_PATH.write_bytes(key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    ))
+
+    log_fn(f"   ✅ {CERT_PATH.name} + {KEY_PATH.name} (valid 1y, SAN=127.0.0.1/localhost/10.11.1.1 + {len(IKM_C2_DOMAINS)} domaines C2)")
+    return CERT_PATH, KEY_PATH
 
 # ---------------------------------------------------------------------------
 # Config — matches values extracted from APK (identical across v17.4 & v19.1)
@@ -578,3 +680,56 @@ async def admin_crypto_rtmp(device_id: str = "test", sign_ts: str = ""):
     sig = rtmp_sign(device_id, sign_ts)
     url = f"rtmp://{{RTMP_SERVER}}/{device_id}?sign={sign_ts}-{sig}"
     return {"device_id": device_id, "sign_ts": sign_ts, "md5": sig, "url": url}
+
+
+# ---------------------------------------------------------------------------
+# Entrypoint — python server.py  (HTTPS auto-gen cert)
+#              python server.py --http  (HTTP clair, debug)
+# ---------------------------------------------------------------------------
+
+def main() -> None:
+    import uvicorn
+
+    parser = argparse.ArgumentParser(description="iKeyMonitor Mock C2 Server")
+    parser.add_argument("--host", default="0.0.0.0", help="Bind host (default: 0.0.0.0)")
+    parser.add_argument("--port", type=int, default=8443, help="Bind port (default: 8443 HTTPS, 8080 HTTP)")
+    parser.add_argument("--http", action="store_true",
+                        help="Serve plain HTTP (no TLS). Bascule le port par défaut à 8080.")
+    parser.add_argument("--regen-cert", action="store_true",
+                        help="Force regeneration of cert.pem/key.pem even if they exist.")
+    args = parser.parse_args()
+
+    if args.http and args.port == 8443:
+        args.port = 8080
+
+    banner = "\n" + "═" * 60 + "\n  iKeyMonitor Mock C2 Server v2.0.0 (v17.4 + v19.1)\n" + "═" * 60
+    print(banner)
+
+    if args.http:
+        print(f"⚠️  HTTP MODE (no TLS) — http://{args.host}:{args.port}/")
+        uvicorn.run(app, host=args.host, port=args.port, log_level="info")
+        return
+
+    if args.regen_cert:
+        for p in (CERT_PATH, KEY_PATH):
+            if p.exists():
+                p.unlink()
+                print(f"🗑️  Removed old {p.name}")
+
+    cert, key = ensure_cert()
+    print(f"🔐 HTTPS — https://{args.host}:{args.port}/")
+    print(f"   cert: {cert}")
+    print(f"   key:  {key}\n")
+
+    uvicorn.run(
+        app,
+        host=args.host,
+        port=args.port,
+        ssl_certfile=str(cert),
+        ssl_keyfile=str(key),
+        log_level="info",
+    )
+
+
+if __name__ == "__main__":
+    main()

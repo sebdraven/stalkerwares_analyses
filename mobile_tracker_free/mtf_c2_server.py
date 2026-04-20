@@ -10,29 +10,117 @@ Tous les endpoints renvoient "ok" pour que le stalkerware continue
 à exfiltrer. Les données reçues sont loggées dans ./captures/
 
 Usage :
-  pip install fastapi uvicorn python-multipart --break-system-packages
-  python mtf_c2_server.py                        # HTTP :8080
-  python mtf_c2_server.py --port 443 --ssl       # HTTPS (nécessite cert)
+  uv sync
+  uv run python mtf_c2_server.py           # HTTPS :8443, auto-gen cert si absent
+  uv run python mtf_c2_server.py --http     # HTTP :8080 (debug)
+  uv run python mtf_c2_server.py --regen-cert  # force nouveau cert
+
+Le premier lancement génère mock.crt + mock.key (self-signed, SAN=
+127.0.0.1/localhost/10.11.1.1/10.0.2.2/mobile-track-data.com, valide 1 an).
+Le bypass SSL Frida reste requis côté app (ou MITM proxy sans cert pinning).
 
 Pour rediriger le stalkerware vers ce serveur :
   - DNS spoofing de mobile-track-data.com
   - ou modifier /etc/hosts sur le device (root)
-  - ou proxy MITM (pas de cert pinning !)
+  - ou adb reverse tcp:8443 tcp:8443 (lab Corellium sans VPN)
 """
 
 import argparse
+import ipaddress
 import json
 import logging
 import os
 import shutil
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import JSONResponse, PlainTextResponse
 import uvicorn
+
+# ============================================================
+# Self-signed TLS cert — auto-généré au premier lancement
+# ============================================================
+
+CERT_PATH = Path(__file__).parent / "mock.crt"
+KEY_PATH  = Path(__file__).parent / "mock.key"
+
+
+def ensure_cert(log_fn=print) -> tuple[Path, Path]:
+    """Génère mock.crt + mock.key si absents. Self-signed, SAN multi-IP,
+    valide 1 an. Utilise `cryptography` (pur Python, pas d'openssl)."""
+    if CERT_PATH.exists() and KEY_PATH.exists():
+        log_fn(f"🔒 Reusing existing cert: {CERT_PATH.name}")
+        return CERT_PATH, KEY_PATH
+
+    try:
+        from cryptography import x509
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+        from cryptography.x509.oid import NameOID
+    except ImportError:
+        log_fn("❌ `cryptography` manquant. Ajoute-le dans pyproject.toml :")
+        log_fn('     dependencies = ["cryptography>=42", ...]')
+        log_fn("   puis : uv sync")
+        sys.exit(1)
+
+    log_fn("🔐 Generating self-signed cert (first run)…")
+
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+
+    subject = issuer = x509.Name([
+        x509.NameAttribute(NameOID.COUNTRY_NAME, "FR"),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "ASTRA LORIA (research)"),
+        x509.NameAttribute(NameOID.COMMON_NAME, "mock-mtf-c2"),
+    ])
+
+    san = x509.SubjectAlternativeName([
+        x509.DNSName("localhost"),
+        x509.DNSName("mobile-track-data.com"),
+        x509.DNSName("mock-c2"),
+        x509.IPAddress(ipaddress.IPv4Address("127.0.0.1")),
+        x509.IPAddress(ipaddress.IPv4Address("10.11.1.1")),
+        x509.IPAddress(ipaddress.IPv4Address("10.0.2.2")),
+    ])
+
+    now = datetime.now(timezone.utc)
+    cert = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(issuer)
+        .public_key(key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before(now - timedelta(minutes=5))
+        .not_valid_after(now + timedelta(days=365))
+        .add_extension(san, critical=False)
+        .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
+        .add_extension(
+            x509.KeyUsage(
+                digital_signature=True, key_encipherment=True,
+                content_commitment=False, data_encipherment=False,
+                key_agreement=False, key_cert_sign=False, crl_sign=False,
+                encipher_only=False, decipher_only=False,
+            ),
+            critical=True,
+        )
+        .add_extension(
+            x509.ExtendedKeyUsage([x509.oid.ExtendedKeyUsageOID.SERVER_AUTH]),
+            critical=False,
+        )
+        .sign(key, hashes.SHA256())
+    )
+
+    CERT_PATH.write_bytes(cert.public_bytes(serialization.Encoding.PEM))
+    KEY_PATH.write_bytes(key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    ))
+
+    log_fn(f"   ✅ {CERT_PATH.name} + {KEY_PATH.name} (valid 1y, SAN=127.0.0.1/localhost/10.11.1.1/10.0.2.2/mobile-track-data.com)")
+    return CERT_PATH, KEY_PATH
 
 # ============================================================
 # Config
@@ -543,15 +631,19 @@ async def stats():
 def main():
     parser = argparse.ArgumentParser(description="MTF C2 Mock Server")
     parser.add_argument("--host", default="0.0.0.0", help="Bind address")
-    parser.add_argument("--port", type=int, default=8080, help="Port")
-    parser.add_argument("--ssl", action="store_true", help="Enable HTTPS")
-    parser.add_argument("--cert", default="cert.pem", help="SSL cert file")
-    parser.add_argument("--key", default="key.pem", help="SSL key file")
+    parser.add_argument("--port", type=int, default=8443, help="Port (default: 8443 HTTPS, 8080 HTTP)")
+    parser.add_argument("--http", action="store_true",
+                        help="Serve plain HTTP (no TLS). Bascule aussi le port par défaut à 8080.")
+    parser.add_argument("--regen-cert", action="store_true",
+                        help="Force regeneration of mock.crt/mock.key even if they exist.")
     args = parser.parse_args()
+
+    # Ajuste le port si HTTP et port par défaut 8443 pas override
+    if args.http and args.port == 8443:
+        args.port = 8080
 
     print("=" * 60)
     print("Mobile Tracker Free — C2 Mock Server (Sinkhole)")
-    print(f"Listening on {args.host}:{args.port}")
     print(f"Captures → {CAPTURE_DIR.absolute()}")
     print(f"Stats    → http://{args.host}:{args.port}/_stats")
     print("=" * 60)
@@ -559,20 +651,33 @@ def main():
     print("Redirect stalkerware traffic here via:")
     print("  - DNS spoofing (mobile-track-data.com)")
     print("  - /etc/hosts on rooted device")
+    print("  - adb reverse tcp:8443 tcp:8443 (Corellium)")
     print("  - MITM proxy (no cert pinning!)")
     print()
 
-    ssl_kwargs = {}
-    if args.ssl:
-        ssl_kwargs["ssl_certfile"] = args.cert
-        ssl_kwargs["ssl_keyfile"] = args.key
+    if args.http:
+        print(f"⚠️  HTTP MODE (no TLS) — http://{args.host}:{args.port}/")
+        uvicorn.run(app, host=args.host, port=args.port, log_level="warning")
+        return
+
+    if args.regen_cert:
+        for p in (CERT_PATH, KEY_PATH):
+            if p.exists():
+                p.unlink()
+                print(f"🗑️  Removed old {p.name}")
+
+    cert, key = ensure_cert()
+    print(f"🔐 HTTPS — https://{args.host}:{args.port}/")
+    print(f"   cert: {cert}")
+    print(f"   key:  {key}\n")
 
     uvicorn.run(
         app,
         host=args.host,
         port=args.port,
+        ssl_certfile=str(cert),
+        ssl_keyfile=str(key),
         log_level="warning",
-        **ssl_kwargs,
     )
 
 

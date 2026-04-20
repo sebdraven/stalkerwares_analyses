@@ -13,23 +13,116 @@ Version 2.0.0 — synced with hoverwatch_analysis.md v3 findings:
 
 Usage:
     uv sync
-    uv run uvicorn server:app --host 0.0.0.0 --port 8443 \\
-        --ssl-keyfile key.pem --ssl-certfile cert.pem
-    # Or without SSL (the app's TrustManager accepts anything):
-    uv run uvicorn server:app --host 0.0.0.0 --port 8443
+    uv run python server.py            # HTTPS, auto-gen cert si absent
+    uv run python server.py --http     # HTTP clair (pour debug, si
+                                       # NetworkSecurityConfig cleartext=true)
+
+    # Le premier lancement génère mock.crt + mock.key (self-signed, SAN=
+    # 127.0.0.1/localhost/10.11.1.1, valide 1 an). Le bypass SSL Frida est
+    # donc obligatoire côté app (cf. *_hook.js section SSL BYPASS).
 
 Research use only — ASTRA / LHS-LORIA stalkerware analysis project.
 """
 
+import argparse
+import ipaddress
 import json
 import logging
+import sys
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
+
+# ---------------------------------------------------------------------------
+# Self-signed TLS cert — auto-généré au premier lancement
+# ---------------------------------------------------------------------------
+
+CERT_PATH = Path(__file__).parent / "mock.crt"
+KEY_PATH  = Path(__file__).parent / "mock.key"
+
+
+def ensure_cert(log_fn=print) -> tuple[Path, Path]:
+    """Génère mock.crt + mock.key si absents. Self-signed, SAN multi-IP,
+    valide 1 an. Utilise `cryptography` (dep via fastapi[standard]).
+
+    Returns:
+        (cert_path, key_path)
+    """
+    if CERT_PATH.exists() and KEY_PATH.exists():
+        log_fn(f"🔒 Reusing existing cert: {CERT_PATH.name}")
+        return CERT_PATH, KEY_PATH
+
+    try:
+        from cryptography import x509
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+        from cryptography.x509.oid import NameOID
+    except ImportError:
+        log_fn("❌ `cryptography` manquant. Ajoute-le dans pyproject.toml :")
+        log_fn("     dependencies = [\"cryptography>=42\", ...]")
+        log_fn("   puis : uv sync")
+        sys.exit(1)
+
+    log_fn("🔐 Generating self-signed cert (first run)…")
+
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+
+    subject = issuer = x509.Name([
+        x509.NameAttribute(NameOID.COUNTRY_NAME, "FR"),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "ASTRA LORIA (research)"),
+        x509.NameAttribute(NameOID.COMMON_NAME, "mock-refog-c2"),
+    ])
+
+    san = x509.SubjectAlternativeName([
+        x509.DNSName("localhost"),
+        x509.DNSName("mock-c2"),
+        x509.IPAddress(ipaddress.IPv4Address("127.0.0.1")),
+        x509.IPAddress(ipaddress.IPv4Address("10.11.1.1")),
+        x509.IPAddress(ipaddress.IPv4Address("10.0.2.2")),   # Android emu host alias
+    ])
+
+    now = datetime.now(timezone.utc)
+    cert = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(issuer)
+        .public_key(key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before(now - timedelta(minutes=5))
+        .not_valid_after(now + timedelta(days=365))
+        .add_extension(san, critical=False)
+        .add_extension(
+            x509.BasicConstraints(ca=False, path_length=None), critical=True,
+        )
+        .add_extension(
+            x509.KeyUsage(
+                digital_signature=True, key_encipherment=True,
+                content_commitment=False, data_encipherment=False,
+                key_agreement=False, key_cert_sign=False, crl_sign=False,
+                encipher_only=False, decipher_only=False,
+            ),
+            critical=True,
+        )
+        .add_extension(
+            x509.ExtendedKeyUsage([x509.oid.ExtendedKeyUsageOID.SERVER_AUTH]),
+            critical=False,
+        )
+        .sign(key, hashes.SHA256())
+    )
+
+    CERT_PATH.write_bytes(cert.public_bytes(serialization.Encoding.PEM))
+    KEY_PATH.write_bytes(key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    ))
+
+    log_fn(f"   ✅ {CERT_PATH.name} + {KEY_PATH.name} (valid 1y, SAN=127.0.0.1/localhost/10.11.1.1/10.0.2.2)")
+    return CERT_PATH, KEY_PATH
 
 # ---------------------------------------------------------------------------
 # Config
@@ -62,12 +155,20 @@ for sub in ("registrations", "exfil", "exceptions", "raw", "by_brand"):
 # Logging
 # ---------------------------------------------------------------------------
 
+# Force UTF-8 on stdout/stderr so emojis (🎯 🔑 💓 📡 ☠️ …) and non-Latin
+# text from stalkerware payloads don't get mangled by the Windows cp1252 console.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError):
+        pass  # already wrapped / not a TTY — fine
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler(LOG_DIR / "c2.log"),
+        logging.FileHandler(LOG_DIR / "c2.log", encoding="utf-8"),
     ],
 )
 log = logging.getLogger("hoverwatch-c2")
@@ -266,8 +367,8 @@ async def registration(request: Request):
     devices[auth_key] = device_info
 
     # Persist registration to per-brand and global jsonl logs
-    with open(LOG_DIR / "registrations" / "all.jsonl", "a") as f:
-        f.write(json.dumps(device_info, default=str) + "\n")
+    with open(LOG_DIR / "registrations" / "all.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps(device_info, ensure_ascii=False, default=str) + "\n")
 
     log.info(
         "🎯 DEVICE REGISTERED: user=%s | hid=%s | device=%s | imei=%s | type=%s | → auth_key=%s",
@@ -419,7 +520,8 @@ async def exception_log(request: Request):
     safe_key = auth_key[:32].replace("/", "_").replace(":", "_").replace("\\", "_")
     out_path = LOG_DIR / "exceptions" / f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{brand}_{safe_key or 'noauth'}.json"
     out_path.write_text(
-        json.dumps({"auth_key": auth_key, "brand": brand, "parts": parsed_parts}, ensure_ascii=False, indent=2, default=str)
+        json.dumps({"auth_key": auth_key, "brand": brand, "parts": parsed_parts}, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
     )
 
     return Response(status_code=200, content="ok")
@@ -526,7 +628,8 @@ async def receive_logs(request: Request):
                 "parts": parsed_parts,
             },
             ensure_ascii=False, indent=2, default=str,
-        )
+        ),
+        encoding="utf-8",
     )
 
     return Response(status_code=200, content="ok")
@@ -632,3 +735,53 @@ async def admin_update_settings(request: Request):
     log.info("⚙️  SETTINGS UPDATED → version=%d", DEFAULT_SETTINGS["version"])
     log.info("   %s", json.dumps(DEFAULT_SETTINGS, indent=2))
     return {"status": "ok", "new_settings": DEFAULT_SETTINGS}
+
+
+# ---------------------------------------------------------------------------
+# Entrypoint — python server.py  (HTTPS auto-gen cert)
+#              python server.py --http  (HTTP clair, debug)
+# ---------------------------------------------------------------------------
+
+def main() -> None:
+    import uvicorn
+
+    parser = argparse.ArgumentParser(description="Refog Mock C2 Server")
+    parser.add_argument("--host", default="0.0.0.0", help="Bind host (default: 0.0.0.0)")
+    parser.add_argument("--port", type=int, default=8443, help="Bind port (default: 8443)")
+    parser.add_argument("--http", action="store_true",
+                        help="Serve plain HTTP (no TLS). Needs cleartextTrafficPermitted on the app side.")
+    parser.add_argument("--regen-cert", action="store_true",
+                        help="Force regeneration of mock.crt/mock.key even if they exist.")
+    args = parser.parse_args()
+
+    banner = "\n" + "═" * 60 + "\n  Refog Mock C2 Server v2.0.0\n" + "═" * 60
+    print(banner)
+
+    if args.http:
+        print(f"⚠️  HTTP MODE (no TLS) — http://{args.host}:{args.port}/")
+        uvicorn.run(app, host=args.host, port=args.port, log_level="info")
+        return
+
+    if args.regen_cert:
+        for p in (CERT_PATH, KEY_PATH):
+            if p.exists():
+                p.unlink()
+                print(f"🗑️  Removed old {p.name}")
+
+    cert, key = ensure_cert()
+    print(f"🔐 HTTPS — https://{args.host}:{args.port}/")
+    print(f"   cert: {cert}")
+    print(f"   key:  {key}\n")
+
+    uvicorn.run(
+        app,
+        host=args.host,
+        port=args.port,
+        ssl_certfile=str(cert),
+        ssl_keyfile=str(key),
+        log_level="info",
+    )
+
+
+if __name__ == "__main__":
+    main()

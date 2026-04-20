@@ -1,9 +1,18 @@
 [project]
 name = "mobile-tracker-free"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "Mock C2 server for Mobile Tracker Free stalkerware — ASTRA / LHS-LORIA research project"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "requests>=2.33.1",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "python-multipart>=0.0.9",
+    "cryptography>=42.0.0",   # mtf_c2_server.py : ensure_cert() self-signed TLS
+    "requests>=2.33.1",       # download_mtf_payload.py, mtf_cmd_trigger.py
+]
+
+[tool.uv]
+dev-dependencies = [
+    "httpx>=0.27.0",
 ]
