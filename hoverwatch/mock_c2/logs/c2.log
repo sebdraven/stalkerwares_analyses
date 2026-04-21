@@ -34,3 +34,1053 @@
 2026-04-20 21:57:09,087 [INFO] <<< POST /admin/clear/abuser@evil.com:30ddccc82db94c65 → 200
 2026-04-20 21:57:09,105 [INFO] >>> GET / | brand=- | UA=Android Monitor 7.5.369 | auth=- | settings-ver=- | event=- | CL=0 | CT=
 2026-04-20 21:57:09,106 [INFO] <<< GET / → 200
+2026-04-21 11:12:17,742 [INFO] >>> GET / | brand=- | UA=curl/8.12.0-DEV | auth=- | settings-ver=- | event=- | CL=0 | CT=
+2026-04-21 11:12:17,744 [INFO] <<< GET / → 200
+2026-04-21 11:17:03,817 [INFO] >>> POST /api/online/registration/ | brand=- | UA=Android Monitor 7.5.385 | auth=- | settings-ver=- | event=- | CL=148 | CT=application/json
+2026-04-21 11:17:03,827 [INFO] 🎯 DEVICE REGISTERED: user=toto | hid=and:488e7b2412c1b040 | device=Corellium Generic | imei=unknown | type=OWN | → auth_key=toto:32c8f6e9a38b48c7
+2026-04-21 11:17:03,829 [INFO] <<< POST /api/online/registration/ → 200
+2026-04-21 11:46:10,886 [INFO] >>> GET /api/online/check/ | brand=- | UA=curl/8.12.0-DEV | auth=- | settings-ver=- | event=- | CL=0 | CT=
+2026-04-21 11:46:10,887 [INFO] <<< GET /api/online/check/ → 405
+2026-04-21 11:57:09,741 [INFO] >>> GET / | brand=- | UA=curl/8.12.0-DEV | auth=- | settings-ver=- | event=- | CL=0 | CT=
+2026-04-21 11:57:09,757 [INFO] <<< GET / → 200
+2026-04-21 11:57:38,365 [INFO] >>> GET / | brand=- | UA=curl/8.12.0-DEV | auth=- | settings-ver=- | event=- | CL=0 | CT=
+2026-04-21 11:57:38,367 [INFO] <<< GET / → 200
+2026-04-21 12:04:58,881 [INFO] >>> GET / | brand=- | UA=curl/8.12.0-DEV | auth=- | settings-ver=- | event=- | CL=0 | CT=
+2026-04-21 12:04:58,882 [INFO] <<< GET / → 200
+2026-04-21 12:09:33,070 [INFO] >>> POST /api/online/registration/ | brand=- | UA=Android Monitor 7.5.385 | auth=- | settings-ver=- | event=- | CL=148 | CT=application/json
+2026-04-21 12:09:33,096 [INFO] 🎯 DEVICE REGISTERED: user=toto | hid=and:488e7b2412c1b040 | device=Corellium Generic | imei=unknown | type=OWN | → auth_key=toto:09877c31d64b4f78
+2026-04-21 12:09:33,097 [INFO] <<< POST /api/online/registration/ → 200
+2026-04-21 14:26:46,854 [INFO] >>> POST /api/online/registration/ | brand=- | UA=Android Monitor 7.5.385 | auth=- | settings-ver=- | event=- | CL=148 | CT=application/json
+2026-04-21 14:26:46,872 [INFO] 🎯 DEVICE REGISTERED: user=toto | hid=and:488e7b2412c1b040 | device=Corellium Generic | imei=unknown | type=OWN | → auth_key=toto:92380666a3d54969
+2026-04-21 14:26:46,874 [INFO] <<< POST /api/online/registration/ → 200
+2026-04-21 14:32:10,300 [INFO] >>> POST /api/online/registration/ | brand=- | UA=Android Monitor 7.5.385 | auth=- | settings-ver=- | event=- | CL=148 | CT=application/json
+2026-04-21 14:32:10,304 [INFO] 🎯 DEVICE REGISTERED: user=toto | hid=and:488e7b2412c1b040 | device=Corellium Generic | imei=unknown | type=OWN | → auth_key=toto:d69afc45b3434c3f
+2026-04-21 14:32:10,306 [INFO] <<< POST /api/online/registration/ → 200
+2026-04-21 14:42:22,480 [INFO] >>> POST /api/online/registration/ | brand=- | UA=Android Monitor 7.5.385 | auth=- | settings-ver=- | event=- | CL=148 | CT=application/json
+2026-04-21 14:42:22,490 [INFO] 🎯 DEVICE REGISTERED: user=toto | hid=and:488e7b2412c1b040 | device=Corellium Generic | imei=unknown | type=OWN | → auth_key=toto:abb921d6fdc84a35
+2026-04-21 14:42:22,491 [INFO] <<< POST /api/online/registration/ → 200
+2026-04-21 14:47:23,988 [INFO] >>> POST /api/online/activation/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=744 | CT=application/json
+2026-04-21 14:47:23,992 [INFO] 🔑 ACTIVATION | auth=toto:abb921d6fdc84a35 | payload={"config": {"settings": {"version": 101, "on": true, "debug": false, "onlyWiFi": false, "period": 5, "autoupdate": {"on": false}, "location": {"on": true, "period": 10, "acc": 1000, "gps": true}, "contact": {"on": true}, "call": {"on": true, "rec": true, "source": 4, "quality": 1, "codec": 2, "gain"
+2026-04-21 14:47:23,993 [INFO] <<< POST /api/online/activation/ → 200
+2026-04-21 14:47:24,097 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:47:24,099 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:47:24,100 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:47:29,062 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:47:29,063 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:47:29,063 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:47:30,317 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=57199 | CT=multipart/form-data; boundary=PH59MZsX_BvXTF5xSnCH
+2026-04-21 14:47:30,325 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 86 parts
+2026-04-21 14:47:30,325 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7704abab9616fee189113"}, "version_app": "7.5.385", "version_os": "16", "device": "Corellium Corellium Generic", "type": "E", "stack": "124042.161", "description": "CrApp Inf: 'com.android.core.mntau' /data/app/~~ghJ_SlFZGGyx79fVc6Az8A==/com.andr
+2026-04-21 14:47:30,325 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e7704abab9616fee19a285"}, "type": "E", "stack": "124042.168", "description": "St Domains changed to https://a.syncvch.com:443/;https://i1.hoverwatch.com:443/;https://hwa.cab:443/"}}
+2026-04-21 14:47:30,326 [INFO]    part exception0003: {"name": "exception0003", "json": {"_id": {"$oid": "69e7704abab9616fee1a17b6"}, "type": "E", "stack": "124042.171", "description": "TskInit Inf: update 0.0.0 -> 7.5.385  sql ver:3.44.3"}}
+2026-04-21 14:47:30,326 [INFO]    part exception0004: {"name": "exception0004", "json": {"_id": {"$oid": "69e7704abab9616fee1a17b7"}, "type": "E", "stack": "124042.171", "description": "AH Inf: Show com.activities.ActivityMainStarter"}}
+2026-04-21 14:47:30,326 [INFO]    part exception0005: {"name": "exception0005", "json": {"_id": {"$oid": "69e7704abab9616fee1a17b8"}, "type": "E", "stack": "124042.171", "description": "AH Inf: Hide com.activities.ActivityDblStarter"}}
+2026-04-21 14:47:30,335 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 14:47:31,220 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=10689 | CT=multipart/form-data; boundary=PjIhSOmn8yJD9YoHRiAH
+2026-04-21 14:47:31,224 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 44 parts | 3214 bytes
+2026-04-21 14:47:31,226 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e7704abab9616fee17cdc1"}, "type": 308, "ev": 22, "val": 2, "data": "Corellium"}}
+2026-04-21 14:47:31,227 [INFO]    part log0002: {"name": "log0002", "kind": "json", "data": {"_id": {"$oid": "69e7704abab9616fee17f4d2"}, "type": 308, "ev": 61}}
+2026-04-21 14:47:31,227 [INFO]    part log0003: {"name": "log0003", "kind": "json", "data": {"_id": {"$oid": "69e7704abab9616fee18df34"}, "type": 308, "ev": 1, "val": 1}}
+2026-04-21 14:47:31,227 [INFO]    part log0004: {"name": "log0004", "kind": "json", "data": {"_id": {"$oid": "69e7704abab9616fee1a3eca"}, "type": 308, "ev": 8, "data": "16"}}
+2026-04-21 14:47:31,227 [INFO]    part log0005: {"name": "log0005", "kind": "json", "data": {"_id": {"$oid": "69e7704abab9616fee1a65dc"}, "type": 308, "ev": 6, "val": 100}}
+2026-04-21 14:47:31,228 [INFO]    … +39 more parts
+2026-04-21 14:47:31,229 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 14:47:32,202 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=15504 | CT=multipart/form-data; boundary=Gdzi_Ohhh8xrKoLV22KL
+2026-04-21 14:47:32,205 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 15082 bytes
+2026-04-21 14:47:32,206 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e771ddbab9616fee1e84f9", "content_type": "image/jpeg; charset=UTF-8", "size": 15028, "saved_to": "logs\\raw\\20260421_144732_UNKNOWN_attachment0001_0000_69e771ddbab9616fee1e84f9"}
+2026-04-21 14:47:32,206 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e771ddbab9616fee1e84f9"}, "type": 317}}
+2026-04-21 14:47:32,207 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 14:49:14,068 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:49:14,070 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:49:14,070 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:49:15,113 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=802 | CT=multipart/form-data; boundary=j7KOVqd9cNivSk3FKrpG
+2026-04-21 14:49:15,114 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 14:49:15,114 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e771e2bab9616fee28be36"}, "type": "EX", "stack": "124730.267 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 14:49:15,115 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e771e3bab9616fee267448"}, "type": "E", "stack": "124731.252", "description": "HCl pcl: ok"}}
+2026-04-21 14:49:15,116 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 14:49:16,114 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=wIlbHgx83Wl8WgOXgDCX
+2026-04-21 14:49:16,116 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 14:49:16,117 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e771e6bab9616fee57bd79"}, "type": 314}}
+2026-04-21 14:49:16,118 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 14:50:59,015 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:50:59,016 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:50:59,017 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:51:00,002 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=t5CMjaFkyCWXCl2Jz7GP
+2026-04-21 14:51:00,002 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 14:51:00,003 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7724cbab9616fee200baa"}, "type": "E", "stack": "124916.210", "description": "HCl pcl: ok"}}
+2026-04-21 14:51:00,003 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 14:52:44,057 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:52:44,057 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:52:44,058 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:52:45,151 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=21uMCsO1Yj_C6Fo8nb_g
+2026-04-21 14:52:45,153 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 14:52:45,153 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e772b5bab9616fee269b5c"}, "type": "E", "stack": "125101.253", "description": "HCl pcl: ok"}}
+2026-04-21 14:52:45,154 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 14:54:29,067 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:54:29,067 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:54:29,068 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:54:30,044 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=315 | CT=multipart/form-data; boundary=-f4-8KxQZQ608GTK1iYb
+2026-04-21 14:54:30,045 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 14:54:30,046 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7731ebab9616fee26744e"}, "type": "E", "stack": "125246.252", "description": "HCl pcl: ok"}}
+2026-04-21 14:54:30,048 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 14:56:14,059 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:56:14,060 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:56:14,062 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:56:15,157 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=RgFQneYW2XWaIB3d0WD3
+2026-04-21 14:56:15,158 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 14:56:15,158 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77387bab9616fee28e550"}, "type": "E", "stack": "125431.268", "description": "HCl pcl: ok"}}
+2026-04-21 14:56:15,161 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 14:57:59,000 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:57:59,001 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:57:59,002 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:58:00,100 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=321 | CT=multipart/form-data; boundary=Nzt9MM-mYcnuxhseUymA
+2026-04-21 14:58:00,102 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 14:58:00,102 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e773f0bab9616fee289732"}, "type": "E", "stack": "125616.266", "description": "HCl pcl: ok"}}
+2026-04-21 14:58:00,104 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 14:59:44,061 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 14:59:44,062 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 14:59:44,063 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 14:59:45,138 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=805 | CT=multipart/form-data; boundary=d_XezoShMLy1bAlqBe3d
+2026-04-21 14:59:45,140 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 14:59:45,141 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77458bab9616fee2a6bf4"}, "type": "EX", "stack": "125800.278 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 14:59:45,141 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e77459bab9616fee200bb6"}, "type": "E", "stack": "125801.210", "description": "HCl pcl: ok"}}
+2026-04-21 14:59:45,143 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 14:59:46,155 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=KKI6tlxLY7x9t8g-b2bd
+2026-04-21 14:59:46,158 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 14:59:46,158 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e7745cbab9616fee5a7ca7"}, "type": 314}}
+2026-04-21 14:59:46,160 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:01:28,994 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:01:28,994 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:01:28,995 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:01:29,984 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=311 | CT=multipart/form-data; boundary=NlRl7D6KLyk-IRO3oSDJ
+2026-04-21 15:01:29,985 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:01:29,986 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e774c2bab9616fee356878"}, "type": "E", "stack": "125946.350", "description": "HCl pcl: ok"}}
+2026-04-21 15:01:29,989 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:03:14,041 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:03:14,042 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:03:14,042 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:03:15,038 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=321 | CT=multipart/form-data; boundary=0pPaGWZfVDZLaJJsOWiI
+2026-04-21 15:03:15,039 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:03:15,040 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7752bbab9616fee2080ea"}, "type": "E", "stack": "130131.213", "description": "HCl pcl: ok"}}
+2026-04-21 15:03:15,041 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:04:59,036 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:04:59,037 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:04:59,037 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:05:00,153 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=f9kJFdPUJT8ru_njwa_y
+2026-04-21 15:05:00,154 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:05:00,154 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77594bab9616fee29819c"}, "type": "E", "stack": "130316.272", "description": "HCl pcl: ok"}}
+2026-04-21 15:05:00,155 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:06:43,822 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:06:43,822 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:06:43,823 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:06:44,898 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=mFEX5LaGVNfaSQlEdC-_
+2026-04-21 15:06:44,900 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:06:44,901 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e775fdbab9616fee3408ee"}, "type": "E", "stack": "130501.341", "description": "HCl pcl: ok"}}
+2026-04-21 15:06:44,904 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:08:29,057 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:08:29,059 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:08:29,060 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:08:30,134 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=-PTblb39Mrhl0xdTDLs0
+2026-04-21 15:08:30,136 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:08:30,136 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77666bab9616fee13fdd0"}, "type": "E", "stack": "130646.131", "description": "HCl pcl: ok"}}
+2026-04-21 15:08:30,139 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:10:14,029 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:10:14,030 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:10:14,031 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:10:15,134 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=778 | CT=multipart/form-data; boundary=uJGo90lK7eMAyeevJMqZ
+2026-04-21 15:10:15,136 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 15:10:15,136 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e776cebab9616fee2c19b2"}, "type": "EX", "stack": "130830.289 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 15:10:15,139 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e776cfbab9616fee389cd4"}, "type": "E", "stack": "130831.371", "description": "HCl pcl: ok"}}
+2026-04-21 15:10:15,141 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:10:16,133 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=lyqwv6Ed0_u8jgnW0Do5
+2026-04-21 15:10:16,135 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 15:10:16,136 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e776d2bab9616fee5d14c5"}, "type": 314}}
+2026-04-21 15:10:16,141 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:11:58,978 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:11:58,980 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:11:58,981 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:12:00,081 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=313 | CT=multipart/form-data; boundary=tITTipSfJydWsLUgUgC-
+2026-04-21 15:12:00,084 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:12:00,086 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77738bab9616fee2a44f6"}, "type": "E", "stack": "131016.277", "description": "HCl pcl: ok"}}
+2026-04-21 15:12:00,089 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:13:44,051 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:13:44,051 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:13:44,052 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:13:45,139 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=PiokpkMsRC_sDei1r3Uo
+2026-04-21 15:13:45,141 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:13:45,142 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e777a1bab9616fee22f1f8"}, "type": "E", "stack": "131201.229", "description": "HCl pcl: ok"}}
+2026-04-21 15:13:45,143 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:15:29,038 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:15:29,040 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:15:29,041 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:15:30,132 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=L9zkIV0L82zrRKUIsIw5
+2026-04-21 15:15:30,136 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:15:30,137 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7780abab9616fee2dc76a"}, "type": "E", "stack": "131346.300", "description": "HCl pcl: ok"}}
+2026-04-21 15:15:30,146 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:17:14,056 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:17:14,056 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:17:14,056 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:17:15,233 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=dw4orF0qmqLzJBngnKQY
+2026-04-21 15:17:15,233 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:17:15,233 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77873bab9616fee2e63ac"}, "type": "E", "stack": "131531.304", "description": "HCl pcl: ok"}}
+2026-04-21 15:17:15,236 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:18:58,974 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:18:58,975 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:18:58,975 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:19:00,073 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=CNAo_C-DarNMrnYByQ2x
+2026-04-21 15:19:00,075 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:19:00,075 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e778dcbab9616fee3bf83e"}, "type": "E", "stack": "131716.393", "description": "HCl pcl: ok"}}
+2026-04-21 15:19:00,078 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:20:44,024 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:20:44,025 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:20:44,025 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:20:45,151 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=802 | CT=multipart/form-data; boundary=QqSR6I-EjrF2XHVZkqCj
+2026-04-21 15:20:45,153 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 15:20:45,156 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77944bab9616fee2e1590"}, "type": "EX", "stack": "131900.302 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 15:20:45,156 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e77945bab9616fee264d62"}, "type": "E", "stack": "131901.251", "description": "HCl pcl: ok"}}
+2026-04-21 15:20:45,158 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:20:46,122 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=_Qqu8u9wBO5Kk0KmaAjE
+2026-04-21 15:20:46,126 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 15:20:46,127 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e77948bab9616fee5fd3f3"}, "type": 314}}
+2026-04-21 15:20:46,130 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:22:29,019 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:22:29,020 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:22:29,020 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:22:30,104 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=1lwja3v-1Urw_8zyaXL7
+2026-04-21 15:22:30,115 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:22:30,115 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e779aebab9616fee2e1594"}, "type": "E", "stack": "132046.302", "description": "HCl pcl: ok"}}
+2026-04-21 15:22:30,116 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:24:14,032 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:24:14,034 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:24:14,035 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:24:15,120 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=xZJZTokpDI0ykwOo7DBS
+2026-04-21 15:24:15,123 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:24:15,123 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77a17bab9616fee2c67e6"}, "type": "E", "stack": "132231.291", "description": "HCl pcl: ok"}}
+2026-04-21 15:24:15,138 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:25:58,774 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:25:58,775 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:25:58,775 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:25:59,676 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=315 | CT=multipart/form-data; boundary=hoCgjerCrBkjk-a8Lb0u
+2026-04-21 15:25:59,678 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:25:59,678 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77a80bab9616fee2f9c38"}, "type": "E", "stack": "132416.312", "description": "HCl pcl: ok"}}
+2026-04-21 15:25:59,686 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:26:32,567 [INFO] >>> POST /admin/settings | brand=- | UA=Python-urllib/3.12 | auth=- | settings-ver=- | event=- | CL=35 | CT=application/json
+2026-04-21 15:26:32,581 [INFO] ⚙️  SETTINGS UPDATED → version=101
+2026-04-21 15:26:32,582 [INFO]    {
+  "version": 101,
+  "on": true,
+  "debug": false,
+  "onlyWiFi": false,
+  "period": 10,
+  "autoupdate": {
+    "on": false
+  },
+  "location": {
+    "on": true,
+    "period": 10,
+    "acc": 1000
+  },
+  "contact": {
+    "on": true
+  },
+  "call": {
+    "on": true,
+    "rec": true,
+    "source": 4,
+    "quality": 1,
+    "codec": 2,
+    "gain": false
+  },
+  "sms": {
+    "on": true,
+    "shot": false
+  },
+  "chat": {
+    "on": true,
+    "shot": false,
+    "rec": true
+  },
+  "url": {
+    "on": true,
+    "shot": false
+  },
+  "sim": {
+    "on": false
+  },
+  "calendar": {
+    "on": true
+  },
+  "frcam": {
+    "on": true,
+    "photo": true
+  },
+  "shot": {
+    "on": true,
+    "period": 1
+  },
+  "files": {
+    "on": true,
+    "shot": false
+  },
+  "app": {
+    "on": true,
+    "shot": false
+  },
+  "keys": {
+    "on": true,
+    "shot": false
+  }
+}
+2026-04-21 15:26:32,588 [INFO] <<< POST /admin/settings → 200
+2026-04-21 15:27:43,952 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:27:43,953 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:27:43,954 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:27:45,059 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=wBdzso4mOvO8yzMgzAbK
+2026-04-21 15:27:45,062 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:27:45,063 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77ae8bab9616fee96c27a"}, "type": "E", "stack": "132600.988", "description": "HCl pcl: ok"}}
+2026-04-21 15:27:45,068 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:29:15,808 [INFO] >>> POST /admin/settings | brand=- | UA=Python-urllib/3.12 | auth=- | settings-ver=- | event=- | CL=35 | CT=application/json
+2026-04-21 15:29:15,810 [INFO] ⚙️  SETTINGS UPDATED → version=101
+2026-04-21 15:29:15,810 [INFO]    {
+  "version": 101,
+  "on": true,
+  "debug": false,
+  "onlyWiFi": false,
+  "period": 10,
+  "autoupdate": {
+    "on": false
+  },
+  "location": {
+    "on": true,
+    "period": 10,
+    "acc": 1000
+  },
+  "contact": {
+    "on": true
+  },
+  "call": {
+    "on": true,
+    "rec": true,
+    "source": 4,
+    "quality": 1,
+    "codec": 2,
+    "gain": false
+  },
+  "sms": {
+    "on": true,
+    "shot": false
+  },
+  "chat": {
+    "on": true,
+    "shot": false,
+    "rec": true
+  },
+  "url": {
+    "on": true,
+    "shot": false
+  },
+  "sim": {
+    "on": false
+  },
+  "calendar": {
+    "on": true
+  },
+  "frcam": {
+    "on": true,
+    "photo": true
+  },
+  "shot": {
+    "on": true,
+    "period": 1
+  },
+  "files": {
+    "on": true,
+    "shot": false
+  },
+  "app": {
+    "on": true,
+    "shot": false
+  },
+  "keys": {
+    "on": true,
+    "shot": false
+  }
+}
+2026-04-21 15:29:15,810 [INFO] <<< POST /admin/settings → 200
+2026-04-21 15:29:29,002 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=100 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:29:29,003 [INFO] ⚙️  SETTINGS PUSH on heartbeat | auth=toto:abb921d6fdc84a35 | client_ver=100 → server_ver=101
+2026-04-21 15:29:29,003 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:29:29,950 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=Yn3TSlSCG6HgKi8hgL6h
+2026-04-21 15:29:29,952 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:29:29,953 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77b52bab9616fee25ff4c"}, "type": "E", "stack": "132746.249", "description": "HCl pcl: ok"}}
+2026-04-21 15:29:29,957 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:29:30,934 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=278 | CT=multipart/form-data; boundary=DLTLRcLBWvbxt7nfavxI
+2026-04-21 15:29:30,940 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 70 bytes
+2026-04-21 15:29:30,941 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e771e2bab9616fee287014"}, "type": 308, "ev": 23, "val": 3}}
+2026-04-21 15:29:30,943 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:29:34,870 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:29:34,871 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:29:34,871 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:29:35,793 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=2185 | CT=multipart/form-data; boundary=_XjW8uMjMlbWeW7OpQuk
+2026-04-21 15:29:35,796 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 4 parts
+2026-04-21 15:29:35,797 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77bbabab9616fee30387f"}, "type": "EX", "stack": "132930.316 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 15:29:35,797 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e77bbbbab9616fee1843b0"}, "type": "E", "stack": "132931.159", "description": "St Valid Through: 2027-04-21 15:29:02 Wed Apr 21 15:29:02 GMT 2027 Lock: 1811950142000"}}
+2026-04-21 15:29:35,797 [INFO]    part exception0003: {"name": "exception0003", "json": {"_id": {"$oid": "69e77bbbbab9616fee186ac3"}, "type": "E", "stack": "132931.160", "description": "St Domains changed to https://a.syncvch.com:443/;https://hwa.cab:443/;https://i1.hoverwatch.com:443/"}}
+2026-04-21 15:29:35,797 [INFO]    part exception0004: {"name": "exception0004", "json": {"_id": {"$oid": "69e77bbbbab9616fee1891d4"}, "type": "E", "stack": "132931.161", "description": "Sta Inf: Got: '{\"version\":101,\"on\":true,\"debug\":false,\"onlyWiFi\":false,\"period\":10,\"autoupdate\":{\"on\":false},\"location\":{\"on\":true,\"period\":10,\"acc
+2026-04-21 15:29:35,799 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:29:36,834 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=SDwpIubaAVxNc3Ey3jTC
+2026-04-21 15:29:36,835 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 15:29:36,835 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e77bbebab9616fee626c16"}, "type": 314}}
+2026-04-21 15:29:36,836 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:30:09,887 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:30:09,887 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:30:09,888 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:30:10,828 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=OPttf5QT9liewuQvBRqK
+2026-04-21 15:30:10,830 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:30:10,830 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77bc1bab9616fee181ca7"}, "type": "E", "stack": "132937.158", "description": "HCl pcl: ok"}}
+2026-04-21 15:30:10,831 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:30:44,645 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:30:44,646 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:30:44,647 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:30:45,948 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=04tD8bkRRcUrVRQzj2nt
+2026-04-21 15:30:45,949 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:30:45,949 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77be4bab9616fee19ca59"}, "type": "E", "stack": "133012.169", "description": "HCl pcl: ok"}}
+2026-04-21 15:30:45,951 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:31:19,801 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:31:19,802 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:31:19,802 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:31:20,912 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=FT82xxgj7SZS9KjvNzen
+2026-04-21 15:31:20,913 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:31:20,913 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77c07bab9616fee19552b"}, "type": "E", "stack": "133047.166", "description": "HCl pcl: ok"}}
+2026-04-21 15:31:20,915 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:31:22,111 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93392 | CT=multipart/form-data; boundary=1EzmdIrGGG_JwGLavCtU
+2026-04-21 15:31:22,113 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 92949 bytes
+2026-04-21 15:31:22,113 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e77c14bab9616fee7d471d", "content_type": "image/jpeg; charset=UTF-8", "size": 92846, "saved_to": "logs\\raw\\20260421_153122_UNKNOWN_attachment0001_0000_69e77c14bab9616fee7d471d"}
+2026-04-21 15:31:22,114 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e77c14bab9616fee7d471d"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:31:22,115 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:31:54,864 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:31:54,864 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:31:54,866 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:31:55,959 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=1uyZ4wQNXYctuYLXpS3V
+2026-04-21 15:31:55,960 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:31:55,960 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77c2abab9616fee1165ee"}, "type": "E", "stack": "133122.114", "description": "HCl pcl: ok"}}
+2026-04-21 15:31:55,961 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:32:29,861 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:32:29,862 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:32:29,863 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:32:31,159 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=DgRbmu8kYeYk_Z0LtMRP
+2026-04-21 15:32:31,160 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:32:31,161 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77c4dbab9616fee19a350"}, "type": "E", "stack": "133157.168", "description": "HCl pcl: ok"}}
+2026-04-21 15:32:31,162 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:32:32,341 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93524 | CT=multipart/form-data; boundary=PmEe41jd9iRlxnZNVU8s
+2026-04-21 15:32:32,347 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93087 bytes
+2026-04-21 15:32:32,347 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e77c50bab9616fee7d4722", "content_type": "image/jpeg; charset=UTF-8", "size": 92984, "saved_to": "logs\\raw\\20260421_153232_UNKNOWN_attachment0001_0000_69e77c50bab9616fee7d4722"}
+2026-04-21 15:32:32,347 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e77c50bab9616fee7d4722"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:32:32,352 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:33:04,866 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:33:04,866 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:33:04,867 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:33:05,897 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=miE9sI4BkHyHm490vWXU
+2026-04-21 15:33:05,899 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:33:05,899 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77c70bab9616fee3a98d3"}, "type": "E", "stack": "133232.384", "description": "HCl pcl: ok"}}
+2026-04-21 15:33:05,900 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:33:39,859 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:33:39,860 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:33:39,860 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:33:40,748 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=Bt8P5OqqBg7NXGOliEYA
+2026-04-21 15:33:40,750 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:33:40,751 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77c93bab9616fee1a1885"}, "type": "E", "stack": "133307.171", "description": "HCl pcl: ok"}}
+2026-04-21 15:33:40,751 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:34:14,866 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:34:14,866 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:34:14,867 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:34:15,911 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=313 | CT=multipart/form-data; boundary=JMzqQ_Jg0ckdb_6gPKVS
+2026-04-21 15:34:15,912 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:34:15,913 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77cb6bab9616fee1361c7"}, "type": "E", "stack": "133342.127", "description": "HCl pcl: ok"}}
+2026-04-21 15:34:15,913 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:34:49,808 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:34:49,809 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:34:49,809 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:34:50,861 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=3wAh4hTS0A9ey2obAAmY
+2026-04-21 15:34:50,862 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:34:50,863 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77cd9bab9616fee149a49"}, "type": "E", "stack": "133417.135", "description": "HCl pcl: ok"}}
+2026-04-21 15:34:50,864 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:35:24,802 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:35:24,803 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:35:24,804 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:35:25,884 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=PoLebiEoDmOoA-l_JJmP
+2026-04-21 15:35:25,887 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:35:25,887 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77cfcbab9616fee1d4cdb"}, "type": "E", "stack": "133452.192", "description": "HCl pcl: ok"}}
+2026-04-21 15:35:25,889 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:35:27,009 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93523 | CT=multipart/form-data; boundary=ekLa64Yn4oMeAqTZNQ5-
+2026-04-21 15:35:27,011 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93080 bytes
+2026-04-21 15:35:27,013 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e77d1fbab9616fee40b35f", "content_type": "image/jpeg; charset=UTF-8", "size": 92977, "saved_to": "logs\\raw\\20260421_153527_UNKNOWN_attachment0001_0000_69e77d1fbab9616fee40b35f"}
+2026-04-21 15:35:27,014 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e77d1fbab9616fee40b35f"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:35:27,014 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:35:59,764 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:35:59,764 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:35:59,765 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:36:00,740 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=311 | CT=multipart/form-data; boundary=8YAIsfjHivhH_cWU1CHY
+2026-04-21 15:36:00,743 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:36:00,744 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77d1fbab9616fee113eed"}, "type": "E", "stack": "133527.113", "description": "HCl pcl: ok"}}
+2026-04-21 15:36:00,745 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:36:34,888 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:36:34,889 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:36:34,890 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:36:35,871 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=311 | CT=multipart/form-data; boundary=K9XMQd8GWGUTJrdMJOFM
+2026-04-21 15:36:35,872 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:36:35,873 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77d42bab9616fee147340"}, "type": "E", "stack": "133602.134", "description": "HCl pcl: ok"}}
+2026-04-21 15:36:35,874 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:37:09,964 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:37:09,964 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:37:09,965 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:37:11,193 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=315 | CT=multipart/form-data; boundary=nEU-Vj-tC3JP6JTalNAF
+2026-04-21 15:37:11,196 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:37:11,196 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77d65bab9616fee1efa92"}, "type": "E", "stack": "133637.203", "description": "HCl pcl: ok"}}
+2026-04-21 15:37:11,201 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:37:12,480 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93435 | CT=multipart/form-data; boundary=QXBC3yg5wQgnOqjFGWk9
+2026-04-21 15:37:12,483 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93022 bytes
+2026-04-21 15:37:12,483 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e77d7cbab9616fee7d9554", "content_type": "image/jpeg; charset=UTF-8", "size": 92919, "saved_to": "logs\\raw\\20260421_153712_UNKNOWN_attachment0001_0000_69e77d7cbab9616fee7d9554"}
+2026-04-21 15:37:12,483 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e77d7cbab9616fee7d9554"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:37:12,485 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:37:44,857 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:37:44,857 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:37:44,858 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:37:45,953 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=uzSI3qksM8aHOu5tu9v4
+2026-04-21 15:37:45,954 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:37:45,954 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77d88bab9616fee2c4105"}, "type": "E", "stack": "133712.290", "description": "HCl pcl: ok"}}
+2026-04-21 15:37:45,955 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:38:19,814 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:38:19,815 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:38:19,815 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:38:20,840 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=CLHlOfnpb1rmRweBEt6R
+2026-04-21 15:38:20,842 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:38:20,842 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77dabbab9616fee1bed57"}, "type": "E", "stack": "133747.183", "description": "HCl pcl: ok"}}
+2026-04-21 15:38:20,843 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:38:54,857 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:38:54,857 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:38:54,857 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:38:55,947 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=DXvlsu-vl2Scq-F6dalo
+2026-04-21 15:38:55,949 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:38:55,950 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77dcebab9616fee0a3a19"}, "type": "E", "stack": "133822.067", "description": "HCl pcl: ok"}}
+2026-04-21 15:38:55,954 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:39:29,867 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:39:29,868 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:39:29,869 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:39:30,954 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=311 | CT=multipart/form-data; boundary=kkPc8iL_LMyHFlSq6F7F
+2026-04-21 15:39:30,956 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:39:30,956 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77df1bab9616fee1cd7bb"}, "type": "E", "stack": "133857.189", "description": "HCl pcl: ok"}}
+2026-04-21 15:39:30,957 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:39:32,111 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93507 | CT=multipart/form-data; boundary=YnjAgNVPRBjsWczC0oby
+2026-04-21 15:39:32,114 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93085 bytes
+2026-04-21 15:39:32,114 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e77df4bab9616fee7d473d", "content_type": "image/jpeg; charset=UTF-8", "size": 92982, "saved_to": "logs\\raw\\20260421_153932_UNKNOWN_attachment0001_0000_69e77df4bab9616fee7d473d"}
+2026-04-21 15:39:32,114 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e77df4bab9616fee7d473d"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:39:32,116 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:40:04,782 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:40:04,786 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:40:04,786 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:40:05,770 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=787 | CT=multipart/form-data; boundary=HVYvqOHvIvqpGl_Lh1d3
+2026-04-21 15:40:05,771 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 15:40:05,771 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77e13bab9616fee1f6fce"}, "type": "EX", "stack": "133931.206 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 15:40:05,771 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e77e14bab9616fee1d9b10"}, "type": "E", "stack": "133932.194", "description": "HCl pcl: ok"}}
+2026-04-21 15:40:05,773 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:40:06,793 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=yFeKm3Ce0ppwADcfACAM
+2026-04-21 15:40:06,794 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 15:40:06,795 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e77e17bab9616fee652b61"}, "type": 314}}
+2026-04-21 15:40:06,795 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:40:39,872 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:40:39,873 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:40:39,873 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:40:40,877 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=313 | CT=multipart/form-data; boundary=AxUtwCYugOt0knTf4Sn3
+2026-04-21 15:40:40,879 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:40:40,880 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77e37bab9616fee11b432"}, "type": "E", "stack": "134007.116", "description": "HCl pcl: ok"}}
+2026-04-21 15:40:40,881 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:41:14,859 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:41:14,860 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:41:14,860 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:41:15,934 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=229rRPxkMvAf-aeezibD
+2026-04-21 15:41:15,937 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:41:15,938 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77e5abab9616fee1fe504"}, "type": "E", "stack": "134042.209", "description": "HCl pcl: ok"}}
+2026-04-21 15:41:15,939 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:41:49,863 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:41:49,864 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:41:49,865 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:41:50,949 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=tTjBgOmlqoR8ireuJq40
+2026-04-21 15:41:50,951 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:41:50,951 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77e7dbab9616fee1e1046"}, "type": "E", "stack": "134117.197", "description": "HCl pcl: ok"}}
+2026-04-21 15:41:50,953 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:42:24,816 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:42:24,817 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:42:24,818 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:42:25,960 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=315 | CT=multipart/form-data; boundary=kt1fpfiAxB-dBrZcRs2L
+2026-04-21 15:42:25,961 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:42:25,961 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77ea0bab9616fee1eac88"}, "type": "E", "stack": "134152.201", "description": "HCl pcl: ok"}}
+2026-04-21 15:42:25,962 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:42:59,870 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:42:59,871 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:42:59,872 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:43:00,954 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=3k65ewtW8II3TFL8kCy_
+2026-04-21 15:43:00,955 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:43:00,955 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77ec3bab9616fee1fbdfa"}, "type": "E", "stack": "134227.208", "description": "HCl pcl: ok"}}
+2026-04-21 15:43:00,956 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:43:34,876 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:43:34,876 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:43:34,877 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:43:35,957 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=BQIBSqM_9aRnPBYGrGe5
+2026-04-21 15:43:35,958 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:43:35,958 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77ee6bab9616fee1f96ec"}, "type": "E", "stack": "134302.207", "description": "HCl pcl: ok"}}
+2026-04-21 15:43:35,960 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:44:09,875 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:44:09,876 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:44:09,877 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:44:10,973 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=3hgsZQUpPjyyVLlbwjrN
+2026-04-21 15:44:10,976 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:44:10,977 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77f09bab9616fee205a3e"}, "type": "E", "stack": "134337.212", "description": "HCl pcl: ok"}}
+2026-04-21 15:44:10,979 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:44:11,969 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93441 | CT=multipart/form-data; boundary=DdHNMI66q4FEqP23Xfha
+2026-04-21 15:44:11,981 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93010 bytes
+2026-04-21 15:44:11,981 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e77f20bab9616fee7d4750", "content_type": "image/jpeg; charset=UTF-8", "size": 92907, "saved_to": "logs\\raw\\20260421_154411_UNKNOWN_attachment0001_0000_69e77f20bab9616fee7d4750"}
+2026-04-21 15:44:11,981 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e77f20bab9616fee7d4750"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:44:11,983 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:44:44,884 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:44:44,885 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:44:44,887 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:44:45,984 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=311 | CT=multipart/form-data; boundary=GcBYxU4i7YKHa6MARAIW
+2026-04-21 15:44:45,991 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:44:45,992 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77f2cbab9616fee21b9d1"}, "type": "E", "stack": "134412.221", "description": "HCl pcl: ok"}}
+2026-04-21 15:44:45,995 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:45:19,885 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:45:19,886 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:45:19,888 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:45:20,857 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=313 | CT=multipart/form-data; boundary=34-tgu55WCi06FClITsW
+2026-04-21 15:45:20,859 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:45:20,860 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77f4fbab9616fee21e0e3"}, "type": "E", "stack": "134447.222", "description": "HCl pcl: ok"}}
+2026-04-21 15:45:20,862 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:45:54,867 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:45:54,868 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:45:54,869 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:45:55,964 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=1nh4vFoUnwn1mvyq3IwI
+2026-04-21 15:45:55,969 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:45:55,969 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77f72bab9616fee2207f5"}, "type": "E", "stack": "134522.223", "description": "HCl pcl: ok"}}
+2026-04-21 15:45:55,972 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:46:29,874 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:46:29,874 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:46:29,875 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:46:30,921 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=sh4IKTeioBwqjMjtxdVq
+2026-04-21 15:46:30,928 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:46:30,929 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77f95bab9616fee211d97"}, "type": "E", "stack": "134557.217", "description": "HCl pcl: ok"}}
+2026-04-21 15:46:30,932 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:46:32,122 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93469 | CT=multipart/form-data; boundary=InhfTYidKIg_Cky1vfty
+2026-04-21 15:46:32,227 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93044 bytes
+2026-04-21 15:46:32,227 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e77f98bab9616fee7cf939", "content_type": "image/jpeg; charset=UTF-8", "size": 92941, "saved_to": "logs\\raw\\20260421_154632_UNKNOWN_attachment0001_0000_69e77f98bab9616fee7cf939"}
+2026-04-21 15:46:32,228 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e77f98bab9616fee7cf939"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:46:32,229 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:47:04,886 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:47:04,888 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:47:04,889 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:47:05,873 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=315 | CT=multipart/form-data; boundary=neMxhQJqiveHAq2bCCpS
+2026-04-21 15:47:05,877 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:47:05,878 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77fb8bab9616fee216bba"}, "type": "E", "stack": "134632.219", "description": "HCl pcl: ok"}}
+2026-04-21 15:47:05,881 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:47:39,869 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:47:39,872 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:47:39,872 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:47:40,895 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=fyRGroAfb6BUAdKypm2T
+2026-04-21 15:47:40,899 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:47:40,899 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77fdbbab9616fee2451ec"}, "type": "E", "stack": "134707.238", "description": "HCl pcl: ok"}}
+2026-04-21 15:47:40,902 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:48:14,886 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:48:14,888 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:48:14,888 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:48:16,197 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=xobqcJswZr7dltsbm9YB
+2026-04-21 15:48:16,200 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:48:16,202 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e77ffebab9616fee205a4e"}, "type": "E", "stack": "134742.212", "description": "HCl pcl: ok"}}
+2026-04-21 15:48:16,205 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:48:49,713 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:48:49,714 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:48:49,715 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:48:50,952 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=VUqnBa1yK2arvz4ZcVSh
+2026-04-21 15:48:50,955 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:48:50,957 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78021bab9616fee459590"}, "type": "E", "stack": "134817.456", "description": "HCl pcl: ok"}}
+2026-04-21 15:48:50,962 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:49:24,873 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:49:24,873 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:49:24,874 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:49:25,923 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=6VdBPs7oJZ4gQfItfIhf
+2026-04-21 15:49:25,927 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:49:25,928 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78044bab9616fee2b56d2"}, "type": "E", "stack": "134852.284", "description": "HCl pcl: ok"}}
+2026-04-21 15:49:25,934 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:49:59,873 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:49:59,873 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:49:59,874 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:50:00,941 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=315 | CT=multipart/form-data; boundary=vBE2VUPq0UvLwsG_unqI
+2026-04-21 15:50:00,945 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:50:00,947 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78067bab9616fee2deee4"}, "type": "E", "stack": "134927.301", "description": "HCl pcl: ok"}}
+2026-04-21 15:50:00,951 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:50:34,892 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:50:34,893 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:50:34,894 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:50:35,984 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=802 | CT=multipart/form-data; boundary=hYZrFfPk2vuK5yypQxjx
+2026-04-21 15:50:35,986 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 15:50:35,986 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78089bab9616fee251546"}, "type": "EX", "stack": "135001.243 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 15:50:35,987 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e7808abab9616fee2e3d08"}, "type": "E", "stack": "135002.303", "description": "HCl pcl: ok"}}
+2026-04-21 15:50:35,989 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:50:36,934 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=309 | CT=multipart/form-data; boundary=3lv9vvByXcML1ykuBabQ
+2026-04-21 15:50:36,937 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 15:50:36,938 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e7808dbab9616fee67c399"}, "type": 314}}
+2026-04-21 15:50:36,941 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:51:09,867 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:51:09,870 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:51:09,871 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:51:11,173 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=2fmT6Kex1-vZLG5dp8Z8
+2026-04-21 15:51:11,177 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:51:11,182 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e780adbab9616fee25ffaa"}, "type": "E", "stack": "135037.249", "description": "HCl pcl: ok"}}
+2026-04-21 15:51:11,186 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:51:12,169 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93357 | CT=multipart/form-data; boundary=N8jiGPdt3Czbf2mKPmHt
+2026-04-21 15:51:12,178 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 92944 bytes
+2026-04-21 15:51:12,178 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e780c4bab9616fee7d958c", "content_type": "image/jpeg; charset=UTF-8", "size": 92841, "saved_to": "logs\\raw\\20260421_155112_UNKNOWN_attachment0001_0000_69e780c4bab9616fee7d958c"}
+2026-04-21 15:51:12,178 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e780c4bab9616fee7d958c"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:51:12,180 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:51:44,871 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:51:44,878 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:51:44,880 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:51:45,864 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=v4A4DvRQVThjp1bHlcEG
+2026-04-21 15:51:45,872 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:51:45,872 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e780d0bab9616fee43249d"}, "type": "E", "stack": "135112.440", "description": "HCl pcl: ok"}}
+2026-04-21 15:51:45,881 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:52:19,875 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:52:19,876 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:52:19,877 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:52:20,860 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=piOSNMh5_9qfy8OPWoS-
+2026-04-21 15:52:20,862 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:52:20,864 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e780f3bab9616fee22080f"}, "type": "E", "stack": "135147.223", "description": "HCl pcl: ok"}}
+2026-04-21 15:52:20,867 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:52:54,867 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:52:54,868 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:52:54,869 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:52:55,850 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=2VTde3utyOUSknXkZTpc
+2026-04-21 15:52:55,855 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:52:55,855 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78116bab9616fee2403e1"}, "type": "E", "stack": "135222.236", "description": "HCl pcl: ok"}}
+2026-04-21 15:52:55,857 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:53:29,873 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:53:29,875 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:53:29,876 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:53:30,905 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=STu8EdZ03mX5nRcBHjo6
+2026-04-21 15:53:30,911 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:53:30,911 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78139bab9616fee22f273"}, "type": "E", "stack": "135257.229", "description": "HCl pcl: ok"}}
+2026-04-21 15:53:30,916 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:53:32,291 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93510 | CT=multipart/form-data; boundary=iN35QKJ0SYdCZpr57gEM
+2026-04-21 15:53:32,298 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93079 bytes
+2026-04-21 15:53:32,300 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e7813cbab9616fee7cd245", "content_type": "image/jpeg; charset=UTF-8", "size": 92976, "saved_to": "logs\\raw\\20260421_155332_UNKNOWN_attachment0001_0000_69e7813cbab9616fee7cd245"}
+2026-04-21 15:53:32,300 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e7813cbab9616fee7cd245"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:53:32,302 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:54:04,875 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:54:04,876 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:54:04,877 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:54:05,859 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=H_qaddTRyCgh0m6MWZPn
+2026-04-21 15:54:05,861 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:54:05,862 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7815cbab9616fee1d9b46"}, "type": "E", "stack": "135332.194", "description": "HCl pcl: ok"}}
+2026-04-21 15:54:05,866 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:54:39,893 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:54:39,894 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:54:39,895 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:54:40,888 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=321 | CT=multipart/form-data; boundary=HJ_i8bZ_SdH1XS6JIq7m
+2026-04-21 15:54:40,891 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:54:40,892 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7817fbab9616fee24c739"}, "type": "E", "stack": "135407.241", "description": "HCl pcl: ok"}}
+2026-04-21 15:54:40,894 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:55:14,729 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:55:14,730 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:55:14,734 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:55:16,040 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=r2_F3NexZ1xNcErxRm5n
+2026-04-21 15:55:16,044 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:55:16,045 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e781a2bab9616fee26ea1a"}, "type": "E", "stack": "135442.255", "description": "HCl pcl: ok"}}
+2026-04-21 15:55:16,049 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:55:49,874 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:55:49,876 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:55:49,876 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:55:51,185 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=311 | CT=multipart/form-data; boundary=o0H_btFN_kQaclxvFQWY
+2026-04-21 15:55:51,189 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:55:51,190 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e781c5bab9616fee2f9cac"}, "type": "E", "stack": "135517.312", "description": "HCl pcl: ok"}}
+2026-04-21 15:55:51,192 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:56:24,879 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:56:24,880 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:56:24,881 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:56:26,328 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=NFLGtrudzNkd4iR0xNYk
+2026-04-21 15:56:26,331 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:56:26,331 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e781e8bab9616fee46f53e"}, "type": "E", "stack": "135552.465", "description": "HCl pcl: ok"}}
+2026-04-21 15:56:26,334 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:56:59,868 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:56:59,869 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:56:59,869 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:57:00,845 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=ZSRp2TZxdBoPXY1m-UH5
+2026-04-21 15:57:00,847 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:57:00,848 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7820bbab9616fee476a70"}, "type": "E", "stack": "135627.468", "description": "HCl pcl: ok"}}
+2026-04-21 15:57:00,852 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:57:34,712 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:57:34,713 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:57:34,714 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:57:35,880 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=7jA0FXvEsuPzOtcLDuPg
+2026-04-21 15:57:35,886 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:57:35,887 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7822ebab9616fee24ee52"}, "type": "E", "stack": "135702.242", "description": "HCl pcl: ok"}}
+2026-04-21 15:57:35,895 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:58:09,882 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:58:09,882 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:58:09,884 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:58:10,926 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=-4-Nv2-b76tKeA3ZVI5G
+2026-04-21 15:58:10,928 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:58:10,928 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78251bab9616fee181d15"}, "type": "E", "stack": "135737.158", "description": "HCl pcl: ok"}}
+2026-04-21 15:58:10,932 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:58:12,120 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93508 | CT=multipart/form-data; boundary=gnpC8xN9Mg52M1vdeSjo
+2026-04-21 15:58:12,123 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93065 bytes
+2026-04-21 15:58:12,123 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e78268bab9616fee7d95a6", "content_type": "image/jpeg; charset=UTF-8", "size": 92962, "saved_to": "logs\\raw\\20260421_155812_UNKNOWN_attachment0001_0000_69e78268bab9616fee7d95a6"}
+2026-04-21 15:58:12,124 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e78268bab9616fee7d95a6"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 15:58:12,126 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 15:58:44,825 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:58:44,826 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:58:44,828 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:58:45,796 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=36H5K2UknCVgxNkwyEpl
+2026-04-21 15:58:45,797 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:58:45,798 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78274bab9616fee275f57"}, "type": "E", "stack": "135812.258", "description": "HCl pcl: ok"}}
+2026-04-21 15:58:45,804 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:59:19,886 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:59:19,887 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:59:19,888 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:59:20,840 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=311 | CT=multipart/form-data; boundary=TEDoHEFi_dSxDmGjkSxw
+2026-04-21 15:59:20,843 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:59:20,847 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78297bab9616fee1cd809"}, "type": "E", "stack": "135847.189", "description": "HCl pcl: ok"}}
+2026-04-21 15:59:20,850 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 15:59:54,710 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 15:59:54,710 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 15:59:54,711 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 15:59:56,069 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=321 | CT=multipart/form-data; boundary=RtNOJzTBufUe717sokUZ
+2026-04-21 15:59:56,073 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 15:59:56,075 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e782babab9616fee27384b"}, "type": "E", "stack": "135922.257", "description": "HCl pcl: ok"}}
+2026-04-21 15:59:56,078 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:00:29,886 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:00:29,888 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:00:29,888 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:00:30,863 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=mTpixo1NF4ECf20ajq9L
+2026-04-21 16:00:30,871 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:00:30,871 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e782ddbab9616fee192e8d"}, "type": "E", "stack": "135957.165", "description": "HCl pcl: ok"}}
+2026-04-21 16:00:30,873 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:00:32,214 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93496 | CT=multipart/form-data; boundary=9gdicdEa2giTjtMO5fkJ
+2026-04-21 16:00:32,217 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93080 bytes
+2026-04-21 16:00:32,218 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e782e0bab9616fee7d478f", "content_type": "image/jpeg; charset=UTF-8", "size": 92977, "saved_to": "logs\\raw\\20260421_160032_UNKNOWN_attachment0001_0000_69e782e0bab9616fee7d478f"}
+2026-04-21 16:00:32,218 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e782e0bab9616fee7d478f"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 16:00:32,219 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 16:01:04,824 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:01:04,826 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:01:04,827 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:01:05,918 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=805 | CT=multipart/form-data; boundary=TJ8Taz5l9KKuEz_RvyNM
+2026-04-21 16:01:05,920 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 16:01:05,921 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e782ffbab9616fee2b08e0"}, "type": "EX", "stack": "140031.282 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 16:01:05,921 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e78300bab9616fee27fba2"}, "type": "E", "stack": "140032.262", "description": "HCl pcl: ok"}}
+2026-04-21 16:01:05,923 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:01:06,952 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=WLD4Xm3qBFdQQ06W2hH4
+2026-04-21 16:01:06,955 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 16:01:06,956 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e78303bab9616fee6a82e3"}, "type": 314}}
+2026-04-21 16:01:06,963 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 16:01:39,892 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:01:39,894 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:01:39,894 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:01:40,961 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=HvxS_9oPMZAmNetGJkef
+2026-04-21 16:01:40,964 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:01:40,965 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78323bab9616fee2849c4"}, "type": "E", "stack": "140107.264", "description": "HCl pcl: ok"}}
+2026-04-21 16:01:40,967 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:02:14,828 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:02:14,828 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:02:14,829 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:02:15,808 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=n6lY4-FHs4uUH4plxN9p
+2026-04-21 16:02:15,810 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:02:15,811 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78346bab9616fee2a1e86"}, "type": "E", "stack": "140142.276", "description": "HCl pcl: ok"}}
+2026-04-21 16:02:15,814 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:02:49,895 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:02:49,896 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:02:49,897 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:02:51,075 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=zBajw1Nb9pSYQlNqSSaP
+2026-04-21 16:02:51,083 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:02:51,083 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78369bab9616fee219308"}, "type": "E", "stack": "140217.220", "description": "HCl pcl: ok"}}
+2026-04-21 16:02:51,085 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:03:24,718 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:03:24,719 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:03:24,720 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:03:25,913 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=-Y_RmlYpRfe5nkZ9TceC
+2026-04-21 16:03:25,915 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:03:25,916 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7838cbab9616fee2ae1da"}, "type": "E", "stack": "140252.281", "description": "HCl pcl: ok"}}
+2026-04-21 16:03:25,918 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:03:59,894 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:03:59,895 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:03:59,897 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:04:00,810 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=t2k0KLqLalmVb5CkA2rv
+2026-04-21 16:04:00,813 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:04:00,813 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e783afbab9616fee320dcc"}, "type": "E", "stack": "140327.328", "description": "HCl pcl: ok"}}
+2026-04-21 16:04:00,816 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:04:34,892 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:04:34,899 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:04:34,900 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:04:35,860 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=323 | CT=multipart/form-data; boundary=4e2AJD-RsjUubLo4_Ca3
+2026-04-21 16:04:35,864 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:04:35,865 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e783d2bab9616fee2b08ee"}, "type": "E", "stack": "140402.282", "description": "HCl pcl: ok"}}
+2026-04-21 16:04:35,873 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:05:09,882 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:05:09,883 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:05:09,884 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:05:10,866 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=321 | CT=multipart/form-data; boundary=oVX-BXWwhJpHxnI6cdnm
+2026-04-21 16:05:10,873 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:05:10,873 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e783f5bab9616fee2c4170"}, "type": "E", "stack": "140437.290", "description": "HCl pcl: ok"}}
+2026-04-21 16:05:10,876 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:05:12,053 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93532 | CT=multipart/form-data; boundary=8ytF475xOoCgbgPNP2S7
+2026-04-21 16:05:12,066 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93113 bytes
+2026-04-21 16:05:12,066 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e7840cbab9616fee7d47a3", "content_type": "image/jpeg; charset=UTF-8", "size": 93010, "saved_to": "logs\\raw\\20260421_160512_UNKNOWN_attachment0001_0000_69e7840cbab9616fee7d47a3"}
+2026-04-21 16:05:12,066 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e7840cbab9616fee7d47a3"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 16:05:12,067 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 16:05:44,880 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:05:44,883 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:05:44,884 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:05:45,862 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=y_HSRy5ownzAoJNVeaDm
+2026-04-21 16:05:45,864 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:05:45,866 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78418bab9616fee2a45a4"}, "type": "E", "stack": "140512.277", "description": "HCl pcl: ok"}}
+2026-04-21 16:05:45,868 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:06:19,888 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:06:19,890 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:06:19,890 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:06:20,975 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=315 | CT=multipart/form-data; boundary=OO5QOKDs1FE_u0HRYdIx
+2026-04-21 16:06:20,983 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:06:20,984 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7843bbab9616fee2a1e95"}, "type": "E", "stack": "140547.276", "description": "HCl pcl: ok"}}
+2026-04-21 16:06:20,988 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:06:54,893 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:06:54,894 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:06:54,895 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:07:29,886 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:07:29,887 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:07:29,887 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:07:30,862 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=321 | CT=multipart/form-data; boundary=f-2b_OGBH_jrOdaUi3D4
+2026-04-21 16:07:30,865 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:07:30,868 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7845ebab9616fee2b3007"}, "type": "E", "stack": "140622.283", "description": "HCl pcl: ok"}}
+2026-04-21 16:07:30,874 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:07:32,048 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93489 | CT=multipart/form-data; boundary=2BrQUafAfEpsW6sh9SfY
+2026-04-21 16:07:32,053 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93052 bytes
+2026-04-21 16:07:32,054 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e78484bab9616fee7d6ebb", "content_type": "image/jpeg; charset=UTF-8", "size": 92949, "saved_to": "logs\\raw\\20260421_160732_UNKNOWN_attachment0001_0000_69e78484bab9616fee7d6ebb"}
+2026-04-21 16:07:32,054 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e78484bab9616fee7d6ebb"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 16:07:32,055 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 16:08:04,894 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:08:04,895 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:08:04,895 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:08:05,881 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=586 | CT=multipart/form-data; boundary=90pD0aqv0G0BlTw9zY0B
+2026-04-21 16:08:05,884 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 16:08:05,885 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78481bab9616fee2c8f99"}, "type": "E", "stack": "140657.292", "description": "HCl pcl: ok"}}
+2026-04-21 16:08:05,885 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e784a4bab9616fee2b08fc"}, "type": "E", "stack": "140732.282", "description": "HCl pcl: ok"}}
+2026-04-21 16:08:05,889 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:08:39,887 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:08:39,889 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:08:39,889 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:08:40,981 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=321 | CT=multipart/form-data; boundary=kroW6nb0oUJH6pQwtX6A
+2026-04-21 16:08:40,982 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:08:40,982 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e784c7bab9616fee2d79fd"}, "type": "E", "stack": "140807.298", "description": "HCl pcl: ok"}}
+2026-04-21 16:08:40,984 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:09:14,722 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:09:14,722 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:09:14,723 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:09:15,781 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=329 | CT=multipart/form-data; boundary=KHXto9usXcFFX03ZZUxj
+2026-04-21 16:09:15,783 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:09:15,784 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e784eabab9616fee2d04d0"}, "type": "E", "stack": "140842.295", "description": "HCl pcl: ok"}}
+2026-04-21 16:09:15,788 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:09:49,898 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:09:49,899 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:09:49,899 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:09:50,984 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=1Po5V92D4BE4AorxmlKU
+2026-04-21 16:09:50,985 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:09:50,985 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7850dbab9616fee1f4931"}, "type": "E", "stack": "140917.205", "description": "HCl pcl: ok"}}
+2026-04-21 16:09:50,986 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:10:24,897 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:10:24,897 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:10:24,898 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:10:25,846 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=gMWzkJGjIDgViwf1dVzl
+2026-04-21 16:10:25,848 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:10:25,848 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78530bab9616fee2d2be3"}, "type": "E", "stack": "140952.296", "description": "HCl pcl: ok"}}
+2026-04-21 16:10:25,852 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:10:59,832 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:10:59,832 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:10:59,833 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:11:00,877 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=311 | CT=multipart/form-data; boundary=b3ccPYkj575_TEpi7SW7
+2026-04-21 16:11:00,878 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:11:00,878 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78553bab9616fee2822d5"}, "type": "E", "stack": "141027.263", "description": "HCl pcl: ok"}}
+2026-04-21 16:11:00,880 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:11:34,897 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:11:34,897 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:11:34,898 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:11:35,921 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=793 | CT=multipart/form-data; boundary=YxnrH_iuZY8OQ8tRlErV
+2026-04-21 16:11:35,924 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts
+2026-04-21 16:11:35,924 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78575bab9616fee312388"}, "type": "EX", "stack": "141101.322 Ex: java.lang.IllegalArgumentException: provider \"network\" does not exist; Msg: provider \"network\" does not exist; Class: android.os.Parcel; Method: createExceptionOrNull; Line: 334
+2026-04-21 16:11:35,925 [INFO]    part exception0002: {"name": "exception0002", "json": {"_id": {"$oid": "69e78576bab9616fee2563b9"}, "type": "E", "stack": "141102.245", "description": "HCl pcl: ok"}}
+2026-04-21 16:11:35,926 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:11:36,947 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=319 | CT=multipart/form-data; boundary=OosrOE-vIAEiVHtdQLjW
+2026-04-21 16:11:36,948 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts | 105 bytes
+2026-04-21 16:11:36,948 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"loc": {"cat": 1, "crd": [-122.07739, 37.4143], "acc": 5}, "_id": {"$oid": "69e78579bab9616fee6d1b1a"}, "type": 314}}
+2026-04-21 16:11:36,951 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 16:12:09,907 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:12:09,908 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:12:09,908 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:12:10,977 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=bK2eJ_4Xvf_5f7iz7lbl
+2026-04-21 16:12:10,979 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:12:10,979 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78599bab9616fee2f00ab"}, "type": "E", "stack": "141137.308", "description": "HCl pcl: ok"}}
+2026-04-21 16:12:10,980 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:12:12,324 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93493 | CT=multipart/form-data; boundary=j_vrCJHYglhLGTHHQWfM
+2026-04-21 16:12:12,327 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93065 bytes
+2026-04-21 16:12:12,327 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e785b0bab9616fee7d47be", "content_type": "image/jpeg; charset=UTF-8", "size": 92962, "saved_to": "logs\\raw\\20260421_161212_UNKNOWN_attachment0001_0000_69e785b0bab9616fee7d47be"}
+2026-04-21 16:12:12,328 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e785b0bab9616fee7d47be"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 16:12:12,329 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 16:12:44,912 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:12:44,913 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:12:44,913 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:12:45,980 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=327 | CT=multipart/form-data; boundary=Areb_89pc1hs9hmE43Wp
+2026-04-21 16:12:45,981 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:12:45,981 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e785bcbab9616fee30ae5f"}, "type": "E", "stack": "141212.319", "description": "HCl pcl: ok"}}
+2026-04-21 16:12:45,985 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:13:19,993 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:13:19,994 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:13:19,994 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:13:21,023 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=315 | CT=multipart/form-data; boundary=oiFDw0eg-R2QQsUyxAPu
+2026-04-21 16:13:21,026 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:13:21,027 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e785dfbab9616fee2f75e0"}, "type": "E", "stack": "141247.311", "description": "HCl pcl: ok"}}
+2026-04-21 16:13:21,029 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:13:54,894 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:13:54,895 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:13:54,896 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:13:55,983 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=331 | CT=multipart/form-data; boundary=Rf88PvxIGspjurdmIVKn
+2026-04-21 16:13:55,984 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:13:55,984 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78602bab9616fee387692"}, "type": "E", "stack": "141322.370", "description": "HCl pcl: ok"}}
+2026-04-21 16:13:55,993 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:14:29,886 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:14:29,888 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:14:29,888 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:14:30,861 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=317 | CT=multipart/form-data; boundary=6xsSc2Ugud61e2jyBDCq
+2026-04-21 16:14:30,862 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:14:30,863 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78625bab9616fee306045"}, "type": "E", "stack": "141357.317", "description": "HCl pcl: ok"}}
+2026-04-21 16:14:30,864 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:14:32,071 [INFO] >>> POST /api/online/logs/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=93466 | CT=multipart/form-data; boundary=0URCs7wUc9-ogS4dS4Ga
+2026-04-21 16:14:32,075 [INFO] 📡 EXFIL | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 2 parts | 93053 bytes
+2026-04-21 16:14:32,075 [INFO]    part attachment0001_0000: {"name": "attachment0001_0000", "kind": "binary", "filename": "69e78628bab9616fee7cf9a6", "content_type": "image/jpeg; charset=UTF-8", "size": 92950, "saved_to": "logs\\raw\\20260421_161432_UNKNOWN_attachment0001_0000_69e78628bab9616fee7cf9a6"}
+2026-04-21 16:14:32,076 [INFO]    part log0001: {"name": "log0001", "kind": "json", "data": {"_id": {"$oid": "69e78628bab9616fee7cf9a6"}, "scr": 1, "type": 302, "attach_extra": {"0": {"cap": "Quickstep"}}}}
+2026-04-21 16:14:32,077 [INFO] <<< POST /api/online/logs/ → 200
+2026-04-21 16:15:04,908 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:15:04,910 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:15:04,911 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:15:05,984 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=foPvHe2x2ZqF7XeYn0fa
+2026-04-21 16:15:05,985 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:15:05,985 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e78648bab9616fee2f00b7"}, "type": "E", "stack": "141432.308", "description": "HCl pcl: ok"}}
+2026-04-21 16:15:05,986 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:15:39,894 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:15:39,894 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:15:39,895 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:15:41,271 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=325 | CT=multipart/form-data; boundary=5r6HKXIeAQ7RcS1S-xOY
+2026-04-21 16:15:41,275 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:15:41,275 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7866bbab9616fee306049"}, "type": "E", "stack": "141507.317", "description": "HCl pcl: ok"}}
+2026-04-21 16:15:41,276 [INFO] <<< POST /api/online/exceptionlog/ → 200
+2026-04-21 16:16:14,754 [INFO] >>> POST /api/online/check/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=101 | event=- | CL=0 | CT=application/x-www-form-urlencoded
+2026-04-21 16:16:14,755 [INFO] 💓 HEARTBEAT auth_key=toto:abb921d6fdc84a35 brand=UNKNOWN
+2026-04-21 16:16:14,755 [INFO] <<< POST /api/online/check/ → 200
+2026-04-21 16:16:15,953 [INFO] >>> POST /api/online/exceptionlog/ | brand=UNKNOWN | UA=Android Monitor 7.5.385 | auth=toto:abb921d6fdc84a35 | settings-ver=- | event=- | CL=321 | CT=multipart/form-data; boundary=eFh8IJj4IzZTGKr2-cdT
+2026-04-21 16:16:15,955 [INFO] 🐛 EXCEPTION LOG | brand=UNKNOWN | auth=toto:abb921d6fdc84a35 | 1 parts
+2026-04-21 16:16:15,955 [INFO]    part exception0001: {"name": "exception0001", "json": {"_id": {"$oid": "69e7868ebab9616fee51cafb"}, "type": "E", "stack": "141542.536", "description": "HCl pcl: ok"}}
+2026-04-21 16:16:15,957 [INFO] <<< POST /api/online/exceptionlog/ → 200

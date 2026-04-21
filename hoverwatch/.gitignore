@@ -1,0 +1,6 @@
+*.json
+logs/*
+*.jpeg
+*.jpg
+*.log
+*.jsonl

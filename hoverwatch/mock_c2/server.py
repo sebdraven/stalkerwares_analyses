@@ -128,13 +128,13 @@ def ensure_cert(log_fn=print) -> tuple[Path, Path]:
 # Config
 # ---------------------------------------------------------------------------
 
-# Mock returns a 3-domain list (the app expects "X;Y;Z" format with rotation).
-# In a multi-port setup, replace these with 3 distinct mock instances for
-# failover/rotation testing.
+# Real Hoverwatch C2 domains (decrypted from the APK's DES-obfuscated strings).
+# The lab device's /etc/hosts must resolve these to the mock C2's IP.
+# 3-domain rotation as expected by C0895z.m6657n() — format "X;Y;Z".
 MOCK_DOMAINS = (
-    "https://127.0.0.1:8443/;"
-    "https://127.0.0.1:8443/;"
-    "https://127.0.0.1:8443/"
+    "https://a.syncvch.com:443/;"
+    "https://i1.hoverwatch.com:443/;"
+    "https://hwa.cab:443/"
 )
 
 MOCK_PIN = "1234"
@@ -433,6 +433,28 @@ async def check(request: Request):
     if auth_key in locked_devices:
         log.warning("🔒 LOCKED auth_key=%s (HTTP 401 — app will sync every 720min)", auth_key)
         return Response(status_code=401, content="License locked")
+
+    # Check if settings version has changed — push new settings to app
+    client_settings_ver = request.headers.get("x-settings-ver", "")
+    try:
+        client_ver = int(client_settings_ver) if client_settings_ver else -1
+    except ValueError:
+        client_ver = -1
+    server_ver = DEFAULT_SETTINGS.get("version", SETTINGS_VERSION)
+
+    if server_ver > client_ver:
+        log.info(
+            "⚙️  SETTINGS PUSH on heartbeat | auth=%s | client_ver=%s → server_ver=%d",
+            auth_key, client_settings_ver, server_ver,
+        )
+        return JSONResponse(content={
+            "status": "ok",
+            "auth_key": auth_key,
+            "valid_through": VALID_THROUGH,
+            "subscription": MOCK_SUBSCRIPTION,
+            "domains": MOCK_DOMAINS,
+            "settings": DEFAULT_SETTINGS,
+        })
 
     log.info("💓 HEARTBEAT auth_key=%s brand=%s", auth_key, brand_of(auth_key))
     return Response(status_code=200, content="ok")
