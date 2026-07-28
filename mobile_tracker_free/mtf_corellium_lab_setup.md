@@ -11,7 +11,7 @@
 - Compte Corellium (https://corellium.com) — plan Enterprise ou Individual
 - Le serveur mock C2 (`mtf_c2_server.py`) hébergé sur une machine accessible depuis le cloud Corellium
 - Les APK : dropper v3.9 (`com.mtf.protect`) + payload (`phone.monitor2026`)
-- Un certificat SSL auto-signé (le stalkerware utilise HTTPS mais pas de cert pinning)
+- Un certificat SSL auto-signé **installé dans le system trust store** (MTF utilise le vrai `X509TrustManager.checkServerTrusted()`, contrairement à Hoverwatch qui a un trust-all)
 
 ---
 
@@ -46,8 +46,9 @@
 
 ### 3.1 Créer la VM
 
-- Image : **Android 12 (API 31)** ou **Android 13 (API 33)**
+- Image : **Android 13 (API 33)** ou **Android 14 (API 34)**
   - Le stalkerware cible minSDK 23, targetSDK 34
+  - ⚠️ **API 35+ / Android 15+ casse le payload** (vérifié 21/04/2026 sur API 36)
   - Éviter Android 14+ pour l'instant (restrictions foreground services)
 - Device profile : **Generic ARM** (Pixel 4/5 ou Samsung)
 - **Rooted** : OUI (par défaut sur Corellium)
@@ -60,29 +61,44 @@ Prendre un snapshot **avant** installation du stalkerware :
 Corellium UI → Snapshots → "clean_before_mtf"
 ```
 
-### 3.3 Préparer le réseau — Méthode 1 : /etc/hosts
+### 3.3 Préparer le réseau — Méthode 1 : /etc/hosts + adb reverse
 
-C'est la méthode la plus simple. Via le shell ADB intégré de Corellium :
+Même approche que le lab Hoverwatch. Via le shell root intégré :
 
 ```bash
-# Monter /system en écriture
-adb shell su -c "mount -o rw,remount /system"
-
-# Ajouter les redirections DNS
-adb shell su -c "cat >> /etc/hosts << 'EOF'
+mount -o rw,remount /
+cat >> /etc/hosts << 'EOF'
 # MTF C2 Sinkhole
-<IP_DU_SERVEUR_MOCK>  mobile-track-data.com
-<IP_DU_SERVEUR_MOCK>  mobile-tracker-free.com
-<IP_DU_SERVEUR_MOCK>  tracker-free.com
-<IP_DU_SERVEUR_MOCK>  apkv2.tracker-free.com
-<IP_DU_SERVEUR_MOCK>  appapk.mtf.re
-EOF"
+127.0.0.1 mobile-track-data.com
+127.0.0.1 mobile-tracker-free.com
+127.0.0.1 tracker-free.com
+127.0.0.1 apkv2.tracker-free.com
+127.0.0.1 appapk.mtf.re
+# Block Firebase/FCM leak
+127.0.0.1 fcm.googleapis.com
+127.0.0.1 firebaseinstallations.googleapis.com
+127.0.0.1 firebaselogging-pa.googleapis.com
+127.0.0.1 firebase-settings.crashlytics.com
+127.0.0.1 android.clients.google.com
+127.0.0.1 mtalk.google.com
+127.0.0.1 alt1-mtalk.google.com
+127.0.0.1 alt2-mtalk.google.com
+127.0.0.1 alt3-mtalk.google.com
+127.0.0.1 alt4-mtalk.google.com
+127.0.0.1 alt5-mtalk.google.com
+127.0.0.1 alt6-mtalk.google.com
+127.0.0.1 alt7-mtalk.google.com
+127.0.0.1 alt8-mtalk.google.com
+EOF
+mount -o ro,remount /
 
-# Vérifier
-adb shell cat /etc/hosts
+# Port forwarding : 443 → 8443 (le mock écoute sur 8443)
+iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 443 -j REDIRECT --to-port 8443
+```
 
-# Remonter en lecture seule
-adb shell su -c "mount -o ro,remount /system"
+Côté PC (PowerShell) :
+```powershell
+adb reverse tcp:8443 tcp:8443
 ```
 
 ### 3.4 Préparer le réseau — Méthode 2 : Proxy MITM (mitmproxy)
@@ -118,42 +134,44 @@ VM → Network → Monitor → Start Capture
 
 ---
 
-## 4. Installation du certificat SSL
+## 4. Installation du certificat SSL (OBLIGATOIRE)
 
-Le stalkerware attend du HTTPS. Notre mock server doit servir en HTTPS avec un cert que la VM accepte.
+⚠️ **Contrairement à Hoverwatch** (qui a un `TrustManager` trust-all, cf. `C0740d.verify() → return true`), MTF utilise le vrai `X509TrustManagerExtensions.checkServerTrusted()` (classe `p000.C0467m4`). Le cert self-signé du mock C2 **DOIT** être installé dans le system trust store Android, sinon le TLS handshake échoue silencieusement et aucune requête n'atteint le mock.
 
-### 4.1 Générer un certificat auto-signé
+### 4.1 Générer le certificat (automatique au premier lancement)
 
-```bash
-# Sur le serveur mock
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem \
-  -sha256 -days 365 -nodes \
-  -subj "/CN=mobile-track-data.com" \
-  -addext "subjectAltName=DNS:mobile-track-data.com,DNS:mobile-tracker-free.com,DNS:tracker-free.com,DNS:apkv2.tracker-free.com,DNS:appapk.mtf.re"
+Le mock C2 génère `mock.crt` + `mock.key` automatiquement au premier lancement. Le SAN couvre `localhost`, `mobile-track-data.com`, `127.0.0.1`, `10.11.1.1`, `10.0.2.2`.
+
+### 4.2 Installer dans le system trust store (root)
+
+Côté PowerShell :
+```powershell
+adb push mock.crt /sdcard/mock.crt
 ```
 
-### 4.2 Installer le CA dans la VM (system-level, root)
-
+Sur le device (shell root) :
 ```bash
-# Convertir au format Android
-openssl x509 -inform PEM -in cert.pem -outform DER -out cert.der
-HASH=$(openssl x509 -inform PEM -subject_hash_old -in cert.pem | head -1)
-
-# Pousser dans le system trust store
-adb push cert.pem /sdcard/${HASH}.0
-adb shell su -c "mount -o rw,remount /system"
-adb shell su -c "cp /sdcard/${HASH}.0 /system/etc/security/cacerts/"
-adb shell su -c "chmod 644 /system/etc/security/cacerts/${HASH}.0"
-adb shell su -c "mount -o ro,remount /system"
-
-# Reboot pour prise en compte
-adb reboot
+HASH=$(openssl x509 -inform PEM -subject_hash_old -in /sdcard/mock.crt | head -1)
+echo "Hash: $HASH"
+mount -o rw,remount /
+cp /sdcard/mock.crt /system/etc/security/cacerts/${HASH}.0
+chmod 644 /system/etc/security/cacerts/${HASH}.0
+mount -o ro,remount /
 ```
 
-### 4.3 Lancer le mock server en HTTPS
-
+Vérification :
 ```bash
-python mtf_c2_server.py --port 443 --ssl --cert cert.pem --key key.pem
+ls -la /system/etc/security/cacerts/${HASH}.0
+curl -v https://mobile-track-data.com:443/ 2>&1 | head -20
+# Doit afficher le contenu sans erreur SSL (pas besoin de -k)
+```
+
+### 4.3 Lancer le mock server
+
+Côté PowerShell :
+```powershell
+cd C:\Users\sebdr\workspace\stalkerwares_analyses\mobile_tracker_free
+uv run python mtf_c2_server.py
 ```
 
 ---

@@ -4,7 +4,7 @@
     "mtf_payload_v39_arm_20260409_160800.apk"
   ],
   "treeExpansionsV2": [
-    "t:JResources"
+    "t:JResources//lib//armeabi-v7a"
   ],
   "codeData": {
     "comments": [],
@@ -15,10 +15,25 @@
       "type": "resource",
       "tabPath": "AndroidManifest.xml",
       "subPath": "",
-      "caret": 16809,
+      "caret": 0,
       "view": {
         "x": 0,
-        "y": 6666
+        "y": 0
+      },
+      "active": false,
+      "pinned": false,
+      "bookmarked": false,
+      "hidden": false,
+      "previewTab": false
+    },
+    {
+      "type": "resource",
+      "tabPath": "DebugProbesKt.bin",
+      "subPath": "",
+      "caret": 0,
+      "view": {
+        "x": 0,
+        "y": 0
       },
       "active": true,
       "pinned": false,

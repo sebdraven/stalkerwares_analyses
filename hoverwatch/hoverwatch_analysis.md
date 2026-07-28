@@ -17,6 +17,7 @@
 > - v3 — 2026-04-20 (après-midi) : décryption batch des 13 strings DES (canary `"refog"` in-binary, YouTube Kids caché), kill switch `C0744c`, format exfil multipart Apache HttpClient (PAS protobuf), schéma BDD IM `mpk_events`, flow `ActivityInstaller` (11 fragments / 18 modules togglables), correction confusion `user_type` JSON vs brand code URL
 > - v4 — 2026-04-21 (matin) : analyse dynamique Corellium, système de camouflage 8-déguisements (§23), setup lab Corellium + mock C2 (§24), zéro anti-VM confirmé, mapping noms réels JADX→manifest
 > - v5 — 2026-04-21 (après-midi) : diagnostic démarrage ServiceCore, bug `MOCK_DOMAINS` double port (§25), traçage complet du flow d'initialisation C2 — seed in-binary → registration → domain override, exfiltration live confirmée (logs + selfie), mécanisme de push settings via heartbeat + commandes ServiceCore (§26)
+> - v6 — 2026-05-05 : cross-install device fingerprinting — mécanisme de persistance d'identification post-désinstall via fichier `/sdcard/dev_<model>` contenant l'ANDROID_ID, envoyé au C2 dans le champ `hid` (§27). IOC forensique post-uninstall. Bypass pour pipeline de test
 
 ---
 
@@ -145,7 +146,7 @@ Le flag `f6028x` est une constante `final static` positionnée par le build vari
 {
   "username": "<email_acheteur>",
   "password": "<password_acheteur>",
-  "hid": "and:<device_hardware_id>",
+  "hid": "and:<device_hardware_id>",   // cf. §27 — ANDROID_ID persisté sur sdcard
   "device_name": "<modele_telephone>",
   "client_ver": "7.5.369",
   "os_ver": "<android_version>",
@@ -955,6 +956,7 @@ CREATE TABLE mpk_cell_location (
 | 10 | Keylogger via AccessibilityService | **HAUTE** | Capture de tous les mots de passe saisis |
 | 11 | Caméra frontale silencieuse (module 319) | **HAUTE** | Photos de la victime à son insu |
 | 12 | Configuration modules à distance | **HAUTE** | L'abuseur active/désactive la surveillance sans accès physique |
+| 13 | Persistance d'identifiant cross-install via fichier sdcard (`/sdcard/dev_<model>`) | **HAUTE** | Le C2 reconnaît le device même après désinstallation ; IOC forensique post-uninstall ; le fichier contient l'ANDROID_ID en clair |
 
 ---
 
@@ -1614,6 +1616,114 @@ Confirmé fonctionnel le 21/04/2026 sur Corellium (Android 16, Hoverwatch 7.5.38
 
 ---
 
+## 27. Cross-install device fingerprinting — persistance d'identification post-désinstall (v6 — 2026-05-05)
+
+### 27.1 Découverte
+
+Lors de tests dynamiques sur Pixel 7 avec le vrai C2 Hoverwatch : après désinstallation d'un premier sample et installation d'un second, le serveur C2 refuse l'enrollment avec un message "device already recorded". Un factory reset du device permet le ré-enrollment. Comportement incompatible avec un fingerprinting basé sur l'IMEI (inchangeable sur Pixel 7, donc le factory reset n'aurait rien résolu).
+
+### 27.2 Mécanisme identifié — `C0884o.m6430y()`
+
+La méthode `m6430y()` (classe utilitaire `p094hw.utils.C0884o`) implémente un **double mécanisme de persistance d'identifiant** :
+
+```java
+public static String m6430y() {
+    // 1. Cherche un fichier sur le stockage partagé ("sdcard")
+    File file = new File(Environment.getExternalStorageDirectory()
+        + File.separator + "dev_" + Build.MODEL);  // ex: /sdcard/dev_Pixel 7
+    if (file.exists()) {
+        string = C0887r.m6493n(file);               // lit l'ID depuis le fichier
+        log("mpk", " SaID " + string);              // "Saved ID"
+    } else {
+        // 2. Première install : génère l'ID
+        string = Settings.Secure.getString(resolver, "android_id");
+        if (isEmpty(string)) string = timestamp();   // fallback
+        log("mpk", " SV ID" + string);              // "Save ID"
+        C0887r.m6475O(file, string);                 // persiste sur sdcard
+    }
+    return string;
+}
+```
+
+Cette valeur est envoyée au C2 dans le champ `"hid": "and:<valeur>"` du payload de registration (cf. §3.3).
+
+### 27.3 Cycle de vie de l'identifiant
+
+| Événement | Fichier `/sdcard/dev_<model>` | `ANDROID_ID` | `hid` envoyé au C2 | Résultat enrollment |
+|---|---|---|---|---|
+| **Premier install** | ❌ n'existe pas | Valeur A | Lit ANDROID_ID → écrit fichier → `"and:A"` | ✅ Nouveau device |
+| **Désinstall** | ✅ survit (sdcard non wipé) | Valeur A (inchangé) | — | — |
+| **Réinstall (même device)** | ✅ existe → lit valeur A | Ignoré (fichier prioritaire) | `"and:A"` | ❌ "already recorded" |
+| **Factory reset** | ❌ wipé (sdcard effacé) | Valeur B (regénéré) | Lit ANDROID_ID → écrit fichier → `"and:B"` | ✅ Nouveau device |
+| **Suppression manuelle du fichier** | ❌ supprimé par `rm` | Valeur A (inchangé) | Lit ANDROID_ID → écrit fichier → `"and:A"` | ⚠️ Dépend si le serveur a purgé l'ancien record |
+
+### 27.4 Pourquoi ça fonctionne sur Pixel 7 (sans carte SD physique)
+
+`Environment.getExternalStorageDirectory()` ne désigne **pas** une carte SD physique. C'est le **stockage partagé émulé** (`/storage/emulated/0/` = `/sdcard/`), présent sur tous les devices Android, y compris ceux sans slot SD comme le Pixel 7.
+
+La distinction pertinente :
+- `/data/data/<pkg>/` → stockage **privé** de l'app → **wipé à la désinstall**
+- `/sdcard/` (= `/storage/emulated/0/`) → stockage **partagé** → **pas wipé à la désinstall**, mais wipé au factory reset
+
+Le flag `android:requestLegacyExternalStorage="true"` dans le manifest (cf. §1) permet à Hoverwatch d'accéder au sdcard root en mode legacy (contournement de Scoped Storage Android 10+), précisément pour cette opération de persistance.
+
+### 27.5 IOC forensique
+
+Sur un device suspecté compromis par Hoverwatch (ou Snoopza, même codebase) :
+
+```bash
+# Détection — même après désinstallation de l'app
+adb shell ls -la /sdcard/dev_*
+
+# Exemple de résultat positif :
+-rw-rw---- 1 u0_a123 sdcard_rw 16 2026-04-15 14:32 /sdcard/dev_Pixel 7
+
+# Contenu = ANDROID_ID utilisé lors de l'enrollment
+adb shell cat "/sdcard/dev_Pixel 7"
+# → ex: a1b2c3d4e5f6g7h8
+```
+
+**Valeur forensique** :
+- La **présence** du fichier `dev_*` prouve qu'un stalkerware Refog (Hoverwatch/Snoopza) a été installé sur le device, **même si l'app a été désinstallée**
+- Le **contenu** (ANDROID_ID) permet de corréler avec les logs C2 si saisis
+- Le **timestamp de création** (`stat`) donne la date approximative de première infection
+- Le **nom du fichier** contient le `Build.MODEL` → confirmation du device cible
+
+### 27.6 Bypass pour pipeline d'analyse
+
+Pour les tests dynamiques sur banc de test, au lieu d'un factory reset entre chaque sample :
+
+```bash
+# Supprimer le fichier de persistance
+adb shell rm "/sdcard/dev_$(adb shell getprop ro.product.model)"
+
+# Vérifier
+adb shell ls /sdcard/dev_*
+# ls: /sdcard/dev_*: No such file or directory
+
+# Réinstaller le sample → enrollment OK
+```
+
+À scripter dans le pipeline ASTRA/stalkerware pour reset automatique entre les runs.
+
+### 27.7 Analyse comparative avec d'autres familles
+
+| Famille | Clé de fingerprinting C2 | Survit désinstall | Survit factory reset |
+|---|---|---|---|
+| **Hoverwatch/Snoopza** | ANDROID_ID persisté sur sdcard (`/sdcard/dev_<model>`) | ✅ Oui | ❌ Non |
+| Mobile Tracker Free | À déterminer (probablement ANDROID_ID ou UUID SharedPrefs) | À tester | À tester |
+| mSpy/Brainstack | À déterminer | À tester | À tester |
+
+→ Pattern à systématiser dans le pipeline d'analyse : pour chaque famille, documenter le mécanisme de fingerprinting C2 et sa persistance cross-install.
+
+### 27.8 Implications pour les victimes
+
+1. **La désinstallation ne suffit pas** : le fichier `/sdcard/dev_*` reste et permet au C2 Refog de tracker le device même après nettoyage apparent
+2. **Un factory reset est le seul nettoyage complet** sur ce vecteur (mais attention aux autres vecteurs de persistance : comptes Google, backups cloud, etc.)
+3. **Pour les accompagnant·e·s (CSIRT, associations)** : ajouter `ls /sdcard/dev_*` au checklist de triage forensique rapide — c'est un IOC post-désinstall rare et très spécifique à l'écosystème Refog
+
+---
+
 ## 19. TODO
 
 ### Terminé
@@ -1656,6 +1766,7 @@ Confirmé fonctionnel le 21/04/2026 sur Corellium (Android 16, Hoverwatch 7.5.38
   - support des deux brands (header `X-Auth-Key`, path `programversion/{HWA|SNPA}/`)
   - **fix v5** : `MOCK_DOMAINS` remplacé par vrais domaines C2 (`a.syncvch.com`, `i1.hoverwatch.com`, `hwa.cab`) — l'ancien `127.0.0.1:8443` causait un double port après normalisation `m6675w()` → zéro heartbeat post-registration
   - tests Suricata/Snort signatures
+- [x] **Cross-install device fingerprinting** — mécanisme identifié : ANDROID_ID persisté dans `/sdcard/dev_<Build.MODEL>` via `C0884o.m6430y()`, envoyé au C2 dans le champ `hid`. Survit à la désinstall (sdcard non wipé), dégage au factory reset (sdcard + ANDROID_ID regénérés). IOC forensique : `ls /sdcard/dev_*`. Bypass pour tests : `rm /sdcard/dev_*` — v6 (cf. §27)
 - [ ] **Passive DNS / certs TLS** sur les 6 domaines C2 (`a.syncvch.com`, `i1.hoverwatch.com`, `hwa.cab`, `snsync.com`, `app.snoopza.com`, `api.snoopza.com`) — corrélation infra Snoopza↔Hoverwatch via Validin/SecurityTrails/DomainTools
 - [ ] **PR upstream AssoEchap/stalkerware-indicators** avec les 4 nouveaux IOCs (`a.syncvch.com`, `hwa.cab`, `snsync.com`, `app.snoopza.com`) + clarifier sous-domaines partiels (`i1.hoverwatch.com`, `api.snoopza.com`)
 - [ ] **Rule YARA** basée sur le canary `"refog"` déchiffrable + ternaire `"SNPA":"HWA_TST":"HWA"` dans `C0737a` — signature Refog ecosystem
