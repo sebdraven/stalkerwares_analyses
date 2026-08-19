@@ -180,49 +180,80 @@ curl -X POST "https://localhost:8443/admin/cmd/raw" -k \
     -d '<IKMService><RequestType>test</RequestType><Camera><Enable>1</Enable><Type>back</Type></Camera></IKMService>'
 ```
 
+---
+
 ## Inspection
 
 ```bash
-# Status : devices connectés, nombre de WS, données exfiltrées
+# Status : devices (avec version détectée), WS, exfil, versions supportées
 curl https://localhost:8443/admin/status -k
 
-# Dernières données exfiltrées
+# Exfil — toutes, ou filtrées par action canonique
 curl "https://localhost:8443/admin/exfiltrated?limit=20" -k
+curl "https://localhost:8443/admin/exfiltrated/by_type/upload_keystrokes?limit=20" -k
 
-# Crypto : chiffrer/déchiffrer 3DES
+# Mapping des endpoints (aliases + canoniques + dossiers)
+curl https://localhost:8443/admin/endpoints -k
+
+# Crypto : 3DES + signature RTMP
 curl "https://localhost:8443/admin/crypto/encrypt?plaintext=test" -k
 curl "https://localhost:8443/admin/crypto/decrypt?ciphertext=..." -k
-
-# Générer signature RTMP
 curl "https://localhost:8443/admin/crypto/rtmp_sign?device_id=DEADBEEF" -k
 ```
+
+`/admin/status` renseigne `version` par device et `supported_versions:
+["v17.4","v19.1"]`.
+
+---
+
+## Données exfiltrées
+
+Uploads binaires sauvés dans `uploads/`, JSON/texte des requêtes dans `logs/c2.log` :
+
+```
+uploads/
+├── photos/        screenshots/     video/       surrounding/
+├── chat_img/      call_img/        audio/
+├── keystrokes/    chats/           web_history/
+├── gps/           calls/           clipboard/
+├── contacts/      calendar/        wifi/
+├── debug/         crash_logs/      (debug + weekly crash — v19.1)
+└── misc/          (fallback)
+```
+
+---
+
+## Crypto (identique v17.4 / v19.1)
+
+- **3DES/ECB** : clé `ccc707d2924768f2cc12bc8b` — chiffre/signe les requêtes
+  (hex → base64), classe `p128r.C3443z` (v17.4) / `p185u.AbstractC4687z` (v19.1)
+- **RTMP sign** : `MD5("/live/" + device_id + "-" + timestamp + "-" + secret)`,
+  secret `C4hgdA%Qc5UHfqEho&Ke`
+- **Pas de SSL pinning** — MITM trivial
+
+---
+
+## IOC réseau utiles
+
+| IOC | Portée |
+|---|---|
+| URL pattern `index.php?m=api&a=` | cross-version |
+| WebSocket `<IKMService>` | cross-version |
+| HealthCheck `<ThreerdPartySecurityapps>` (typo « Threerd ») | cross-version, fiable |
+| User-Agent WS `com.ab.ikm.portal.request` | cross-version |
+| `a=uoload_keystrokes` | **v17.4 uniquement** |
+| `a=upload_keystrokes` | **v19.1+** |
+| Package `...im20210815` / `...a20251031` | discrimine la version |
+
+---
 
 ## Fichiers
 
 | Fichier | Description |
 |---|---|
-| `server.py` | Serveur FastAPI (REST + WebSocket + admin) |
-| `ikeymonitor_hook.js` | Hooks Frida (13 hooks : crypto, WS, REST, keylogger, RTMP) |
-| `gen_cert.py` | Générateur de certificat TLS avec SAN |
-| `pyproject.toml` | Dépendances (fastapi, uvicorn, websockets, pycryptodome) |
-
-## Données exfiltrées
-
-Les uploads binaires sont sauvegardés dans `uploads/` :
-```
-uploads/
-├── photos/
-├── screenshots/
-├── audio/
-├── video/
-├── chat_img/
-└── call_img/
-```
-
-Les logs textuels sont dans `logs/c2.log`.
-
-## Crypto
-
-- **3DES/ECB** : clé `ccc707d2924768f2cc12bc8b` — signature des requêtes
-- **RTMP sign** : `MD5("/live/" + device_id + "-" + timestamp + "-" + secret)` avec secret `C4hgdA%Qc5UHfqEho&Ke`
-- **Pas de SSL pinning** — MITM trivial
+| `server.py` | Serveur FastAPI cross-version (REST + WebSocket + admin + crypto) |
+| `ikeymonitor_hook.js` | Hooks Frida v17.4 |
+| `ikeymonitor_v19.1_hook.js` | Hooks Frida v19.1 (package + classes obfusquées) |
+| `gen_cert.py` | Générateur de certificat TLS avec SAN (aussi auto-généré par `server.py`) |
+| `test_client.py` | Client de test du protocole (sans device) |
+| `pyproject.toml` | Dépendances (fastapi, uvicorn, websockets, pycryptodome, cryptography) |
