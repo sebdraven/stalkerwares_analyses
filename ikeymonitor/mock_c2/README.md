@@ -1,35 +1,67 @@
-# iKeyMonitor v17.4 — Mock C2 Server
+# iKeyMonitor v17.4 + v19.1 — Mock C2 Server
 
-Mock C2 pour l'analyse en lab de l'APK iKeyMonitor Android.
-Dual-canal : REST API + WebSocket + support RTMP.
+Mock C2 pour l'analyse en lab de l'APK iKeyMonitor Android, **cross-version** :
+un seul serveur gère à la fois la **v17.4** (endpoints avec typos `uoload`) et la
+**v19.1** (endpoints corrigés/renommés), en normalisant les anciens noms vers la
+forme canonique v19.1.
 
-> **Research use only** — ASTRA / stalkerware analysis project.
+Dual-canal : REST API + WebSocket, avec support RTMP pour le screen streaming.
+
+> **Research use only** — ASTRA / LHS-LORIA.
+
+Analyse delta des deux versions : `../ikeymonitor_v19.1_delta.md`.
+
+---
+
+## Ce qui change entre v17.4 et v19.1 (et ce qui ne change pas)
+
+| Aspect | v17.4 | v19.1 | Côté mock |
+|---|---|---|---|
+| Endpoints REST | 25 (5 typos `uoload`) | 28 (typos corrigées + renommages) | **normalisés par alias** |
+| Cibles chat | 9 apps | 15 (+WhatsApp Business, Gmail, Instagram, Skype, TikTok, X) | app-side, transparent |
+| GPP bypass | présent | étendu à 15 langues | app-side, transparent |
+| Package name | `com.sec.android.internet.im.service.im20210815` | `com.android.internet.a20251031` | hook Frida distinct |
+| Crypto 3DES | clé `ccc707d2924768f2cc12bc8b` | **identique** | — |
+| Secret RTMP | `C4hgdA%Qc5UHfqEho&Ke` | **identique** | — |
+| WebSocket XML | `<IKMService>` | **identique** | — |
+| C2 infra | `ikmws.awsapi.io` + 4 mirrors | **identique** | — |
+
+Les « +6 cibles chat » et le « GPP bypass 15 langues » sont des comportements
+**app-side** (interception locale / anti-détection) : ils ne se traduisent pas par
+des endpoints serveur, donc rien à faire côté mock. Ce qui touche le serveur, c'est
+uniquement le **jeu d'endpoints**, géré par normalisation.
+
+---
 
 ## Quickstart
 
 ```bash
-# 1. Installer les dépendances
 uv sync
 
-# 2. Générer le certificat TLS (SAN pour *.awsapi.io)
-uv run python gen_cert.py
+# HTTPS :8443 — génère cert.pem + key.pem au premier lancement
+uv run python server.py
 
-# 3. Lancer le serveur
-uv run uvicorn server:app --host 0.0.0.0 --port 8443 \
-    --ssl-keyfile key.pem --ssl-certfile cert.pem
+# Variantes
+uv run python server.py --http          # HTTP :8080 (debug, sans TLS)
+uv run python server.py --regen-cert    # force un nouveau certificat
 
-# 4. (Optionnel) Serveur RTMP pour le screen streaming
+# (Optionnel) serveur RTMP pour le screen streaming
 # docker run -d -p 1935:1935 tiangolo/nginx-rtmp
 ```
 
+Le cert self-signé couvre `localhost`, `127.0.0.1`, `10.11.1.1`, `10.0.2.2`
+et les 5 domaines C2 iKM dans le SAN. **Pas de SSL pinning** côté app (trust
+user + system certs) → MITM trivial, mais le cert doit être installé comme
+certificat utilisateur sur le device.
+
+---
+
 ## Setup device de test
 
-### DNS redirect
-
-Sur le device (ou dans le routeur/DNS du lab) :
+### DNS redirect (5 domaines, identiques aux deux versions)
 
 ```
-# /etc/hosts ou équivalent
+# /etc/hosts ou DNS du lab
 192.168.X.X  ikmws.awsapi.io
 192.168.X.X  ikmws-mirror.awsapi.io
 192.168.X.X  ikm-sv2.awsapi.io
