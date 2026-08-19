@@ -71,71 +71,108 @@ certificat utilisateur sur le device.
 
 ### Certificat
 
-Installer `cert.pem` comme certificat utilisateur sur le device Android.
-L'APK trust les certificats user (pas de pinning).
+Installer `cert.pem` comme certificat **utilisateur** (pas besoin du system store :
+iKM trust les user certs).
 
-### Frida
+### Frida — hook selon la version
 
 ```bash
+# v17.4
 frida -U -f com.sec.android.internet.im.service.im20210815 \
     -l ikeymonitor_hook.js --no-pause
+
+# v19.1 (package + classes obfusquées différents)
+frida -U -f com.android.internet.a20251031 \
+    -l ikeymonitor_v19.1_hook.js --no-pause
 ```
+
+---
 
 ## Architecture
 
 ```
 ┌──────────────┐     REST (HTTPS)      ┌─────────────────┐
-│              │  ──────────────────▶   │                 │
-│  APK iKM     │     /index.php?       │  Mock C2 Server │
-│  v17.4       │     m=api&a={action}  │  (FastAPI)      │
+│  APK iKM     │  ──────────────────▶   │  Mock C2 Server │
+│  v17.4 /     │   /index.php?         │  (FastAPI)      │
+│  v19.1       │   m=api&a={action}    │  :8443          │
 │              │  ◀──────────────────  │                 │
-│              │     XML response      │  :8443          │
-│              │                       │                 │
-│              │     WebSocket (WSS)   │  /ws            │
-│              │  ◀────────────────▶   │                 │
+│              │     XML response      │  normalisation  │
+│              │                       │  alias → v19.1  │
+│              │     WebSocket (WSS)   │                 │
+│              │  ◀────────────────▶   │  /ws            │
 │              │     XML commands      │                 │
-│              │                       ├─────────────────┤
-│              │     RTMP stream       │  Admin API      │
-│              │  ──────────────────▶  │  /admin/*       │
-└──────────────┘     :1935             └─────────────────┘
+│              │     RTMP stream       ├─────────────────┤
+│              │  ──────────────────▶  │  Admin API      │
+└──────────────┘     :1935             │  /admin/*       │
+                                       └─────────────────┘
 ```
+
+Le serveur détecte la version (`detect_version()`) à partir du package/namespace
+présent dans les requêtes, la mémorise par device, et **route toujours vers le
+handler canonique v19.1** après passage par la table d'alias.
+
+---
 
 ## Endpoints REST
 
 Tous sous `/index.php?m=api&a={action}`.
 
-### Contrôle
-| Action | Description |
+### Contrôle & auth (10)
+
+| Action | Description | Version |
+|---|---|---|
+| `register` | Enregistrement device | v17.4+ |
+| `account` | Validation licence | v17.4+ |
+| `cycle` | Heartbeat (~5 min) — peut porter des commandes embarquées | v17.4+ |
+| `get_settings` / `set_settings` | Config distante | v17.4+ |
+| `get_websocket_address` | URL du WebSocket | v17.4+ |
+| `check_update` / `download_update` | MAJ APK | v17.4+ |
+| `reset_password` | Reset credentials | **v19.1** |
+| `schedule_surround` | Planification enregistrement ambiant | **v19.1** |
+
+### Exfiltration (18 canoniques v19.1)
+
+`upload_keystrokes`, `upload_chat_logs`, `upload_website_history`,
+`upload_call_history`, `upload_gps_history`, `upload_chat_img`, `upload_call_img`,
+`upload_wifi`, `upload_clipboard`, `upload_photo`, `upload_video`,
+`upload_screenvideo`, `upload_surrounding`, `upload_contact`, `upload_calendar`,
+`upload_screenshot`, `upload_debug_logs` *(v19.1)*, `upload_weekly_crash_logs` *(v19.1)*.
+
+### Table de normalisation v17.4 → v19.1
+
+| Reçu (v17.4) | Normalisé (canonique v19.1) |
 |---|---|
-| `register` | Enregistrement device |
-| `account` | Validation licence |
-| `cycle` | Heartbeat (toutes les ~5 min) |
-| `get_settings` / `set_settings` | Config distante |
-| `get_websocket_address` | URL du WebSocket |
-| `check_update` / `download_update` | MAJ APK |
+| `uoload_keystrokes` | `upload_keystrokes` |
+| `uoload_chat_logs` | `upload_chat_logs` |
+| `uoload_website_history` | `upload_website_history` |
+| `uoload_call_history` | `upload_call_history` |
+| `uoload_gps_history` | `upload_gps_history` |
+| `surrounding` | `upload_surrounding` |
+| `contact` | `upload_contact` |
+| `calendar` | `upload_calendar` |
+| `get_screenshot` | `upload_screenshot` |
+| `upload_Wifi` | `upload_wifi` |
 
-### Exfiltration (25 endpoints)
-`uoload_keystrokes`, `uoload_chat_logs`, `uoload_website_history`,
-`uoload_call_history`, `uoload_gps_history`, `upload_chat_img`,
-`upload_call_img`, `upload_Wifi`, `upload_clipboard`, `upload_photo`,
-`upload_video`, `upload_screenvideo`, `contact`, `calendar`,
-`surrounding`, `get_screenshot`, etc.
+Les deux formes sont acceptées : une trace réseau v17.4 comme v19.1 aboutit au
+même handler. `GET /admin/endpoints` renvoie cette table + la liste canonique.
 
-Note : les typos `uoload` sont dans l'APK originale (IOC fingerprint).
+---
 
 ## Commandes WebSocket (via Admin API)
 
+Protocole XML `<IKMService>` **inchangé** entre les deux versions.
+
 ```bash
-# Capture photo (front/back)
+# Photo (front/back)
 curl -X POST "https://localhost:8443/admin/cmd/camera?camera_type=front" -k
 
-# Capture d'écran
+# Screenshot
 curl -X POST "https://localhost:8443/admin/cmd/screenshot" -k
 
 # Stream écran RTMP (start/stop)
 curl -X POST "https://localhost:8443/admin/cmd/screenstream?enable=1" -k
 
-# Enregistrement ambiant (60 secondes)
+# Enregistrement ambiant (60 s)
 curl -X POST "https://localhost:8443/admin/cmd/surrounding?enable=1&duration=60" -k
 
 # Commande XML arbitraire
