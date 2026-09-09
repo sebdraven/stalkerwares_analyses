@@ -1,0 +1,15 @@
+# Fichier de travail Claude Code — ne pas versionner
+CLAUDE.md
+
+# TLS — cert regénéré au premier lancement
+cert.pem
+key.pem
+
+# Données de session — uploads et logs de lab
+logs/
+uploads/
+
+# Artefacts Python / uv
+__pycache__/
+*.pyc
+.python-version
