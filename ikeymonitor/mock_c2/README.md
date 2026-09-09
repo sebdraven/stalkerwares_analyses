@@ -26,64 +26,252 @@ Analyse delta des deux versions : `../ikeymonitor_v19.1_delta.md`.
 | WebSocket XML | `<IKMService>` | **identique** | — |
 | C2 infra | `ikmws.awsapi.io` + 4 mirrors | **identique** | — |
 
-Les « +6 cibles chat » et le « GPP bypass 15 langues » sont des comportements
-**app-side** (interception locale / anti-détection) : ils ne se traduisent pas par
-des endpoints serveur, donc rien à faire côté mock. Ce qui touche le serveur, c'est
-uniquement le **jeu d'endpoints**, géré par normalisation.
-
 ---
 
-## Quickstart
+## Lancement rapide
 
 ```bash
 uv sync
 
-# HTTPS :8443 — génère cert.pem + key.pem au premier lancement
+# HTTPS :8443 (défaut) — génère cert.pem + key.pem au premier lancement
 uv run python server.py
 
-# Variantes
-uv run python server.py --http          # HTTP :8080 (debug, sans TLS)
-uv run python server.py --regen-cert    # force un nouveau certificat
+# HTTP :8080 — debug, sans TLS
+uv run python server.py --http
 
-# (Optionnel) serveur RTMP pour le screen streaming
-# docker run -d -p 1935:1935 tiangolo/nginx-rtmp
+# Forcer un nouveau certificat
+uv run python server.py --regen-cert
+
+# Port custom
+uv run python server.py --port 9443
 ```
-
-Le cert self-signé couvre `localhost`, `127.0.0.1`, `10.11.1.1`, `10.0.2.2`
-et les 5 domaines C2 iKM dans le SAN. **Pas de SSL pinning** côté app (trust
-user + system certs) → MITM trivial, mais le cert doit être installé comme
-certificat utilisateur sur le device.
 
 ---
 
-## Setup device de test
+## Setup lab complet (Corellium)
 
-### DNS redirect (5 domaines, identiques aux deux versions)
-
-```
-# /etc/hosts ou DNS du lab
-192.168.X.X  ikmws.awsapi.io
-192.168.X.X  ikmws-mirror.awsapi.io
-192.168.X.X  ikm-sv2.awsapi.io
-192.168.X.X  ikm-sv3.awsapi.io
-192.168.X.X  ikm-sv4.awsapi.io
-```
-
-### Certificat
-
-Installer `cert.pem` comme certificat **utilisateur** (pas besoin du system store :
-iKM trust les user certs).
-
-### Frida — hook selon la version
+### 1. Lancer le serveur mock
 
 ```bash
+cd ikeymonitor/mock_c2
+uv sync
+uv run python server.py
+```
+
+Au premier lancement, `cert.pem` et `key.pem` sont générés automatiquement.
+Le SAN couvre `localhost`, `127.0.0.1`, `10.11.1.1`, `10.0.2.2`
+et les 5 domaines C2 iKeyMonitor — pas besoin de regénérer.
+
+### 2. Récupérer l'IP de la machine qui héberge le mock
+
+```bash
+# macOS
+ipconfig getifaddr en0
+```
+
+On appelle cette IP `<MOCK_IP>` dans la suite.
+
+### 3. Rediriger le DNS dans Corellium
+
+Dans l'interface Corellium, **Network > DNS** (ou via le profil réseau du device),
+ajouter des entrées pour les 5 domaines C2 :
+
+```
+<MOCK_IP>  ikmws.awsapi.io
+<MOCK_IP>  ikmws-mirror.awsapi.io
+<MOCK_IP>  ikm-sv2.awsapi.io
+<MOCK_IP>  ikm-sv3.awsapi.io
+<MOCK_IP>  ikm-sv4.awsapi.io
+```
+
+Alternative si le DNS Corellium n'est pas accessible : utiliser un serveur DNS local
+(dnsmasq ou similaire) pointé sur `<MOCK_IP>` pour ces domaines.
+
+### 4. Installer le certificat sur le device virtuel
+
+Récupérer `cert.pem` depuis `mock_c2/cert.pem` et l'installer sur le device Android
+Corellium comme **certificat utilisateur** :
+
+```bash
+# Pousser via ADB (Corellium expose un ADB bridge)
+adb push cert.pem /sdcard/ikm_mock.pem
+```
+
+Ensuite sur le device :
+**Paramètres → Sécurité → Chiffrement et identifiants → Installer un certificat
+→ Certificat CA → sélectionner `ikm_mock.pem`**
+
+iKeyMonitor trust les user certs (pas de SSL pinning) — pas besoin du system store.
+
+### 5. Vérifier la redirection DNS
+
+Depuis le device (via ADB shell ou terminal Corellium) :
+
+```bash
+nslookup ikmws.awsapi.io
+# doit retourner <MOCK_IP>
+```
+
+Et vérifier que le mock répond :
+
+```bash
+curl -k https://ikmws.awsapi.io:8443/index.php?m=api&a=register
+# doit retourner un XML <IKMService>
+```
+
+### 6. Lancer les hooks Frida
+
+```bash
+# Frida server doit tourner sur le device (Corellium le fournit en général)
+
 # v17.4
 frida -U -f com.sec.android.internet.im.service.im20210815 \
     -l ikeymonitor_hook.js --no-pause
 
-# v19.1 (package + classes obfusquées différents)
+# v19.1
 frida -U -f com.android.internet.a20251031 \
     -l ikeymonitor_v19.1_hook.js --no-pause
+```
+
+### 7. Lancer l'APK
+
+Démarrer iKeyMonitor depuis Corellium. Observer :
+- Les logs du mock C2 (`logs/c2.log` ou stdout).
+- Les logs Frida dans le terminal.
+
+Le device doit s'enregistrer (action `register`) puis démarrer le cycle heartbeat
+(action `cycle` toutes les ~5 min).
+
+### 8. (Optionnel) RTMP pour le screen streaming
+
+```bash
+docker run -d -p 1935:1935 tiangolo/nginx-rtmp
+```
+
+L'APK push vers `rtmp://<MOCK_IP>/<device_id>?sign=<ts>-<md5>`.
+Le serveur mock fournit la signature via `/admin/crypto/rtmp_sign`.
+
+---
+
+## Vérification du bon fonctionnement
+
+### Vérifier que le serveur tourne
+
+```bash
+curl -k https://localhost:8443/admin/status
+```
+
+Réponse attendue :
+```json
+{
+  "devices": [],
+  "ws_connections": 0,
+  "exfiltrated_count": 0,
+  "command_queue": 0,
+  "supported_versions": ["v17.4", "v19.1"]
+}
+```
+
+### Simuler un device (sans APK)
+
+```bash
+uv run python test_client.py --host 127.0.0.1 --port 8443
+```
+
+Doit afficher : `register → 200`, `cycle → 200`, connexion WS + handshake `onConnect`.
+
+### Vérifier qu'un device est connecté
+
+```bash
+curl -k https://localhost:8443/admin/status | python3 -m json.tool
+```
+
+Le champ `devices` doit lister le device avec `version`, `first_seen`, `last_seen`.
+
+---
+
+## Commandes temps réel (WebSocket via Admin API)
+
+Une fois un device connecté :
+
+```bash
+# Capture photo (front / back)
+curl -k -X POST "https://localhost:8443/admin/cmd/camera?camera_type=front"
+curl -k -X POST "https://localhost:8443/admin/cmd/camera?camera_type=back"
+
+# Screenshot
+curl -k -X POST "https://localhost:8443/admin/cmd/screenshot"
+
+# Screen streaming RTMP (start / stop)
+curl -k -X POST "https://localhost:8443/admin/cmd/screenstream?enable=1"
+curl -k -X POST "https://localhost:8443/admin/cmd/screenstream?enable=0"
+
+# Enregistrement ambiant (durée en secondes)
+curl -k -X POST "https://localhost:8443/admin/cmd/surrounding?enable=1&duration=60"
+curl -k -X POST "https://localhost:8443/admin/cmd/surrounding?enable=0"
+
+# Commande XML brute
+curl -k -X POST "https://localhost:8443/admin/cmd/raw" \
+    -d '<IKMService><RequestType>camera_snap</RequestType><RequestId>1</RequestId><Camera><Enable>1</Enable><Type>front</Type></Camera></IKMService>'
+```
+
+---
+
+## Inspection des données exfiltrées
+
+```bash
+# Toutes les exfiltrations (50 dernières)
+curl -k "https://localhost:8443/admin/exfiltrated?limit=50"
+
+# Filtrer par type
+curl -k "https://localhost:8443/admin/exfiltrated/by_type/upload_keystrokes"
+curl -k "https://localhost:8443/admin/exfiltrated/by_type/upload_gps_history"
+curl -k "https://localhost:8443/admin/exfiltrated/by_type/upload_chat_logs"
+
+# Mapping endpoints (aliases v17.4 → v19.1)
+curl -k "https://localhost:8443/admin/endpoints"
+
+# Export de session complet
+curl -k "https://localhost:8443/admin/session/export"
+```
+
+Les fichiers bruts sont dans `uploads/` :
+
+```
+uploads/
+├── photos/         # upload_photo
+├── screenshots/    # upload_screenshot
+├── video/          # upload_video, upload_screenvideo
+├── surrounding/    # upload_surrounding
+├── chat_img/       # upload_chat_img
+├── call_img/       # upload_call_img
+├── keystrokes/     # upload_keystrokes
+├── chats/          # upload_chat_logs
+├── gps/            # upload_gps_history
+├── calls/          # upload_call_history
+├── web_history/    # upload_website_history
+├── clipboard/      # upload_clipboard
+├── contacts/       # upload_contact
+├── calendar/       # upload_calendar
+├── wifi/           # upload_wifi
+├── debug/          # upload_debug_logs
+├── crash_logs/     # upload_weekly_crash_logs
+└── misc/           # fallback (actions inconnues)
+```
+
+---
+
+## Outils crypto
+
+```bash
+# Chiffrer une chaîne avec la clé 3DES iKM
+curl -k "https://localhost:8443/admin/crypto/encrypt?plaintext=TEST-LICENSE-001"
+
+# Déchiffrer
+curl -k "https://localhost:8443/admin/crypto/decrypt?ciphertext=<base64>"
+
+# Calculer la signature RTMP pour un device
+curl -k "https://localhost:8443/admin/crypto/rtmp_sign?device_id=AA:BB:CC:DD:EE:FF"
 ```
 
 ---
@@ -91,155 +279,37 @@ frida -U -f com.android.internet.a20251031 \
 ## Architecture
 
 ```
-┌──────────────┐     REST (HTTPS)      ┌─────────────────┐
-│  APK iKM     │  ──────────────────▶   │  Mock C2 Server │
-│  v17.4 /     │   /index.php?         │  (FastAPI)      │
-│  v19.1       │   m=api&a={action}    │  :8443          │
-│              │  ◀──────────────────  │                 │
-│              │     XML response      │  normalisation  │
-│              │                       │  alias → v19.1  │
-│              │     WebSocket (WSS)   │                 │
-│              │  ◀────────────────▶   │  /ws            │
-│              │     XML commands      │                 │
-│              │     RTMP stream       ├─────────────────┤
-│              │  ──────────────────▶  │  Admin API      │
-└──────────────┘     :1935             │  /admin/*       │
-                                       └─────────────────┘
-```
-
-Le serveur détecte la version (`detect_version()`) à partir du package/namespace
-présent dans les requêtes, la mémorise par device, et **route toujours vers le
-handler canonique v19.1** après passage par la table d'alias.
-
----
-
-## Endpoints REST
-
-Tous sous `/index.php?m=api&a={action}`.
-
-### Contrôle & auth (10)
-
-| Action | Description | Version |
-|---|---|---|
-| `register` | Enregistrement device | v17.4+ |
-| `account` | Validation licence | v17.4+ |
-| `cycle` | Heartbeat (~5 min) — peut porter des commandes embarquées | v17.4+ |
-| `get_settings` / `set_settings` | Config distante | v17.4+ |
-| `get_websocket_address` | URL du WebSocket | v17.4+ |
-| `check_update` / `download_update` | MAJ APK | v17.4+ |
-| `reset_password` | Reset credentials | **v19.1** |
-| `schedule_surround` | Planification enregistrement ambiant | **v19.1** |
-
-### Exfiltration (18 canoniques v19.1)
-
-`upload_keystrokes`, `upload_chat_logs`, `upload_website_history`,
-`upload_call_history`, `upload_gps_history`, `upload_chat_img`, `upload_call_img`,
-`upload_wifi`, `upload_clipboard`, `upload_photo`, `upload_video`,
-`upload_screenvideo`, `upload_surrounding`, `upload_contact`, `upload_calendar`,
-`upload_screenshot`, `upload_debug_logs` *(v19.1)*, `upload_weekly_crash_logs` *(v19.1)*.
-
-### Table de normalisation v17.4 → v19.1
-
-| Reçu (v17.4) | Normalisé (canonique v19.1) |
-|---|---|
-| `uoload_keystrokes` | `upload_keystrokes` |
-| `uoload_chat_logs` | `upload_chat_logs` |
-| `uoload_website_history` | `upload_website_history` |
-| `uoload_call_history` | `upload_call_history` |
-| `uoload_gps_history` | `upload_gps_history` |
-| `surrounding` | `upload_surrounding` |
-| `contact` | `upload_contact` |
-| `calendar` | `upload_calendar` |
-| `get_screenshot` | `upload_screenshot` |
-| `upload_Wifi` | `upload_wifi` |
-
-Les deux formes sont acceptées : une trace réseau v17.4 comme v19.1 aboutit au
-même handler. `GET /admin/endpoints` renvoie cette table + la liste canonique.
-
----
-
-## Commandes WebSocket (via Admin API)
-
-Protocole XML `<IKMService>` **inchangé** entre les deux versions.
-
-```bash
-# Photo (front/back)
-curl -X POST "https://localhost:8443/admin/cmd/camera?camera_type=front" -k
-
-# Screenshot
-curl -X POST "https://localhost:8443/admin/cmd/screenshot" -k
-
-# Stream écran RTMP (start/stop)
-curl -X POST "https://localhost:8443/admin/cmd/screenstream?enable=1" -k
-
-# Enregistrement ambiant (60 s)
-curl -X POST "https://localhost:8443/admin/cmd/surrounding?enable=1&duration=60" -k
-
-# Commande XML arbitraire
-curl -X POST "https://localhost:8443/admin/cmd/raw" -k \
-    -d '<IKMService><RequestType>test</RequestType><Camera><Enable>1</Enable><Type>back</Type></Camera></IKMService>'
+┌──────────────┐     REST (HTTPS :8443)    ┌─────────────────┐
+│  APK iKM     │  ─── /index.php? ───────▶  │  Mock C2 Server │
+│  v17.4 /     │      m=api&a={action}     │  (FastAPI)      │
+│  v19.1       │  ◀── XML response ──────  │                 │
+│              │                           │  alias table    │
+│              │     WebSocket (WSS :8443) │  v17.4 → v19.1  │
+│              │  ◀──── /ws ──────────────▶│                 │
+│              │       XML commands        │  Admin API      │
+│              │                           │  /admin/*       │
+│              │     RTMP (:1935)          │                 │
+│              │  ──── screen stream ────▶  └─────────────────┘
+└──────────────┘
 ```
 
 ---
 
-## Inspection
+## Crypto
 
-```bash
-# Status : devices (avec version détectée), WS, exfil, versions supportées
-curl https://localhost:8443/admin/status -k
-
-# Exfil — toutes, ou filtrées par action canonique
-curl "https://localhost:8443/admin/exfiltrated?limit=20" -k
-curl "https://localhost:8443/admin/exfiltrated/by_type/upload_keystrokes?limit=20" -k
-
-# Mapping des endpoints (aliases + canoniques + dossiers)
-curl https://localhost:8443/admin/endpoints -k
-
-# Crypto : 3DES + signature RTMP
-curl "https://localhost:8443/admin/crypto/encrypt?plaintext=test" -k
-curl "https://localhost:8443/admin/crypto/decrypt?ciphertext=..." -k
-curl "https://localhost:8443/admin/crypto/rtmp_sign?device_id=DEADBEEF" -k
-```
-
-`/admin/status` renseigne `version` par device et `supported_versions:
-["v17.4","v19.1"]`.
+- **3DES/ECB/PKCS5** — clé hardcodée `ccc707d2924768f2cc12bc8b` (24 octets)
+- **Signature RTMP** — `MD5("/live/" + device_id + "-" + ts + "-" + secret)`, secret `C4hgdA%Qc5UHfqEho&Ke`
+- **Pas de SSL pinning** — user certs acceptés nativement par iKM
 
 ---
 
-## Données exfiltrées
-
-Uploads binaires sauvés dans `uploads/`, JSON/texte des requêtes dans `logs/c2.log` :
-
-```
-uploads/
-├── photos/        screenshots/     video/       surrounding/
-├── chat_img/      call_img/        audio/
-├── keystrokes/    chats/           web_history/
-├── gps/           calls/           clipboard/
-├── contacts/      calendar/        wifi/
-├── debug/         crash_logs/      (debug + weekly crash — v19.1)
-└── misc/          (fallback)
-```
-
----
-
-## Crypto (identique v17.4 / v19.1)
-
-- **3DES/ECB** : clé `ccc707d2924768f2cc12bc8b` — chiffre/signe les requêtes
-  (hex → base64), classe `p128r.C3443z` (v17.4) / `p185u.AbstractC4687z` (v19.1)
-- **RTMP sign** : `MD5("/live/" + device_id + "-" + timestamp + "-" + secret)`,
-  secret `C4hgdA%Qc5UHfqEho&Ke`
-- **Pas de SSL pinning** — MITM trivial
-
----
-
-## IOC réseau utiles
+## IOC réseau
 
 | IOC | Portée |
 |---|---|
-| URL pattern `index.php?m=api&a=` | cross-version |
-| WebSocket `<IKMService>` | cross-version |
-| HealthCheck `<ThreerdPartySecurityapps>` (typo « Threerd ») | cross-version, fiable |
+| URL `index.php?m=api&a=` | cross-version |
+| XML WebSocket `<IKMService>` | cross-version |
+| HealthCheck `<ThreerdPartySecurityapps>` (typo) | cross-version, fiable |
 | User-Agent WS `com.ab.ikm.portal.request` | cross-version |
 | `a=uoload_keystrokes` | **v17.4 uniquement** |
 | `a=upload_keystrokes` | **v19.1+** |
@@ -251,9 +321,9 @@ uploads/
 
 | Fichier | Description |
 |---|---|
-| `server.py` | Serveur FastAPI cross-version (REST + WebSocket + admin + crypto) |
-| `ikeymonitor_hook.js` | Hooks Frida v17.4 |
-| `ikeymonitor_v19.1_hook.js` | Hooks Frida v19.1 (package + classes obfusquées) |
-| `gen_cert.py` | Générateur de certificat TLS avec SAN (aussi auto-généré par `server.py`) |
-| `test_client.py` | Client de test du protocole (sans device) |
-| `pyproject.toml` | Dépendances (fastapi, uvicorn, websockets, pycryptodome, cryptography) |
+| `server.py` | Serveur FastAPI cross-version (REST + WebSocket + Admin + crypto) |
+| `test_client.py` | Client de test — simule le protocole APK sans device |
+| `ikeymonitor_hook.js` | Hooks Frida — v17.4 |
+| `ikeymonitor_v19.1_hook.js` | Hooks Frida — v19.1 (classes obfusquées) |
+| `gen_cert.py` | Générateur de cert TLS standalone (aussi intégré dans `server.py`) |
+| `pyproject.toml` | Dépendances Python (fastapi, uvicorn, websockets, pycryptodome, cryptography) |
