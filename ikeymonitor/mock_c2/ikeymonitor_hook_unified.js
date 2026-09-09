@@ -19,7 +19,7 @@
  *   - Construction URL REST (action + body)
  *   - RTMP sign
  *
- * Research use only — ASTRA / LHS-LORIA.
+ * Research use only.
  */
 
 'use strict';
@@ -253,7 +253,7 @@ function hookRTMP() {
 
 Java.perform(function() {
     log('INIT', '═══════════════════════════════════════════════');
-    log('INIT', '  iKeyMonitor Unified Hook — ASTRA/LHS-LORIA');
+    log('INIT', '  iKeyMonitor Unified Hook');
     log('INIT', '═══════════════════════════════════════════════');
 
     VERSION = detectVersion();

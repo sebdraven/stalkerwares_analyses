@@ -1,6 +1,6 @@
 # Rapport d'Analyse Forensique — iKeyMonitor Android v17.4
 
-**Analyste :** Sébastien Larinier — ASTRA/LHS-LORIA  
+**Analyste :** Sébastien Larinier  
 **Date :** 2026-04-20  
 **Sample :** `Ikeymonitor-Android_from_Panel.apk`  
 **Package :** `com.sec.android.internet.im.service.im20210815`  

@@ -14,7 +14,7 @@ Usage:
     uv run python server.py --http       # HTTP :8080 (debug)
     uv run python server.py --regen-cert # force nouveau cert
 
-Research use only — ASTRA/LHS-LORIA stalkerware analysis project.
+Research use only.
 """
 
 import argparse
@@ -72,7 +72,7 @@ def ensure_cert(log_fn=print) -> tuple[Path, Path]:
 
     subject = issuer = x509.Name([
         x509.NameAttribute(NameOID.COUNTRY_NAME, "FR"),
-        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "ASTRA LORIA (research)"),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Mock C2 (research)"),
         x509.NameAttribute(NameOID.COMMON_NAME, "ikmws.awsapi.io"),
     ])
 
@@ -130,7 +130,7 @@ def ensure_cert(log_fn=print) -> tuple[Path, Path]:
 TDES_KEY = b"ccc707d2924768f2cc12bc8b"
 RTMP_SECRET = "C4hgdA%Qc5UHfqEho&Ke"
 MOCK_UNIT_ID = "MSIK-ONLINE-MOCK001"
-MOCK_LICENSE = "MOCK-LICENSE-ASTRA-2026"
+MOCK_LICENSE = "MOCK-LICENSE-2026"
 
 LOG_DIR = Path("logs")
 UPLOAD_DIR = Path("uploads")
