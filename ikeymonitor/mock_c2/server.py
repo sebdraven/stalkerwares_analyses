@@ -454,19 +454,19 @@ async def _handle_account(request, body, entry, client, action):
 
 
 async def _handle_cycle(request, body, entry, client, action):
-    """Heartbeat — §5: dépile command_queue dans la réponse, §7: forced_ret."""
-    extra = ""
+    """Heartbeat — §5: dépile command_queue dans la réponse, §7: forced_ret.
+    Embarque aussi les tags de config serveur (websocket_address + LoginStatus)
+    que l'APK lit via x.u.a() pour (re)piloter la connexion WSS.
+    """
+    extra = _server_config_tags(request)
 
     # §5 — embarquer les commandes en queue dans la réponse cycle
-    queued = []
-    remaining = []
-    for cmd in command_queue:
-        queued.append(cmd)
+    queued = list(command_queue)
     command_queue.clear()
     for cmd in queued:
         extra += cmd
 
-    # §7 — code de retour forcé
+    # §7 — code de retour forcé (kill/reset/reauth)
     ret = "500"
     if client in devices and devices[client].get("forced_ret"):
         ret = devices[client]["forced_ret"]
