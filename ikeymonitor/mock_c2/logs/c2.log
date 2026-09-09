@@ -17,3 +17,250 @@
 2026-04-20 22:08:47,201 [INFO] WS recv: <IKMService><Client>AA:BB:CC:DD:EE:FF</Client><License>TEST-LICENSE-001</License><WSTimeStamp>1776715727</WSTimeStamp></IKMService>
 2026-04-20 22:08:47,201 [INFO] WS: client=AA:BB:CC:DD:EE:FF license=TEST-LICENSE-001 ret= type=
 2026-04-20 22:08:52,223 [INFO] WebSocket disconnected (remaining: 0)
+2026-09-09 10:37:32,487 [INFO] 
+════════════════════════════════════════════════════════════
+  iKeyMonitor Mock C2 Server v3.0.0 (v17.4 + v19.1)
+════════════════════════════════════════════════════════════
+2026-09-09 10:37:32,858 [INFO] 🔐 Generating self-signed cert (first run)…
+2026-09-09 10:37:32,918 [INFO]    ✅ cert.pem + key.pem (valid 1y)
+2026-09-09 10:37:32,918 [INFO] 🔐 HTTPS — https://0.0.0.0:8443/
+2026-09-09 11:01:38,280 [INFO] 
+════════════════════════════════════════════════════════════
+  iKeyMonitor Mock C2 Server v3.0.0 (v17.4 + v19.1)
+════════════════════════════════════════════════════════════
+2026-09-09 11:01:38,295 [INFO] 🔐 Generating self-signed cert (first run)…
+2026-09-09 11:01:38,341 [INFO]    ✅ cert.pem + key.pem (valid 1y)
+2026-09-09 11:01:38,341 [INFO] 🔐 HTTPS — https://0.0.0.0:8443/
+2026-09-09 11:03:38,370 [INFO] 
+════════════════════════════════════════════════════════════
+  iKeyMonitor Mock C2 Server v3.0.0 (v17.4 + v19.1)
+════════════════════════════════════════════════════════════
+2026-09-09 11:03:38,370 [INFO] 🔒 Reusing existing cert: cert.pem
+2026-09-09 11:03:38,370 [INFO] 🔐 HTTPS — https://0.0.0.0:8443/
+2026-09-09 11:55:33,345 [INFO] >>> [register] from 127.0.0.1 (214 bytes) [v19.1]
+2026-09-09 11:55:33,350 [INFO]     saved 214 bytes -> uploads/misc/1788947733345_020000000000_register.bin
+2026-09-09 11:55:33,350 [INFO] REGISTER device: 020000000000 -> Ret=300 (licence acceptée)
+2026-09-09 12:00:49,726 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:00:49,727 [INFO]     saved 491 bytes -> uploads/misc/1788948049726_020000000000_cycle.bin
+2026-09-09 12:00:49,727 [INFO] CYCLE from 020000000000
+2026-09-09 12:00:49,766 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:00:49,768 [INFO]     saved 491 bytes -> uploads/misc/1788948049766_020000000000_cycle.bin
+2026-09-09 12:00:49,768 [INFO] CYCLE from 020000000000
+2026-09-09 12:00:49,807 [INFO] >>> [check_update] from 127.0.0.1 (403 bytes) [v19.1]
+2026-09-09 12:00:49,808 [INFO]     saved 403 bytes -> uploads/misc/1788948049807_020000000000_check_update.bin
+2026-09-09 12:00:49,808 [INFO] CHECK_UPDATE: 020000000000
+2026-09-09 12:00:49,860 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:00:49,861 [INFO]     saved 260 bytes -> uploads/misc/1788948049860_020000000000_schedule_surround.bin
+2026-09-09 12:00:49,861 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:00:49,899 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:00:49,900 [INFO]     saved 260 bytes -> uploads/misc/1788948049899_020000000000_schedule_surround.bin
+2026-09-09 12:00:49,900 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:03:00,905 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:03:00,906 [INFO]     saved 510 bytes -> uploads/misc/1788948180905_020000000000_cycle.bin
+2026-09-09 12:03:00,907 [INFO] CYCLE from 020000000000
+2026-09-09 12:03:01,002 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:03:01,003 [INFO]     saved 279 bytes -> uploads/misc/1788948181002_020000000000_schedule_surround.bin
+2026-09-09 12:03:01,003 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:05:12,152 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:05:12,153 [INFO]     saved 510 bytes -> uploads/misc/1788948312152_020000000000_cycle.bin
+2026-09-09 12:05:12,154 [INFO] CYCLE from 020000000000
+2026-09-09 12:05:12,248 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:05:12,249 [INFO]     saved 279 bytes -> uploads/misc/1788948312248_020000000000_schedule_surround.bin
+2026-09-09 12:05:12,249 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:08:03,564 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:08:03,564 [INFO]     saved 491 bytes -> uploads/misc/1788948483563_020000000000_cycle.bin
+2026-09-09 12:08:03,565 [INFO] CYCLE from 020000000000
+2026-09-09 12:08:03,644 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:08:03,645 [INFO]     saved 491 bytes -> uploads/misc/1788948483644_020000000000_cycle.bin
+2026-09-09 12:08:03,645 [INFO] CYCLE from 020000000000
+2026-09-09 12:08:03,699 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:08:03,699 [INFO]     saved 260 bytes -> uploads/misc/1788948483699_020000000000_schedule_surround.bin
+2026-09-09 12:08:03,699 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:08:03,779 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:08:03,780 [INFO]     saved 260 bytes -> uploads/misc/1788948483779_020000000000_schedule_surround.bin
+2026-09-09 12:08:03,780 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:10:55,200 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:10:55,203 [INFO]     saved 491 bytes -> uploads/misc/1788948655200_020000000000_cycle.bin
+2026-09-09 12:10:55,203 [INFO] CYCLE from 020000000000
+2026-09-09 12:10:55,284 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:10:55,286 [INFO]     saved 491 bytes -> uploads/misc/1788948655284_020000000000_cycle.bin
+2026-09-09 12:10:55,286 [INFO] CYCLE from 020000000000
+2026-09-09 12:10:55,338 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:10:55,339 [INFO]     saved 260 bytes -> uploads/misc/1788948655338_020000000000_schedule_surround.bin
+2026-09-09 12:10:55,339 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:10:55,421 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:10:55,422 [INFO]     saved 260 bytes -> uploads/misc/1788948655421_020000000000_schedule_surround.bin
+2026-09-09 12:10:55,422 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:15:17,022 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:15:17,022 [INFO]     saved 491 bytes -> uploads/misc/1788948917022_020000000000_cycle.bin
+2026-09-09 12:15:17,023 [INFO] CYCLE from 020000000000
+2026-09-09 12:15:17,068 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:15:17,069 [INFO]     saved 491 bytes -> uploads/misc/1788948917068_020000000000_cycle.bin
+2026-09-09 12:15:17,069 [INFO] CYCLE from 020000000000
+2026-09-09 12:15:17,117 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:15:17,118 [INFO]     saved 260 bytes -> uploads/misc/1788948917117_020000000000_schedule_surround.bin
+2026-09-09 12:15:17,118 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:15:17,161 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:15:17,162 [INFO]     saved 260 bytes -> uploads/misc/1788948917161_020000000000_schedule_surround.bin
+2026-09-09 12:15:17,162 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:17:28,205 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:17:28,207 [INFO]     saved 510 bytes -> uploads/misc/1788949048205_020000000000_cycle.bin
+2026-09-09 12:17:28,207 [INFO] CYCLE from 020000000000
+2026-09-09 12:17:28,300 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:17:28,301 [INFO]     saved 279 bytes -> uploads/misc/1788949048300_020000000000_schedule_surround.bin
+2026-09-09 12:17:28,301 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:19:39,461 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:19:39,462 [INFO]     saved 510 bytes -> uploads/misc/1788949179461_020000000000_cycle.bin
+2026-09-09 12:19:39,462 [INFO] CYCLE from 020000000000
+2026-09-09 12:19:39,557 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:19:39,560 [INFO]     saved 279 bytes -> uploads/misc/1788949179557_020000000000_schedule_surround.bin
+2026-09-09 12:19:39,560 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:21:50,780 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:21:50,781 [INFO]     saved 510 bytes -> uploads/misc/1788949310780_020000000000_cycle.bin
+2026-09-09 12:21:50,781 [INFO] CYCLE from 020000000000
+2026-09-09 12:21:50,876 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:21:50,877 [INFO]     saved 279 bytes -> uploads/misc/1788949310876_020000000000_schedule_surround.bin
+2026-09-09 12:21:50,878 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:24:14,270 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:24:14,271 [INFO]     saved 510 bytes -> uploads/misc/1788949454270_020000000000_cycle.bin
+2026-09-09 12:24:14,271 [INFO] CYCLE from 020000000000
+2026-09-09 12:24:14,436 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:24:14,437 [INFO]     saved 279 bytes -> uploads/misc/1788949454436_020000000000_schedule_surround.bin
+2026-09-09 12:24:14,437 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:26:25,602 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:26:25,604 [INFO]     saved 510 bytes -> uploads/misc/1788949585602_020000000000_cycle.bin
+2026-09-09 12:26:25,604 [INFO] CYCLE from 020000000000
+2026-09-09 12:26:25,698 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:26:25,699 [INFO]     saved 279 bytes -> uploads/misc/1788949585698_020000000000_schedule_surround.bin
+2026-09-09 12:26:25,699 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:28:36,871 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:28:36,872 [INFO]     saved 510 bytes -> uploads/misc/1788949716871_020000000000_cycle.bin
+2026-09-09 12:28:36,873 [INFO] CYCLE from 020000000000
+2026-09-09 12:28:36,967 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:28:36,968 [INFO]     saved 279 bytes -> uploads/misc/1788949716967_020000000000_schedule_surround.bin
+2026-09-09 12:28:36,968 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:30:32,268 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:30:32,269 [INFO]     saved 491 bytes -> uploads/misc/1788949832268_020000000000_cycle.bin
+2026-09-09 12:30:32,269 [INFO] CYCLE from 020000000000
+2026-09-09 12:30:32,312 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:30:32,313 [INFO]     saved 491 bytes -> uploads/misc/1788949832312_020000000000_cycle.bin
+2026-09-09 12:30:32,313 [INFO] CYCLE from 020000000000
+2026-09-09 12:30:32,362 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:30:32,363 [INFO]     saved 260 bytes -> uploads/misc/1788949832362_020000000000_schedule_surround.bin
+2026-09-09 12:30:32,364 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:30:32,459 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:30:32,460 [INFO]     saved 260 bytes -> uploads/misc/1788949832459_020000000000_schedule_surround.bin
+2026-09-09 12:30:32,460 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:32:43,462 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:32:43,463 [INFO]     saved 510 bytes -> uploads/misc/1788949963462_020000000000_cycle.bin
+2026-09-09 12:32:43,463 [INFO] CYCLE from 020000000000
+2026-09-09 12:32:43,559 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:32:43,560 [INFO]     saved 279 bytes -> uploads/misc/1788949963559_020000000000_schedule_surround.bin
+2026-09-09 12:32:43,560 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:34:54,717 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:34:54,718 [INFO]     saved 510 bytes -> uploads/misc/1788950094717_020000000000_cycle.bin
+2026-09-09 12:34:54,718 [INFO] CYCLE from 020000000000
+2026-09-09 12:34:54,811 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:34:54,811 [INFO]     saved 279 bytes -> uploads/misc/1788950094811_020000000000_schedule_surround.bin
+2026-09-09 12:34:54,812 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:37:05,969 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:37:05,973 [INFO]     saved 510 bytes -> uploads/misc/1788950225969_020000000000_cycle.bin
+2026-09-09 12:37:05,973 [INFO] CYCLE from 020000000000
+2026-09-09 12:37:06,069 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:37:06,069 [INFO]     saved 279 bytes -> uploads/misc/1788950226069_020000000000_schedule_surround.bin
+2026-09-09 12:37:06,070 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:39:12,834 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:39:12,835 [INFO]     saved 491 bytes -> uploads/misc/1788950352834_020000000000_cycle.bin
+2026-09-09 12:39:12,835 [INFO] CYCLE from 020000000000
+2026-09-09 12:39:12,928 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:39:12,929 [INFO]     saved 491 bytes -> uploads/misc/1788950352928_020000000000_cycle.bin
+2026-09-09 12:39:12,929 [INFO] CYCLE from 020000000000
+2026-09-09 12:39:12,968 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:39:12,969 [INFO]     saved 260 bytes -> uploads/misc/1788950352968_020000000000_schedule_surround.bin
+2026-09-09 12:39:12,969 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:39:13,024 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:39:13,024 [INFO]     saved 260 bytes -> uploads/misc/1788950353024_020000000000_schedule_surround.bin
+2026-09-09 12:39:13,025 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:41:24,017 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:41:24,018 [INFO]     saved 510 bytes -> uploads/misc/1788950484017_020000000000_cycle.bin
+2026-09-09 12:41:24,018 [INFO] CYCLE from 020000000000
+2026-09-09 12:41:24,111 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:41:24,112 [INFO]     saved 279 bytes -> uploads/misc/1788950484111_020000000000_schedule_surround.bin
+2026-09-09 12:41:24,112 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:42:55,156 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:42:55,157 [INFO]     saved 491 bytes -> uploads/misc/1788950575156_020000000000_cycle.bin
+2026-09-09 12:42:55,157 [INFO] CYCLE from 020000000000
+2026-09-09 12:42:55,205 [INFO] >>> [cycle] from 127.0.0.1 (491 bytes) [v19.1]
+2026-09-09 12:42:55,206 [INFO]     saved 491 bytes -> uploads/misc/1788950575205_020000000000_cycle.bin
+2026-09-09 12:42:55,206 [INFO] CYCLE from 020000000000
+2026-09-09 12:42:55,251 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:42:55,252 [INFO]     saved 260 bytes -> uploads/misc/1788950575251_020000000000_schedule_surround.bin
+2026-09-09 12:42:55,253 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:42:55,299 [INFO] >>> [schedule_surround] from 127.0.0.1 (260 bytes) [v19.1]
+2026-09-09 12:42:55,300 [INFO]     saved 260 bytes -> uploads/misc/1788950575299_020000000000_schedule_surround.bin
+2026-09-09 12:42:55,300 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:45:06,376 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:45:06,377 [INFO]     saved 510 bytes -> uploads/misc/1788950706376_020000000000_cycle.bin
+2026-09-09 12:45:06,377 [INFO] CYCLE from 020000000000
+2026-09-09 12:45:06,509 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:45:06,510 [INFO]     saved 279 bytes -> uploads/misc/1788950706509_020000000000_schedule_surround.bin
+2026-09-09 12:45:06,510 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:47:17,560 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:47:17,562 [INFO]     saved 510 bytes -> uploads/misc/1788950837560_020000000000_cycle.bin
+2026-09-09 12:47:17,562 [INFO] CYCLE from 020000000000
+2026-09-09 12:47:17,655 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:47:17,655 [INFO]     saved 279 bytes -> uploads/misc/1788950837655_020000000000_schedule_surround.bin
+2026-09-09 12:47:17,655 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:49:28,808 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:49:28,809 [INFO]     saved 510 bytes -> uploads/misc/1788950968808_020000000000_cycle.bin
+2026-09-09 12:49:28,809 [INFO] CYCLE from 020000000000
+2026-09-09 12:49:28,902 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:49:28,903 [INFO]     saved 279 bytes -> uploads/misc/1788950968902_020000000000_schedule_surround.bin
+2026-09-09 12:49:28,903 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:51:40,055 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:51:40,056 [INFO]     saved 510 bytes -> uploads/misc/1788951100055_020000000000_cycle.bin
+2026-09-09 12:51:40,056 [INFO] CYCLE from 020000000000
+2026-09-09 12:51:40,149 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:51:40,150 [INFO]     saved 279 bytes -> uploads/misc/1788951100149_020000000000_schedule_surround.bin
+2026-09-09 12:51:40,150 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:53:51,305 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:53:51,306 [INFO]     saved 510 bytes -> uploads/misc/1788951231304_020000000000_cycle.bin
+2026-09-09 12:53:51,306 [INFO] CYCLE from 020000000000
+2026-09-09 12:53:51,399 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:53:51,400 [INFO]     saved 279 bytes -> uploads/misc/1788951231399_020000000000_schedule_surround.bin
+2026-09-09 12:53:51,401 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:54:04,421 [INFO] >>> [get_websocket_address] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:54:04,422 [INFO]     saved 510 bytes -> uploads/misc/1788951244421_020000000000_get_websocket_address.bin
+2026-09-09 12:54:04,422 [INFO] WS_ADDRESS requested by 020000000000 -> wss://ikmws.awsapi.io/ws
+2026-09-09 12:54:04,844 [INFO] WebSocket connected (anon, total ws: 1)
+2026-09-09 12:54:04,846 [INFO] Sent onConnect handshake
+2026-09-09 12:54:04,939 [INFO] WS recv: <IKMService><RequestType>screen_video</RequestType><RequestId></RequestId><Ret>1</Ret><Logstype>5</Logstype><Client>020000000000</Client><License>MOCK-LICENSE-2026</License><WSTimeStamp>1788951244</WSTimeStamp></IKMService>
+2026-09-09 12:54:04,940 [INFO] WS identified: client=020000000000
+2026-09-09 12:54:04,940 [INFO] WS: client=020000000000 license_plain=? ret=1 type=screen_video
+2026-09-09 12:54:05,071 [INFO] WS recv: <IKMService><License>MOCK-LICENSE-2026</License><Logstype>1</Logstype><Client>020000000000</Client><Body></Body><Ret>1</Ret><WSTimeStamp>1788951244</WSTimeStamp></IKMService>
+2026-09-09 12:54:05,071 [INFO] WS: client=020000000000 license_plain=? ret=1 type=
+2026-09-09 12:56:02,585 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:56:02,586 [INFO]     saved 510 bytes -> uploads/misc/1788951362585_020000000000_cycle.bin
+2026-09-09 12:56:02,586 [INFO] CYCLE from 020000000000
+2026-09-09 12:56:02,680 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:56:02,681 [INFO]     saved 279 bytes -> uploads/misc/1788951362680_020000000000_schedule_surround.bin
+2026-09-09 12:56:02,681 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 12:58:13,846 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 12:58:13,848 [INFO]     saved 510 bytes -> uploads/misc/1788951493846_020000000000_cycle.bin
+2026-09-09 12:58:13,848 [INFO] CYCLE from 020000000000
+2026-09-09 12:58:13,942 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 12:58:13,943 [INFO]     saved 279 bytes -> uploads/misc/1788951493942_020000000000_schedule_surround.bin
+2026-09-09 12:58:13,943 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 13:00:25,123 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 13:00:25,124 [INFO]     saved 510 bytes -> uploads/misc/1788951625123_020000000000_cycle.bin
+2026-09-09 13:00:25,124 [INFO] CYCLE from 020000000000
+2026-09-09 13:00:25,218 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 13:00:25,219 [INFO]     saved 279 bytes -> uploads/misc/1788951625218_020000000000_schedule_surround.bin
+2026-09-09 13:00:25,219 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 13:02:36,353 [INFO] >>> [cycle] from 127.0.0.1 (510 bytes) [v19.1]
+2026-09-09 13:02:36,355 [INFO]     saved 510 bytes -> uploads/misc/1788951756353_020000000000_cycle.bin
+2026-09-09 13:02:36,355 [INFO] CYCLE from 020000000000
+2026-09-09 13:02:36,488 [INFO] >>> [schedule_surround] from 127.0.0.1 (279 bytes) [v19.1]
+2026-09-09 13:02:36,489 [INFO]     saved 279 bytes -> uploads/misc/1788951756488_020000000000_schedule_surround.bin
+2026-09-09 13:02:36,489 [INFO] UNKNOWN action [schedule_surround] from 020000000000
+2026-09-09 13:02:47,563 [INFO] WebSocket disconnected: 020000000000
