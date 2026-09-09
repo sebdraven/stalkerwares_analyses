@@ -444,8 +444,15 @@ async def api_router(request: Request, m: str = Query("api"), a: str = Query("")
 # --- Handlers ---
 
 async def _handle_register(request, body, entry, client, action):
-    log.info("REGISTER device: %s", client)
-    return PlainTextResponse(xml_response("500", client))
+    # TrialPage.h() attend <Ret>300</Ret> pour valider l'enregistrement,
+    # + <UnitID> et <License> qu'elle stocke. 303=clé invalide, 304=quota atteint.
+    log.info("REGISTER device: %s -> Ret=300 (licence acceptée)", client)
+    return PlainTextResponse(
+        f"<IKMService><Ret>300</Ret>"
+        f"<UnitID>{MOCK_UNIT_ID}</UnitID>"
+        f"<License>{MOCK_LICENSE}</License>"
+        f"<Client>{_xml_escape(client)}</Client></IKMService>"
+    )
 
 
 async def _handle_account(request, body, entry, client, action):
