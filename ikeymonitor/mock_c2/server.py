@@ -501,14 +501,32 @@ async def _handle_set_settings(request, body, entry, client, action):
     return PlainTextResponse(xml_response("500", client))
 
 
-async def _handle_get_websocket_address(request, body, entry, client, action):
+def _ws_url(request: Request) -> str:
+    """Construit l'URL WSS à partir du Host de la requête (loopback via adb reverse)."""
     host = request.headers.get("host", "127.0.0.1:8443")
     scheme = "wss" if "https" in str(request.url) else "ws"
-    ws_url = f"{scheme}://{host}/ws"
-    log.info("WS_ADDRESS requested by %s -> %s", client, ws_url)
+    return f"{scheme}://{host}/ws"
+
+
+def _server_config_tags(request: Request) -> str:
+    """Tags de config serveur lus par l'APK dans x.u.a() :
+    - websocket_address : URL du WebSocket (vrai tag, sensible à la casse)
+    - LoginStatus=1     : déclenche la connexion WSS côté APK
+    Extraction APK = <tag>...</tag> par indexOf (x.d.d), casse exacte requise.
+    """
+    return (
+        f"<websocket_address>{_ws_url(request)}</websocket_address>"
+        f"<LoginStatus>1</LoginStatus>"
+    )
+
+
+async def _handle_get_websocket_address(request, body, entry, client, action):
+    # Le handler APK (A_91ba…b) n'appelle x.u.a() que si <Ret>1</Ret>.
+    ws_cfg = _server_config_tags(request)
+    log.info("WS_ADDRESS requested by %s -> %s", client, _ws_url(request))
     return PlainTextResponse(
-        f"<IKMService><Ret>500</Ret><Client>{_xml_escape(client)}</Client>"
-        f"<WSAddress>{ws_url}</WSAddress></IKMService>"
+        f"<IKMService><Ret>1</Ret><Client>{_xml_escape(client)}</Client>"
+        f"{ws_cfg}</IKMService>"
     )
 
 
