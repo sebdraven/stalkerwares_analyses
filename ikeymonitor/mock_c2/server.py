@@ -149,7 +149,7 @@ for d in [LOG_DIR, UPLOAD_DIR, UPLOAD_DIR / "photos", UPLOAD_DIR / "screenshots"
           UPLOAD_DIR / "gps", UPLOAD_DIR / "calls", UPLOAD_DIR / "web_history",
           UPLOAD_DIR / "clipboard", UPLOAD_DIR / "contacts", UPLOAD_DIR / "calendar",
           UPLOAD_DIR / "wifi", UPLOAD_DIR / "surrounding", UPLOAD_DIR / "debug",
-          UPLOAD_DIR / "crash_logs"]:
+          UPLOAD_DIR / "crash_logs", UPLOAD_DIR / "misc"]:
     d.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
@@ -172,22 +172,20 @@ log = logging.getLogger("ikm-c2")
 
 devices: dict[str, dict] = {}
 exfiltrated: list[dict] = []
-ws_connections: list[WebSocket] = []
+ws_connections: dict[str, WebSocket] = {}  # client_id -> ws
+ws_anon: list[WebSocket] = []              # ws pas encore identifiés
 command_queue: list[str] = []
 
 # ---------------------------------------------------------------------------
 # Endpoint mapping — v17.4 action → canonical v19.1 action
-# Used to normalize old typo'd endpoints to their corrected form
 # ---------------------------------------------------------------------------
 
 ENDPOINT_ALIASES: dict[str, str] = {
-    # v17.4 typos → v19.1 corrected
     "uoload_keystrokes": "upload_keystrokes",
     "uoload_chat_logs": "upload_chat_logs",
     "uoload_website_history": "upload_website_history",
     "uoload_call_history": "upload_call_history",
     "uoload_gps_history": "upload_gps_history",
-    # v17.4 renamed → v19.1
     "surrounding": "upload_surrounding",
     "contact": "upload_contact",
     "calendar": "upload_calendar",
@@ -195,7 +193,6 @@ ENDPOINT_ALIASES: dict[str, str] = {
     "upload_Wifi": "upload_wifi",
 }
 
-# Upload subdirectory routing
 UPLOAD_SUBDIRS: dict[str, str] = {
     "upload_photo": "photos",
     "upload_chat_img": "chat_img",
@@ -217,27 +214,46 @@ UPLOAD_SUBDIRS: dict[str, str] = {
     "upload_weekly_crash_logs": "crash_logs",
 }
 
+# Champs XML à extraire par action canonique
+PARSE_FIELDS: dict[str, list[str]] = {
+    "upload_keystrokes": ["App", "Text", "Time"],
+    "upload_chat_logs": ["App", "Contact", "Message", "Time"],
+    "upload_gps_history": ["Lat", "Lon", "Time", "Accuracy"],
+    "upload_call_history": ["Number", "Duration", "Time", "Type"],
+    "upload_website_history": ["Url", "Title", "Time"],
+    "upload_contact": ["Name", "Phone", "Email"],
+    "upload_clipboard": ["Text", "Time"],
+    "upload_wifi": ["SSID", "BSSID", "Time"],
+}
+
 # ---------------------------------------------------------------------------
 # 3DES helpers
 # ---------------------------------------------------------------------------
 
 def tdes_encrypt(plaintext: str, key: bytes = TDES_KEY) -> str:
-    """Reproduce 3DES/ECB encrypt -> hex -> base64 (C3443z.m7234b / C4687z.m11302b)."""
     cipher = DES3.new(key, DES3.MODE_ECB)
     ct = cipher.encrypt(pad(plaintext.encode("utf-8"), DES3.block_size))
     return base64.b64encode(ct.hex().encode()).decode()
 
 
 def tdes_decrypt(b64hex: str, key: bytes = TDES_KEY) -> str:
-    """Reverse of tdes_encrypt."""
     raw_hex = base64.b64decode(b64hex).decode()
     ct = bytes.fromhex(raw_hex)
     cipher = DES3.new(key, DES3.MODE_ECB)
     return unpad(cipher.decrypt(ct), DES3.block_size).decode("utf-8")
 
 
+def try_tdes_decrypt(value: str) -> Optional[str]:
+    """Tente un déchiffrement 3DES. Retourne le clair ou None."""
+    if not value or len(value) < 4:
+        return None
+    try:
+        return tdes_decrypt(value)
+    except Exception:
+        return None
+
+
 def rtmp_sign(device_id: str, sign_ts: str) -> str:
-    """RTMP URL signature: MD5("/live/" + device_id + "-" + ts + "-" + secret)."""
     raw = f"/live/{device_id}-{sign_ts}-{RTMP_SECRET}"
     return hashlib.md5(raw.encode()).hexdigest()
 
@@ -246,12 +262,11 @@ def rtmp_sign(device_id: str, sign_ts: str) -> str:
 # ---------------------------------------------------------------------------
 
 def xml_response(ret: str = "500", client: str = "", extra: str = "") -> str:
-    """Build IKMService XML response."""
     ts = str(int(time.time()))
     return (
         f"<IKMService>"
-        f"<Ret>{ret}</Ret>"
-        f"<Client>{client}</Client>"
+        f"<Ret>{_xml_escape(ret)}</Ret>"
+        f"<Client>{_xml_escape(client)}</Client>"
         f"<UnitID>{MOCK_UNIT_ID}</UnitID>"
         f"<MonitorStatus>0</MonitorStatus>"
         f"<WSTimeStamp>{ts}</WSTimeStamp>"
@@ -261,83 +276,159 @@ def xml_response(ret: str = "500", client: str = "", extra: str = "") -> str:
 
 
 def xml_command(request_type: str, request_id: str, body: str) -> str:
-    """Build server->APK WebSocket command."""
     return (
         f"<IKMService>"
-        f"<RequestType>{request_type}</RequestType>"
-        f"<RequestId>{request_id}</RequestId>"
+        f"<RequestType>{_xml_escape(request_type)}</RequestType>"
+        f"<RequestId>{_xml_escape(request_id)}</RequestId>"
         f"{body}"
         f"</IKMService>"
     )
 
 
+def _xml_escape(s: str) -> str:
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def parse_xml_field(xml_str: str, tag: str) -> str:
-    """Quick regex XML field extractor."""
-    m = re.search(rf"<{tag}>(.*?)</{tag}>", xml_str, re.DOTALL)
+    m = re.search(rf"<{re.escape(tag)}>(.*?)</{re.escape(tag)}>", xml_str, re.DOTALL)
     return m.group(1) if m else ""
 
 # ---------------------------------------------------------------------------
-# Version detection
+# §1 — Version detection (fiable, basée sur l'alias)
 # ---------------------------------------------------------------------------
 
-def detect_version(body_str: str, client: str) -> str:
-    """Heuristic: detect APK version from request content."""
-    if client in devices and "version" in devices[client]:
+def detect_version(action_raw: str, canonical: str, client: str) -> str:
+    """Détecte la version APK à partir de l'action brute :
+    si l'action a été normalisée via un alias → v17.4, sinon v19.1."""
+    if client in devices and devices[client].get("version") not in (None, "unknown"):
         return devices[client]["version"]
-    if "com.sec.android" in body_str or "monitoringapp" in body_str:
+    if action_raw in ENDPOINT_ALIASES:
         return "v17.4"
-    if "com.android.internet" in body_str or "a20251031" in body_str:
+    if canonical in HANDLERS:
         return "v19.1"
     return "unknown"
 
 # ---------------------------------------------------------------------------
-# FastAPI app
+# §3 — Parse des payloads entrants
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title="iKeyMonitor Mock C2", version="2.0.0",
-              description="Dual-version: supports v17.4 (uoload typos) + v19.1 (corrected)")
+def parse_payload(canonical: str, body_str: str) -> dict:
+    """Extrait les champs XML significatifs pour les actions à fort signal."""
+    fields = PARSE_FIELDS.get(canonical)
+    if not fields:
+        return {}
+    result = {}
+    for f in fields:
+        val = parse_xml_field(body_str, f)
+        if val:
+            result[f] = val
+    return result
 
+# ---------------------------------------------------------------------------
+# §2 + §4 — Persistence + déchiffrement auto
+# ---------------------------------------------------------------------------
 
-def _normalize_action(action: str) -> str:
-    """Normalize v17.4 typo'd actions to canonical v19.1 names."""
-    return ENDPOINT_ALIASES.get(action, action)
+async def _save_upload(action: str, canonical: str, request: Request, body: bytes) -> tuple[bytes, str, dict]:
+    """Lit le body, persiste, parse, tente le déchiffrement, log."""
+    body_str = body.decode("utf-8", errors="replace")
+    client = parse_xml_field(body_str, "Client") or "unknown"
+    version = detect_version(action, canonical, client)
 
+    parsed = parse_payload(canonical, body_str)
 
-def _log_request(action: str, canonical: str, request: Request, body: bytes, version: str):
-    """Log every incoming request with version tagging."""
+    license_raw = parse_xml_field(body_str, "License")
+    license_plain = try_tdes_decrypt(license_raw)
+    data_raw = parse_xml_field(body_str, "Data")
+    data_plain = try_tdes_decrypt(data_raw)
+
+    ts_ms = int(time.time() * 1000)
+    safe_client = re.sub(r"[^a-zA-Z0-9_\-]", "_", client)
+
     entry = {
         "ts": datetime.now().isoformat(),
         "action_raw": action,
         "action_canonical": canonical,
         "version": version,
+        "client": client,
         "ip": request.client.host if request.client else "?",
         "body_len": len(body),
-        "body_preview": body[:500].decode("utf-8", errors="replace"),
+        "body_preview": body_str[:500],
     }
+    if parsed:
+        entry["parsed"] = parsed
+    if license_plain:
+        entry["license_plain"] = license_plain
+    if data_plain:
+        entry["data_plain"] = data_plain
+
     exfiltrated.append(entry)
+
     version_tag = f"[{version}]" if version != "unknown" else ""
-    log.info(">>> [%s] %s from %s (%d bytes) %s",
-             canonical, f"(raw: {action})" if action != canonical else "",
+    log.info(">>> [%s] %sfrom %s (%d bytes) %s",
+             canonical,
+             f"(raw: {action}) " if action != canonical else "",
              entry["ip"], len(body), version_tag)
+    if parsed:
+        log.info("    parsed: %s", json.dumps(parsed, ensure_ascii=False))
+    if license_plain:
+        log.info("    license (decrypted): %s", license_plain)
+    if data_plain:
+        log.info("    data (decrypted): %s", data_plain[:200])
+
+    # §2 — toujours persister sur disque pour les actions d'upload
+    subdir = UPLOAD_SUBDIRS.get(canonical, "misc")
+    bin_path = UPLOAD_DIR / subdir / f"{ts_ms}_{safe_client}_{canonical}.bin"
+    bin_path.parent.mkdir(parents=True, exist_ok=True)
+    bin_path.write_bytes(body)
+    log.info("    saved %d bytes -> %s", len(body), bin_path)
+
+    if parsed or license_plain or data_plain:
+        json_data = {"body_preview": body_str[:2000]}
+        if parsed:
+            json_data["parsed"] = parsed
+        if license_plain:
+            json_data["license_plain"] = license_plain
+        if data_plain:
+            json_data["data_plain"] = data_plain
+        json_path = bin_path.with_suffix(".json")
+        json_path.write_text(json.dumps(json_data, indent=2, ensure_ascii=False))
+
+    return body, client, entry
 
 
-async def _save_upload(action: str, canonical: str, request: Request) -> bytes:
-    """Read body, log, and save uploaded files."""
-    body = await request.body()
-    body_str = body.decode("utf-8", errors="replace")
-    version = detect_version(body_str, parse_xml_field(body_str, "Client"))
-    _log_request(action, canonical, request, body, version)
+def _track_device(client: str, version: str, canonical: str, license_plain: Optional[str] = None):
+    """Crée ou met à jour un device."""
+    if client == "unknown":
+        return
+    now = datetime.now().isoformat()
+    if client not in devices:
+        devices[client] = {
+            "client_id": client,
+            "first_seen": now,
+            "last_seen": now,
+            "version": version,
+            "license_plain": None,
+            "forced_ret": None,
+            "actions": [],
+        }
+    devices[client]["last_seen"] = now
+    devices[client]["actions"].append({"ts": now, "action": canonical})
+    if version != "unknown":
+        devices[client]["version"] = version
+    if license_plain:
+        devices[client]["license_plain"] = license_plain
 
-    content_type = request.headers.get("content-type", "")
-    if "multipart" in content_type or len(body) > 1000:
-        ts = int(time.time())
-        subdir = UPLOAD_SUBDIRS.get(canonical, "misc")
-        fpath = UPLOAD_DIR / subdir / f"{ts}_{canonical}.bin"
-        fpath.parent.mkdir(parents=True, exist_ok=True)
-        fpath.write_bytes(body)
-        log.info("Saved %d bytes -> %s", len(body), fpath)
 
-    return body
+# ---------------------------------------------------------------------------
+# FastAPI app
+# ---------------------------------------------------------------------------
+
+app = FastAPI(title="iKeyMonitor Mock C2", version="3.0.0",
+              description="Dual-version: v17.4 + v19.1, full analysis bench")
+
+
+def _normalize_action(action: str) -> str:
+    return ENDPOINT_ALIASES.get(action, action)
 
 
 # ---------------------------------------------------------------------------
