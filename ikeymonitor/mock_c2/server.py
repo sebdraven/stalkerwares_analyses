@@ -859,30 +859,27 @@ async def admin_crypto_rtmp(device_id: str = "test", sign_ts: str = ""):
 
 
 # ---------------------------------------------------------------------------
-# Entrypoint — python server.py  (HTTPS auto-gen cert)
-#              python server.py --http  (HTTP clair, debug)
+# Entrypoint
 # ---------------------------------------------------------------------------
 
 def main() -> None:
     import uvicorn
 
     parser = argparse.ArgumentParser(description="iKeyMonitor Mock C2 Server")
-    parser.add_argument("--host", default="0.0.0.0", help="Bind host (default: 0.0.0.0)")
-    parser.add_argument("--port", type=int, default=8443, help="Bind port (default: 8443 HTTPS, 8080 HTTP)")
-    parser.add_argument("--http", action="store_true",
-                        help="Serve plain HTTP (no TLS). Bascule le port par défaut à 8080.")
-    parser.add_argument("--regen-cert", action="store_true",
-                        help="Force regeneration of cert.pem/key.pem even if they exist.")
+    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=8443)
+    parser.add_argument("--http", action="store_true")
+    parser.add_argument("--regen-cert", action="store_true")
     args = parser.parse_args()
 
     if args.http and args.port == 8443:
         args.port = 8080
 
-    banner = "\n" + "═" * 60 + "\n  iKeyMonitor Mock C2 Server v2.0.0 (v17.4 + v19.1)\n" + "═" * 60
-    print(banner)
+    banner = "\n" + "═" * 60 + "\n  iKeyMonitor Mock C2 Server v3.0.0 (v17.4 + v19.1)\n" + "═" * 60
+    log.info(banner)
 
     if args.http:
-        print(f"⚠️  HTTP MODE (no TLS) — http://{args.host}:{args.port}/")
+        log.info("⚠️  HTTP MODE — http://%s:%d/", args.host, args.port)
         uvicorn.run(app, host=args.host, port=args.port, log_level="info")
         return
 
@@ -890,12 +887,9 @@ def main() -> None:
         for p in (CERT_PATH, KEY_PATH):
             if p.exists():
                 p.unlink()
-                print(f"🗑️  Removed old {p.name}")
 
-    cert, key = ensure_cert()
-    print(f"🔐 HTTPS — https://{args.host}:{args.port}/")
-    print(f"   cert: {cert}")
-    print(f"   key:  {key}\n")
+    cert, key = ensure_cert(log.info)
+    log.info("🔐 HTTPS — https://%s:%d/", args.host, args.port)
 
     uvicorn.run(
         app,
