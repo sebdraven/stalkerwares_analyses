@@ -6,17 +6,13 @@ Dual-version mock C2 supporting both the typo'd v17.4 endpoints and the correcte
 Channels:
   - REST API (data exfiltration + config) via /index.php?m=api&a={action}
   - WebSocket (real-time commands: Camera, Screenshots, ScreenshotVideo, Surrounding)
-  - Admin API (trigger commands, inspect state, crypto tools)
+  - Admin API (trigger commands, inspect state, crypto tools, session export)
 
 Usage:
     uv sync
     uv run python server.py              # HTTPS :8443, auto-gen cert si absent
     uv run python server.py --http       # HTTP :8080 (debug)
     uv run python server.py --regen-cert # force nouveau cert
-
-Le premier lancement génère cert.pem + key.pem (self-signed, SAN=
-127.0.0.1/localhost/10.11.1.1 + les 5 domaines C2 iKeyMonitor, valide 1 an).
-Le bypass SSL Frida reste requis côté app.
 
 Research use only — ASTRA/LHS-LORIA stalkerware analysis project.
 """
@@ -41,13 +37,12 @@ from fastapi import FastAPI, Query, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import PlainTextResponse, JSONResponse
 
 # ---------------------------------------------------------------------------
-# Self-signed TLS cert — auto-généré au premier lancement
+# Self-signed TLS cert
 # ---------------------------------------------------------------------------
 
 CERT_PATH = Path(__file__).parent / "cert.pem"
 KEY_PATH  = Path(__file__).parent / "key.pem"
 
-# Domaines C2 iKeyMonitor (inclus dans le SAN pour permettre DNS spoofing / hosts)
 IKM_C2_DOMAINS = [
     "ikmws.awsapi.io",
     "ikmws-mirror.awsapi.io",
@@ -58,8 +53,6 @@ IKM_C2_DOMAINS = [
 
 
 def ensure_cert(log_fn=print) -> tuple[Path, Path]:
-    """Génère cert.pem + key.pem si absents. Self-signed, SAN multi-IP +
-    domaines C2 iKM, valide 1 an. Utilise `cryptography` (pur Python)."""
     if CERT_PATH.exists() and KEY_PATH.exists():
         log_fn(f"🔒 Reusing existing cert: {CERT_PATH.name}")
         return CERT_PATH, KEY_PATH
@@ -70,9 +63,7 @@ def ensure_cert(log_fn=print) -> tuple[Path, Path]:
         from cryptography.hazmat.primitives.asymmetric import rsa
         from cryptography.x509.oid import NameOID
     except ImportError:
-        log_fn("❌ `cryptography` manquant. Ajoute-le dans pyproject.toml :")
-        log_fn('     dependencies = ["cryptography>=42", ...]')
-        log_fn("   puis : uv sync")
+        log_fn("❌ `cryptography` manquant — uv add cryptography")
         sys.exit(1)
 
     log_fn("🔐 Generating self-signed cert (first run)…")
@@ -129,15 +120,15 @@ def ensure_cert(log_fn=print) -> tuple[Path, Path]:
         encryption_algorithm=serialization.NoEncryption(),
     ))
 
-    log_fn(f"   ✅ {CERT_PATH.name} + {KEY_PATH.name} (valid 1y, SAN=127.0.0.1/localhost/10.11.1.1 + {len(IKM_C2_DOMAINS)} domaines C2)")
+    log_fn(f"   ✅ {CERT_PATH.name} + {KEY_PATH.name} (valid 1y)")
     return CERT_PATH, KEY_PATH
 
 # ---------------------------------------------------------------------------
-# Config — matches values extracted from APK (identical across v17.4 & v19.1)
+# Config
 # ---------------------------------------------------------------------------
 
-TDES_KEY = b"ccc707d2924768f2cc12bc8b"           # 24-byte 3DES key
-RTMP_SECRET = "C4hgdA%Qc5UHfqEho&Ke"             # RTMP signing secret
+TDES_KEY = b"ccc707d2924768f2cc12bc8b"
+RTMP_SECRET = "C4hgdA%Qc5UHfqEho&Ke"
 MOCK_UNIT_ID = "MSIK-ONLINE-MOCK001"
 MOCK_LICENSE = "MOCK-LICENSE-ASTRA-2026"
 
