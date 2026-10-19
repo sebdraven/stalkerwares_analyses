@@ -63,8 +63,30 @@ Corellium UI → Snapshots → "clean_before_mtf"
 
 ### 3.3 Préparer le réseau — Méthode 1 : /etc/hosts + adb reverse
 
-Même approche que le lab Hoverwatch. Via le shell root intégré :
+Même approche que le lab Hoverwatch. **Pas besoin d'`iptables`** : `adbd` tourne en root sur
+Corellium, donc `adb reverse` peut binder le port privilégié 443 directement. Le mock reste sur 8443.
 
+Poste lab — tunnel SSH D'ABORD, adb ENSUITE. Identique bash / PowerShell :
+```bash
+ssh -N -f -L 5001:<DEVICE_IP>:5001 <user>@proxy.corellium.com
+adb connect localhost:5001
+adb shell dumpsys connectivity | grep "Active default"   # doit ≠ none
+
+adb reverse tcp:443  tcp:8443
+adb reverse tcp:8443 tcp:8443
+```
+
+PowerShell n'a ni `-f` fiable pour détacher le ssh ni `grep` :
+```powershell
+Start-Process ssh -ArgumentList "-N","-L","5001:<DEVICE_IP>:5001","<user>@proxy.corellium.com" -WindowStyle Hidden
+adb connect localhost:5001
+adb shell dumpsys connectivity | Select-String "Active default"
+
+adb reverse tcp:443  tcp:8443
+adb reverse tcp:8443 tcp:8443
+```
+
+Shell device (root) — redirection DNS :
 ```bash
 mount -o rw,remount /
 cat >> /etc/hosts << 'EOF'
@@ -90,24 +112,25 @@ cat >> /etc/hosts << 'EOF'
 127.0.0.1 alt7-mtalk.google.com
 127.0.0.1 alt8-mtalk.google.com
 EOF
-mount -o ro,remount /
-
-# Port forwarding : 443 → 8443 (le mock écoute sur 8443)
-iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 443 -j REDIRECT --to-port 8443
 ```
 
-Côté PC (PowerShell) :
+Le heredoc ci-dessus tourne **dans le shell device**, pas sur le poste lab : que tu sois sous
+bash ou PowerShell, tape-le après être entré en `adb shell`. Si tu veux le faire en one-liner
+depuis PowerShell, passe par un fichier :
 ```powershell
-adb reverse tcp:8443 tcp:8443
+adb push hosts_mtf.txt /sdcard/
+adb shell 'mount -o rw,remount / && cat /sdcard/hosts_mtf.txt >> /etc/hosts'
 ```
+
+⚠️ `mount -o rw,remount /` est à refaire **à chaque reboot**. Et `nslookup` ne lit PAS `/etc/hosts`
+(outil DNS pur) — la seule vérif honnête est `curl` depuis le device (cf. §4.2).
 
 ### 3.4 Préparer le réseau — Méthode 2 : Proxy MITM (mitmproxy)
 
 Si tu veux aussi voir le trafic en clair dans mitmproxy :
 
 ```bash
-# Sur le serveur lab
-pip install mitmproxy
+# Sur le poste lab
 mitmproxy --mode transparent --listen-port 8443 \
   --set confdir=~/.mitmproxy \
   --scripts mtf_mitm_addon.py
@@ -115,12 +138,10 @@ mitmproxy --mode transparent --listen-port 8443 \
 
 Sur la VM Corellium :
 ```bash
-# Installer le certificat mitmproxy
 adb push ~/.mitmproxy/mitmproxy-ca-cert.cer /sdcard/
 adb shell su -c "cp /sdcard/mitmproxy-ca-cert.cer /system/etc/security/cacerts/c8750f0d.0"
 adb shell su -c "chmod 644 /system/etc/security/cacerts/c8750f0d.0"
 
-# Configurer le proxy WiFi via settings
 adb shell settings put global http_proxy <IP_MITMPROXY>:8443
 ```
 
