@@ -49,9 +49,10 @@
 - Image : **Android 13 (API 33)** ou **Android 14 (API 34)**
   - Le stalkerware cible minSDK 23, targetSDK 34
   - ⚠️ **API 35+ / Android 15+ casse le payload** (vérifié 21/04/2026 sur API 36)
-  - Éviter Android 14+ pour l'instant (restrictions foreground services)
+  - Éviter Android 14+ pour l'instant (restrictions foreground services, et store de certs dans l'APEX)
 - Device profile : **Generic ARM** (Pixel 4/5 ou Samsung)
 - **Rooted** : OUI (par défaut sur Corellium)
+- **Enable WAN access** : COCHÉ — sinon `Active default network: none` et l'app bloque sur « no internet »
 - RAM : 4 GB minimum
 
 ### 3.2 Snapshot initial
