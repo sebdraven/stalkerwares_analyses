@@ -362,41 +362,51 @@ Laisser tourner 24h et observer :
 ### 8.1 Depuis le serveur mock
 
 ```bash
-# Exporter toutes les captures
 tar czf mtf_captures_$(date +%Y%m%d).tar.gz captures/
 
-# Compter par catégorie
 for dir in captures/*/; do
     echo "$(find $dir -name '*.json' | wc -l) $(basename $dir)"
 done | sort -rn
 ```
 
+```powershell
+$stamp = Get-Date -Format "yyyyMMdd"
+tar czf "mtf_captures_$stamp.tar.gz" captures/
+
+Get-ChildItem captures -Directory | ForEach-Object {
+    [pscustomobject]@{
+        Dir   = $_.Name
+        Count = (Get-ChildItem $_.FullName -Recurse -Filter *.json).Count
+    }
+} | Sort-Object Count -Descending
+```
+
 ### 8.2 Depuis la VM Corellium
 
 ```bash
-# Extraire la base SQLite locale du stalkerware
 adb shell su -c "cp /data/data/phone.monitor2026/shared_prefs/user.xml /sdcard/"
 adb pull /sdcard/user.xml
 
-# Extraire les bases de données
 adb shell su -c "ls /data/data/phone.monitor2026/databases/"
 adb shell su -c "cp /data/data/phone.monitor2026/databases/*.db /sdcard/"
 adb pull /sdcard/*.db
-
-# PCAP depuis Corellium Network Monitor
-# → Download via l'UI Corellium
 ```
+
+Le dernier `adb pull` compte sur le glob du shell local. PowerShell ne l'expand pas —
+lister puis tirer un par un :
+```powershell
+adb shell su -c "cp /data/data/phone.monitor2026/databases/*.db /sdcard/"
+adb shell ls /sdcard/*.db | ForEach-Object { adb pull $_.Trim() }
+```
+
+PCAP depuis Corellium Network Monitor → Download via l'UI.
 
 ### 8.3 Depuis Frida (runtime analysis)
 
 ```bash
-# Hooker les appels Retrofit pour voir tous les POST en temps réel
-frida -U -n phone.monitor2026 -l hook_retrofit.js
+frida -U -n phone.monitor2026 -l hook_retrofit.js   # tous les POST en temps réel
+frida -U -n phone.monitor2026 -l hook_prefs.js      # les configs
 
-# Hooker le SharedPreferences pour voir les configs
-frida -U -n phone.monitor2026 -l hook_prefs.js
-
-# Dumper le tokenSecurity
 frida -U -n phone.monitor2026 -e '
 Java.perform(function() {
     var ctx = Java.use("com.app.activity.MyApp").f1307l.value;
@@ -410,16 +420,26 @@ Java.perform(function() {
 '
 ```
 
+Le `-e` avec un script multi-ligne en quotes simples ne passe pas en PowerShell — mettre
+le script dans un `.js` et utiliser `-l` :
+```powershell
+frida -U -n phone.monitor2026 -l dump_prefs.js
+```
+
 ---
 
 ## 9. Tips Corellium spécifiques
 
-- **Snapshots** : prendre un snapshot après chaque étape majeure pour pouvoir revenir en arrière
-- **Console** : utiliser la console série Corellium pour le debug kernel si le stalkerware fait du `su`
-- **Apps** : Corellium a le Play Store sur certaines images — utile pour installer les IM cibles (WhatsApp, Telegram, etc.)
-- **Frida** : pré-installé sur les images rootées Corellium
-- **Network** : le network monitor capture le trafic **avant** le chiffrement TLS si tu utilises le kernel module Corellium
-- **API** : Corellium a une API REST pour automatiser tout ça (création VM, install APK, adb commands)
+- **Ordre impératif** : tunnel SSH → `adb connect`. Sinon rien ne répond.
+- **Port ADB exposé = 5001** (pas 5555)
+- **Reset entre VM** : `adb kill-server` + `pkill -f proxy.corellium.com` (PowerShell :
+  `Get-Process ssh | Stop-Process`) ; `offline` dans `adb devices` = ancienne VM morte
+- **Snapshots** : en prendre un après chaque étape majeure
+- **Console** : la console série sert au debug kernel si le stalkerware fait du `su`
+- **Frida** : le Frida natif de la plateforme peut ne pas exposer le process — pousser un vrai
+  `frida-server` sur un port dédié (`-l 0.0.0.0:27043`) + `adb forward tcp:27043 tcp:27043`
+- **Network** : le network monitor capture le trafic **avant** le chiffrement TLS avec le kernel module Corellium
+- **API** : Corellium a une API REST pour automatiser (création VM, install APK, commandes adb)
 
 ---
 
