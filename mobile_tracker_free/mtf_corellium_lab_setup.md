@@ -142,35 +142,41 @@ VM → Network → Monitor → Start Capture
 
 Le mock C2 génère `mock.crt` + `mock.key` automatiquement au premier lancement. Le SAN couvre `localhost`, `mobile-track-data.com`, `127.0.0.1`, `10.11.1.1`, `10.0.2.2`.
 
+⚠️ Ne JAMAIS régénérer le cert une fois qu'il est posé sur le device — ça invalide la copie installée.
+
 ### 4.2 Installer dans le system trust store (root)
 
-Côté PowerShell :
-```powershell
+Le hash se calcule **sur le poste lab** (`openssl` est absent de l'image device).
+
+```bash
+HASH=$(openssl x509 -inform PEM -subject_hash_old -in mock.crt | head -1)
+echo $HASH
 adb push mock.crt /sdcard/mock.crt
 ```
 
-Sur le device (shell root) :
+```powershell
+$HASH = (openssl x509 -inform PEM -subject_hash_old -in mock.crt | Select-Object -First 1)
+$HASH
+adb push mock.crt /sdcard/mock.crt
+```
+
+Shell device (root) :
 ```bash
-HASH=$(openssl x509 -inform PEM -subject_hash_old -in /sdcard/mock.crt | head -1)
-echo "Hash: $HASH"
 mount -o rw,remount /
 cp /sdcard/mock.crt /system/etc/security/cacerts/${HASH}.0
 chmod 644 /system/etc/security/cacerts/${HASH}.0
-mount -o ro,remount /
 ```
 
-Vérification :
+Vérification — **depuis le device**, pas depuis le poste lab :
 ```bash
 ls -la /system/etc/security/cacerts/${HASH}.0
-curl -v https://mobile-track-data.com:443/ 2>&1 | head -20
+curl -v https://mobile-track-data.com/ 2>&1 | head -20
 # Doit afficher le contenu sans erreur SSL (pas besoin de -k)
 ```
 
 ### 4.3 Lancer le mock server
 
-Côté PowerShell :
-```powershell
-cd C:\Users\sebdr\workspace\stalkerwares_analyses\mobile_tracker_free
+```bash
 uv run python mtf_c2_server.py
 ```
 
