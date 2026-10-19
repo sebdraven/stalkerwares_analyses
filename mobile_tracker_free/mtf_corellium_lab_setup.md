@@ -428,25 +428,18 @@ Java.perform(function() {
 ```python
 import corelliumclient
 
-# Setup
 client = corelliumclient.CorelliumClient(api_token="...")
 project = client.projects()[0]
 
-# Créer la VM
 device = project.create_device(
     name="MTF-Lab",
     os="android",
-    flavor="ranchu",  # Generic ARM
+    flavor="ranchu",
     os_version="13.0.0",
 )
 device.wait_for_ready()
 
-# Installer le stalkerware
 device.adb("install /path/to/phone.monitor2026.apk")
-
-# Modifier /etc/hosts
-device.adb('shell su -c "echo \'<IP> mobile-track-data.com\' >> /etc/hosts"')
-
-# Prendre un snapshot
+device.adb('shell su -c "echo \'127.0.0.1 mobile-track-data.com\' >> /etc/hosts"')
 device.snapshot("mtf_installed")
 ```
