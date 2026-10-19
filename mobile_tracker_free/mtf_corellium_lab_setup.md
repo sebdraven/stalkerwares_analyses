@@ -13,6 +13,23 @@
 - Les APK : dropper v3.9 (`com.mtf.protect`) + payload (`phone.monitor2026`)
 - Un certificat SSL auto-signé **installé dans le system trust store** (MTF utilise le vrai `X509TrustManager.checkServerTrusted()`, contrairement à Hoverwatch qui a un trust-all)
 
+### 1.1 Conventions shell
+
+Trois contextes d'exécution dans ce doc, à ne pas confondre :
+
+| Contexte | Ce qui tourne là |
+|---|---|
+| **Poste lab** (macOS/Linux ou Windows) | tunnel SSH, `adb`, `openssl`, le mock C2 |
+| **Shell device** (root, via `adb shell` ou console Corellium) | `mount`, `/etc/hosts`, pose du cert, `curl` de vérif |
+| **Frida** | hooks JS injectés dans le process cible |
+
+Les commandes poste lab sont données en **bash**. La quasi-totalité est identique en
+PowerShell : `adb push`, `adb install`, `adb connect`, `adb reverse`, `adb pull`, `ssh`
+(OpenSSH natif depuis Windows 10) et `openssl` ne changent pas d'un poil.
+
+Ne diffèrent réellement que **les boucles**, **les heredocs** et **les globs** — les
+variantes PowerShell sont données inline aux endroits concernés (§3.3, §4.2, §5.3, §8.1, §8.2).
+
 ---
 
 ## 2. Architecture du lab
@@ -22,20 +39,20 @@
 │                     CORELLIUM CLOUD                      │
 │  ┌─────────────────────┐                                 │
 │  │  Android VM (ARM)   │                                 │
-│  │  ┌───────────────┐  │     HTTPS (UA: ILAHK...)       │
-│  │  │phone.monitor  │──┼──────────────────────┐         │
-│  │  │    2026       │  │                      │         │
-│  │  └───────────────┘  │                      │         │
-│  │  /etc/hosts modifié │                      │         │
-│  │  ou proxy MITM      │                      │         │
-│  └─────────────────────┘                      │         │
-└───────────────────────────────────────────────┼─────────┘
+│  │  ┌───────────────┐  │     HTTPS (UA: ILAHK...)        │
+│  │  │phone.monitor  │──┼──────────────────────┐          │
+│  │  │    2026       │  │                      │          │
+│  │  └───────────────┘  │                      │          │
+│  │  /etc/hosts modifié │                      │          │
+│  │  + adb reverse :443 │                      │          │
+│  └─────────────────────┘                      │          │
+└───────────────────────────────────────────────┼──────────┘
                                                 │
                                                 ▼
                                    ┌────────────────────┐
-                                   │  VPS / Machine lab  │
+                                   │  Poste lab         │
                                    │  mtf_c2_server.py  │
-                                   │  (FastAPI :443)     │
+                                   │  (FastAPI :8443)   │
                                    │  captures/ ← logs  │
                                    └────────────────────┘
 ```
