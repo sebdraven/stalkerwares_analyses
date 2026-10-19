@@ -253,11 +253,7 @@ adb shell cmd notification allow_listener \
 ### 6.1 Lancer l'app et s'enregistrer
 
 ```bash
-# Ouvrir l'app via le secret dialer code
 adb shell am start -n $PKG/com.app.activity.FirstActivity
-
-# Ou via l'alias si l'icône est visible
-adb shell am start -n $PKG/com.app.activity.FirstActivityAlias
 ```
 
 Suivre le flow d'enregistrement :
@@ -268,58 +264,45 @@ Suivre le flow d'enregistrement :
 
 Le mock server répond `{status: "ok", idPhone: 99999}` → le stalkerware démarre.
 
+⚠️ Les clics dans la GUI Corellium sont souvent inopérants — piloter via
+`adb shell input tap <x> <y>` / `input keyevent` / `input text`.
+
 ### 6.2 Générer de l'activité sur la VM
 
-Pour que le stalkerware ait des données à exfiltrer :
-
 ```bash
-# Simuler un SMS entrant
 adb emu sms send 0612345678 "Test SMS for MTF capture"
-
-# Simuler un appel entrant
 adb emu gsm call 0612345678
-
-# Simuler un changement de position GPS
-adb emu geo fix 2.3522 48.8566  # Paris
-
-# Installer des apps IM (pour tester l'interception)
-# → Installer WhatsApp/Telegram/Signal depuis l'APKMirror
-
-# Copier des photos pour tester l'exfiltration media
+adb emu geo fix 2.3522 48.8566          # Paris
 adb push test_photo.jpg /sdcard/DCIM/Camera/
 ```
 
 ### 6.3 Monitorer les captures
 
-Sur le serveur mock :
 ```bash
-# Dashboard rapide
 curl http://localhost:8080/_stats | python -m json.tool
-
-# Suivre les logs en temps réel
 tail -f captures/c2_server.log
-
-# Lister les fichiers capturés (audio, photos, screenshots)
 find captures/ -name "*.json" | wc -l
-find captures/ -path "*/files/*" -type f | wc -l
+```
+
+```powershell
+curl http://localhost:8080/_stats | python -m json.tool
+Get-Content captures\c2_server.log -Wait
+(Get-ChildItem captures -Recurse -Filter *.json).Count
 ```
 
 ### 6.4 Tester les commandes FCM
 
-Le stalkerware écoute Firebase pour les commandes. Pour simuler des commandes sans passer par Firebase, on peut utiliser Frida sur la VM Corellium :
+Le stalkerware écoute Firebase pour les commandes. FCM étant sinkholé (§3.3), on injecte
+la même structure de commande localement via Frida :
 
 ```javascript
 // frida -U -n phone.monitor2026 -l send_fcm.js
 Java.perform(function() {
     var service = Java.use("com.app.service.MyFirebaseMTFMessagingService");
-    var Intent = Java.use("android.content.Intent");
     var Bundle = Java.use("android.os.Bundle");
 
-    // Simuler une commande "GetLocation"
     var bundle = Bundle.$new();
     bundle.putString("action", "GetLocation----42");
-
-    // Trigger via broadcast (alternative au FCM)
     console.log("[*] Sending fake FCM command: GetLocation");
 });
 ```
@@ -338,7 +321,7 @@ Laisser tourner 24h et observer :
 - [ ] Contacts extraits
 - [ ] Calendrier extrait
 
-### 7.2 Commandes actives (via Frida ou manipulation Firebase)
+### 7.2 Commandes actives (via Frida)
 
 - [ ] `TakePictureFront` → capture caméra
 - [ ] `RecordAudio` → enregistrement micro
