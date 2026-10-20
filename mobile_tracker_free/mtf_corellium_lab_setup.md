@@ -13,6 +13,23 @@
 - Les APK : dropper v3.9 (`com.mtf.protect`) + payload (`phone.monitor2026`)
 - Un certificat SSL auto-signé **installé dans le system trust store** (MTF utilise le vrai `X509TrustManager.checkServerTrusted()`, contrairement à Hoverwatch qui a un trust-all)
 
+### 1.1 Conventions shell
+
+Trois contextes d'exécution dans ce doc, à ne pas confondre :
+
+| Contexte | Ce qui tourne là |
+|---|---|
+| **Poste lab** (macOS/Linux ou Windows) | tunnel SSH, `adb`, `openssl`, le mock C2 |
+| **Shell device** (root, via `adb shell` ou console Corellium) | `mount`, `/etc/hosts`, pose du cert, `curl` de vérif |
+| **Frida** | hooks JS injectés dans le process cible |
+
+Les commandes poste lab sont données en **bash**. La quasi-totalité est identique en
+PowerShell : `adb push`, `adb install`, `adb connect`, `adb reverse`, `adb pull`, `ssh`
+(OpenSSH natif depuis Windows 10) et `openssl` ne changent pas d'un poil.
+
+Ne diffèrent réellement que **les boucles**, **les heredocs** et **les globs** — les
+variantes PowerShell sont données inline aux endroits concernés (§3.3, §4.2, §5.3, §8.1, §8.2).
+
 ---
 
 ## 2. Architecture du lab
@@ -22,20 +39,20 @@
 │                     CORELLIUM CLOUD                      │
 │  ┌─────────────────────┐                                 │
 │  │  Android VM (ARM)   │                                 │
-│  │  ┌───────────────┐  │     HTTPS (UA: ILAHK...)       │
-│  │  │phone.monitor  │──┼──────────────────────┐         │
-│  │  │    2026       │  │                      │         │
-│  │  └───────────────┘  │                      │         │
-│  │  /etc/hosts modifié │                      │         │
-│  │  ou proxy MITM      │                      │         │
-│  └─────────────────────┘                      │         │
-└───────────────────────────────────────────────┼─────────┘
+│  │  ┌───────────────┐  │     HTTPS (UA: ILAHK...)        │
+│  │  │phone.monitor  │──┼──────────────────────┐          │
+│  │  │    2026       │  │                      │          │
+│  │  └───────────────┘  │                      │          │
+│  │  /etc/hosts modifié │                      │          │
+│  │  + adb reverse :443 │                      │          │
+│  └─────────────────────┘                      │          │
+└───────────────────────────────────────────────┼──────────┘
                                                 │
                                                 ▼
                                    ┌────────────────────┐
-                                   │  VPS / Machine lab  │
+                                   │  Poste lab         │
                                    │  mtf_c2_server.py  │
-                                   │  (FastAPI :443)     │
+                                   │  (FastAPI :8443)   │
                                    │  captures/ ← logs  │
                                    └────────────────────┘
 ```
@@ -49,9 +66,10 @@
 - Image : **Android 13 (API 33)** ou **Android 14 (API 34)**
   - Le stalkerware cible minSDK 23, targetSDK 34
   - ⚠️ **API 35+ / Android 15+ casse le payload** (vérifié 21/04/2026 sur API 36)
-  - Éviter Android 14+ pour l'instant (restrictions foreground services)
+  - Éviter Android 14+ pour l'instant (restrictions foreground services, et store de certs dans l'APEX)
 - Device profile : **Generic ARM** (Pixel 4/5 ou Samsung)
 - **Rooted** : OUI (par défaut sur Corellium)
+- **Enable WAN access** : COCHÉ — sinon `Active default network: none` et l'app bloque sur « no internet »
 - RAM : 4 GB minimum
 
 ### 3.2 Snapshot initial
@@ -63,8 +81,30 @@ Corellium UI → Snapshots → "clean_before_mtf"
 
 ### 3.3 Préparer le réseau — Méthode 1 : /etc/hosts + adb reverse
 
-Même approche que le lab Hoverwatch. Via le shell root intégré :
+Même approche que le lab Hoverwatch. **Pas besoin d'`iptables`** : `adbd` tourne en root sur
+Corellium, donc `adb reverse` peut binder le port privilégié 443 directement. Le mock reste sur 8443.
 
+Poste lab — tunnel SSH D'ABORD, adb ENSUITE. Identique bash / PowerShell :
+```bash
+ssh -N -f -L 5001:<DEVICE_IP>:5001 <user>@proxy.corellium.com
+adb connect localhost:5001
+adb shell dumpsys connectivity | grep "Active default"   # doit ≠ none
+
+adb reverse tcp:443  tcp:8443
+adb reverse tcp:8443 tcp:8443
+```
+
+PowerShell n'a ni `-f` fiable pour détacher le ssh ni `grep` :
+```powershell
+Start-Process ssh -ArgumentList "-N","-L","5001:<DEVICE_IP>:5001","<user>@proxy.corellium.com" -WindowStyle Hidden
+adb connect localhost:5001
+adb shell dumpsys connectivity | Select-String "Active default"
+
+adb reverse tcp:443  tcp:8443
+adb reverse tcp:8443 tcp:8443
+```
+
+Shell device (root) — redirection DNS :
 ```bash
 mount -o rw,remount /
 cat >> /etc/hosts << 'EOF'
@@ -90,24 +130,25 @@ cat >> /etc/hosts << 'EOF'
 127.0.0.1 alt7-mtalk.google.com
 127.0.0.1 alt8-mtalk.google.com
 EOF
-mount -o ro,remount /
-
-# Port forwarding : 443 → 8443 (le mock écoute sur 8443)
-iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 443 -j REDIRECT --to-port 8443
 ```
 
-Côté PC (PowerShell) :
+Le heredoc ci-dessus tourne **dans le shell device**, pas sur le poste lab : que tu sois sous
+bash ou PowerShell, tape-le après être entré en `adb shell`. Si tu veux le faire en one-liner
+depuis PowerShell, passe par un fichier :
 ```powershell
-adb reverse tcp:8443 tcp:8443
+adb push hosts_mtf.txt /sdcard/
+adb shell 'mount -o rw,remount / && cat /sdcard/hosts_mtf.txt >> /etc/hosts'
 ```
+
+⚠️ `mount -o rw,remount /` est à refaire **à chaque reboot**. Et `nslookup` ne lit PAS `/etc/hosts`
+(outil DNS pur) — la seule vérif honnête est `curl` depuis le device (cf. §4.2).
 
 ### 3.4 Préparer le réseau — Méthode 2 : Proxy MITM (mitmproxy)
 
 Si tu veux aussi voir le trafic en clair dans mitmproxy :
 
 ```bash
-# Sur le serveur lab
-pip install mitmproxy
+# Sur le poste lab
 mitmproxy --mode transparent --listen-port 8443 \
   --set confdir=~/.mitmproxy \
   --scripts mtf_mitm_addon.py
@@ -115,12 +156,10 @@ mitmproxy --mode transparent --listen-port 8443 \
 
 Sur la VM Corellium :
 ```bash
-# Installer le certificat mitmproxy
 adb push ~/.mitmproxy/mitmproxy-ca-cert.cer /sdcard/
 adb shell su -c "cp /sdcard/mitmproxy-ca-cert.cer /system/etc/security/cacerts/c8750f0d.0"
 adb shell su -c "chmod 644 /system/etc/security/cacerts/c8750f0d.0"
 
-# Configurer le proxy WiFi via settings
 adb shell settings put global http_proxy <IP_MITMPROXY>:8443
 ```
 
@@ -142,35 +181,41 @@ VM → Network → Monitor → Start Capture
 
 Le mock C2 génère `mock.crt` + `mock.key` automatiquement au premier lancement. Le SAN couvre `localhost`, `mobile-track-data.com`, `127.0.0.1`, `10.11.1.1`, `10.0.2.2`.
 
+⚠️ Ne JAMAIS régénérer le cert une fois qu'il est posé sur le device — ça invalide la copie installée.
+
 ### 4.2 Installer dans le system trust store (root)
 
-Côté PowerShell :
-```powershell
+Le hash se calcule **sur le poste lab** (`openssl` est absent de l'image device).
+
+```bash
+HASH=$(openssl x509 -inform PEM -subject_hash_old -in mock.crt | head -1)
+echo $HASH
 adb push mock.crt /sdcard/mock.crt
 ```
 
-Sur le device (shell root) :
+```powershell
+$HASH = (openssl x509 -inform PEM -subject_hash_old -in mock.crt | Select-Object -First 1)
+$HASH
+adb push mock.crt /sdcard/mock.crt
+```
+
+Shell device (root) :
 ```bash
-HASH=$(openssl x509 -inform PEM -subject_hash_old -in /sdcard/mock.crt | head -1)
-echo "Hash: $HASH"
 mount -o rw,remount /
 cp /sdcard/mock.crt /system/etc/security/cacerts/${HASH}.0
 chmod 644 /system/etc/security/cacerts/${HASH}.0
-mount -o ro,remount /
 ```
 
-Vérification :
+Vérification — **depuis le device**, pas depuis le poste lab :
 ```bash
 ls -la /system/etc/security/cacerts/${HASH}.0
-curl -v https://mobile-track-data.com:443/ 2>&1 | head -20
+curl -v https://mobile-track-data.com/ 2>&1 | head -20
 # Doit afficher le contenu sans erreur SSL (pas besoin de -k)
 ```
 
 ### 4.3 Lancer le mock server
 
-Côté PowerShell :
-```powershell
-cd C:\Users\sebdr\workspace\stalkerwares_analyses\mobile_tracker_free
+```bash
 uv run python mtf_c2_server.py
 ```
 
@@ -181,7 +226,6 @@ uv run python mtf_c2_server.py
 ### 5.1 Désactiver Play Protect (comme le ferait l'abuseur)
 
 ```bash
-# Via ADB (Corellium est déjà rooté)
 adb shell settings put global package_verifier_enable 0
 adb shell settings put global verifier_verify_adb_installs 0
 ```
@@ -189,12 +233,10 @@ adb shell settings put global verifier_verify_adb_installs 0
 ### 5.2 Installer le payload directement (sans dropper)
 
 ```bash
-# Push l'APK
 adb install phone.monitor2026.apk
 
 # Ou via le dropper pour tester la chaîne complète :
 adb install com.mtf.protect.apk
-# → Suivre le flow du dropper sur la VM
 ```
 
 ### 5.3 Accorder les permissions
@@ -202,7 +244,6 @@ adb install com.mtf.protect.apk
 ```bash
 PKG="phone.monitor2026"
 
-# Permissions runtime critiques
 for PERM in \
   android.permission.READ_SMS \
   android.permission.RECEIVE_SMS \
@@ -216,26 +257,40 @@ for PERM in \
   android.permission.READ_PHONE_STATE \
   android.permission.READ_CALENDAR \
   android.permission.READ_EXTERNAL_STORAGE \
+  android.permission.WRITE_EXTERNAL_STORAGE \
   android.permission.POST_NOTIFICATIONS \
   android.permission.READ_MEDIA_IMAGES \
   android.permission.READ_MEDIA_VIDEO ; do
     adb shell pm grant $PKG $PERM 2>/dev/null
 done
 
-# Battery optimization whitelist
 adb shell dumpsys deviceidle whitelist +$PKG
-
-# Device Admin (le stalkerware le fait via UI, mais en root on peut forcer)
 adb shell dpm set-active-admin $PKG/com.app.received.PolicyActivate\$PolicyAdmin
 ```
+
+```powershell
+$PKG = "phone.monitor2026"
+
+$PERMS = @(
+  "READ_SMS","RECEIVE_SMS","SEND_SMS","READ_CALL_LOG","READ_CONTACTS",
+  "ACCESS_FINE_LOCATION","ACCESS_BACKGROUND_LOCATION","RECORD_AUDIO","CAMERA",
+  "READ_PHONE_STATE","READ_CALENDAR","READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE",
+  "POST_NOTIFICATIONS","READ_MEDIA_IMAGES","READ_MEDIA_VIDEO"
+)
+foreach ($P in $PERMS) { adb shell pm grant $PKG "android.permission.$P" }
+
+adb shell dumpsys deviceidle whitelist +$PKG
+adb shell 'dpm set-active-admin phone.monitor2026/com.app.received.PolicyActivate$PolicyAdmin'
+```
+
+⚠️ Le `$PolicyAdmin` doit arriver **littéral** jusqu'au device : en bash on échappe (`\$`),
+en PowerShell on met la commande entière en quotes simples.
 
 ### 5.4 Activer l'AccessibilityService
 
 ```bash
-# Activer l'AccessibilityService (nécessaire pour l'interception IM no-root)
 adb shell settings put secure enabled_accessibility_services \
   $PKG/com.app.service.AccessService
-
 adb shell settings put secure accessibility_enabled 1
 ```
 
@@ -253,11 +308,7 @@ adb shell cmd notification allow_listener \
 ### 6.1 Lancer l'app et s'enregistrer
 
 ```bash
-# Ouvrir l'app via le secret dialer code
 adb shell am start -n $PKG/com.app.activity.FirstActivity
-
-# Ou via l'alias si l'icône est visible
-adb shell am start -n $PKG/com.app.activity.FirstActivityAlias
 ```
 
 Suivre le flow d'enregistrement :
@@ -268,58 +319,45 @@ Suivre le flow d'enregistrement :
 
 Le mock server répond `{status: "ok", idPhone: 99999}` → le stalkerware démarre.
 
+⚠️ Les clics dans la GUI Corellium sont souvent inopérants — piloter via
+`adb shell input tap <x> <y>` / `input keyevent` / `input text`.
+
 ### 6.2 Générer de l'activité sur la VM
 
-Pour que le stalkerware ait des données à exfiltrer :
-
 ```bash
-# Simuler un SMS entrant
 adb emu sms send 0612345678 "Test SMS for MTF capture"
-
-# Simuler un appel entrant
 adb emu gsm call 0612345678
-
-# Simuler un changement de position GPS
-adb emu geo fix 2.3522 48.8566  # Paris
-
-# Installer des apps IM (pour tester l'interception)
-# → Installer WhatsApp/Telegram/Signal depuis l'APKMirror
-
-# Copier des photos pour tester l'exfiltration media
+adb emu geo fix 2.3522 48.8566          # Paris
 adb push test_photo.jpg /sdcard/DCIM/Camera/
 ```
 
 ### 6.3 Monitorer les captures
 
-Sur le serveur mock :
 ```bash
-# Dashboard rapide
 curl http://localhost:8080/_stats | python -m json.tool
-
-# Suivre les logs en temps réel
 tail -f captures/c2_server.log
-
-# Lister les fichiers capturés (audio, photos, screenshots)
 find captures/ -name "*.json" | wc -l
-find captures/ -path "*/files/*" -type f | wc -l
+```
+
+```powershell
+curl http://localhost:8080/_stats | python -m json.tool
+Get-Content captures\c2_server.log -Wait
+(Get-ChildItem captures -Recurse -Filter *.json).Count
 ```
 
 ### 6.4 Tester les commandes FCM
 
-Le stalkerware écoute Firebase pour les commandes. Pour simuler des commandes sans passer par Firebase, on peut utiliser Frida sur la VM Corellium :
+Le stalkerware écoute Firebase pour les commandes. FCM étant sinkholé (§3.3), on injecte
+la même structure de commande localement via Frida :
 
 ```javascript
 // frida -U -n phone.monitor2026 -l send_fcm.js
 Java.perform(function() {
     var service = Java.use("com.app.service.MyFirebaseMTFMessagingService");
-    var Intent = Java.use("android.content.Intent");
     var Bundle = Java.use("android.os.Bundle");
 
-    // Simuler une commande "GetLocation"
     var bundle = Bundle.$new();
     bundle.putString("action", "GetLocation----42");
-
-    // Trigger via broadcast (alternative au FCM)
     console.log("[*] Sending fake FCM command: GetLocation");
 });
 ```
@@ -338,7 +376,7 @@ Laisser tourner 24h et observer :
 - [ ] Contacts extraits
 - [ ] Calendrier extrait
 
-### 7.2 Commandes actives (via Frida ou manipulation Firebase)
+### 7.2 Commandes actives (via Frida)
 
 - [ ] `TakePictureFront` → capture caméra
 - [ ] `RecordAudio` → enregistrement micro
@@ -362,41 +400,51 @@ Laisser tourner 24h et observer :
 ### 8.1 Depuis le serveur mock
 
 ```bash
-# Exporter toutes les captures
 tar czf mtf_captures_$(date +%Y%m%d).tar.gz captures/
 
-# Compter par catégorie
 for dir in captures/*/; do
     echo "$(find $dir -name '*.json' | wc -l) $(basename $dir)"
 done | sort -rn
 ```
 
+```powershell
+$stamp = Get-Date -Format "yyyyMMdd"
+tar czf "mtf_captures_$stamp.tar.gz" captures/
+
+Get-ChildItem captures -Directory | ForEach-Object {
+    [pscustomobject]@{
+        Dir   = $_.Name
+        Count = (Get-ChildItem $_.FullName -Recurse -Filter *.json).Count
+    }
+} | Sort-Object Count -Descending
+```
+
 ### 8.2 Depuis la VM Corellium
 
 ```bash
-# Extraire la base SQLite locale du stalkerware
 adb shell su -c "cp /data/data/phone.monitor2026/shared_prefs/user.xml /sdcard/"
 adb pull /sdcard/user.xml
 
-# Extraire les bases de données
 adb shell su -c "ls /data/data/phone.monitor2026/databases/"
 adb shell su -c "cp /data/data/phone.monitor2026/databases/*.db /sdcard/"
 adb pull /sdcard/*.db
-
-# PCAP depuis Corellium Network Monitor
-# → Download via l'UI Corellium
 ```
+
+Le dernier `adb pull` compte sur le glob du shell local. PowerShell ne l'expand pas —
+lister puis tirer un par un :
+```powershell
+adb shell su -c "cp /data/data/phone.monitor2026/databases/*.db /sdcard/"
+adb shell ls /sdcard/*.db | ForEach-Object { adb pull $_.Trim() }
+```
+
+PCAP depuis Corellium Network Monitor → Download via l'UI.
 
 ### 8.3 Depuis Frida (runtime analysis)
 
 ```bash
-# Hooker les appels Retrofit pour voir tous les POST en temps réel
-frida -U -n phone.monitor2026 -l hook_retrofit.js
+frida -U -n phone.monitor2026 -l hook_retrofit.js   # tous les POST en temps réel
+frida -U -n phone.monitor2026 -l hook_prefs.js      # les configs
 
-# Hooker le SharedPreferences pour voir les configs
-frida -U -n phone.monitor2026 -l hook_prefs.js
-
-# Dumper le tokenSecurity
 frida -U -n phone.monitor2026 -e '
 Java.perform(function() {
     var ctx = Java.use("com.app.activity.MyApp").f1307l.value;
@@ -410,16 +458,26 @@ Java.perform(function() {
 '
 ```
 
+Le `-e` avec un script multi-ligne en quotes simples ne passe pas en PowerShell — mettre
+le script dans un `.js` et utiliser `-l` :
+```powershell
+frida -U -n phone.monitor2026 -l dump_prefs.js
+```
+
 ---
 
 ## 9. Tips Corellium spécifiques
 
-- **Snapshots** : prendre un snapshot après chaque étape majeure pour pouvoir revenir en arrière
-- **Console** : utiliser la console série Corellium pour le debug kernel si le stalkerware fait du `su`
-- **Apps** : Corellium a le Play Store sur certaines images — utile pour installer les IM cibles (WhatsApp, Telegram, etc.)
-- **Frida** : pré-installé sur les images rootées Corellium
-- **Network** : le network monitor capture le trafic **avant** le chiffrement TLS si tu utilises le kernel module Corellium
-- **API** : Corellium a une API REST pour automatiser tout ça (création VM, install APK, adb commands)
+- **Ordre impératif** : tunnel SSH → `adb connect`. Sinon rien ne répond.
+- **Port ADB exposé = 5001** (pas 5555)
+- **Reset entre VM** : `adb kill-server` + `pkill -f proxy.corellium.com` (PowerShell :
+  `Get-Process ssh | Stop-Process`) ; `offline` dans `adb devices` = ancienne VM morte
+- **Snapshots** : en prendre un après chaque étape majeure
+- **Console** : la console série sert au debug kernel si le stalkerware fait du `su`
+- **Frida** : le Frida natif de la plateforme peut ne pas exposer le process — pousser un vrai
+  `frida-server` sur un port dédié (`-l 0.0.0.0:27043`) + `adb forward tcp:27043 tcp:27043`
+- **Network** : le network monitor capture le trafic **avant** le chiffrement TLS avec le kernel module Corellium
+- **API** : Corellium a une API REST pour automatiser (création VM, install APK, commandes adb)
 
 ---
 
@@ -428,25 +486,18 @@ Java.perform(function() {
 ```python
 import corelliumclient
 
-# Setup
 client = corelliumclient.CorelliumClient(api_token="...")
 project = client.projects()[0]
 
-# Créer la VM
 device = project.create_device(
     name="MTF-Lab",
     os="android",
-    flavor="ranchu",  # Generic ARM
+    flavor="ranchu",
     os_version="13.0.0",
 )
 device.wait_for_ready()
 
-# Installer le stalkerware
 device.adb("install /path/to/phone.monitor2026.apk")
-
-# Modifier /etc/hosts
-device.adb('shell su -c "echo \'<IP> mobile-track-data.com\' >> /etc/hosts"')
-
-# Prendre un snapshot
+device.adb('shell su -c "echo \'127.0.0.1 mobile-track-data.com\' >> /etc/hosts"')
 device.snapshot("mtf_installed")
 ```

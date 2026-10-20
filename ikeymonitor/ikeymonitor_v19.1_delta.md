@@ -1,6 +1,6 @@
 # iKeyMonitor v17.4 → v19.1 — Rapport d'analyse delta
 
-**Analyste :** Sébastien Larinier — ASTRA/LHS-LORIA  
+**Analyste :** Sébastien Larinier  
 **Date :** 2026-04-20  
 **Sample v19.1 :** `com.android.internet.a20251031` (versionCode 322, versionName 19.1-a20251031)  
 **Sample v17.4 (ref) :** `com.sec.android.internet.im.service.im20210815` (versionCode 322, versionName 17.4)  

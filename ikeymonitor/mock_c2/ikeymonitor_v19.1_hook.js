@@ -10,7 +10,7 @@
  * Usage:
  *   frida -U -f com.android.internet.a20251031 -l ikeymonitor_v19.1_hook.js --no-pause
  *
- * Research use only — ASTRA / stalkerware analysis project.
+ * Research use only.
  */
 
 Java.perform(function () {
